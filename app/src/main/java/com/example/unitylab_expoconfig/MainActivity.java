@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -33,81 +34,30 @@ public class MainActivity extends AppCompatActivity {
         Button btnInvitado = findViewById(R.id.button3);
 
         btnEstudiante.setOnClickListener(v -> {
-            // 3. Al hacer clic, cargamos la app completa
-            loadMainAppLayout();
-            setupNavigation();
+            try {
+                // Usa el paquete completo para el Intent
+                Intent intent = new Intent(MainActivity.this,
+                        Class.forName("com.example.unitylab_expoconfig.ui.inicio.SeleccionEPActivity"));
+                startActivity(intent);
+
+                // Opcional: añadir animación
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                // Manejo de error si la clase no se encuentra
+                Toast.makeText(this, "Error al cargar la pantalla", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnInvitado.setOnClickListener(v -> {
             // Modo invitado (puedes personalizar esto)
-            loadMainAppLayout();
-            setupNavigation();
+            //loadMainAppLayout();
+            //setupNavigation();
             // Opcional: Deshabilitar algunas funciones para invitados
         });
     }
 
-    private void loadMainAppLayout() {
-        // Cambiamos al layout principal de la aplicación
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        // Configuración básica de la toolbar
-        setSupportActionBar(binding.appBarMain.toolbar);
 
-        if (binding.appBarMain.fab != null) {
-            binding.appBarMain.fab.setOnClickListener(view ->
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null)
-                            .setAnchorView(R.id.fab)
-                            .show());
-        }
-    }
 
-    private void setupNavigation() {
-        // Configuración del sistema de navegación
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
-        // Configuración del Navigation Drawer
-        NavigationView navigationView = binding.navView;
-        if (navigationView != null) {
-            mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_transform, R.id.nav_reflow, R.id.nav_slideshow, R.id.nav_settings)
-                    .setOpenableLayout(binding.drawerLayout)
-                    .build();
-            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-            NavigationUI.setupWithNavController(navigationView, navController);
-        }
-
-        // Configuración de la Bottom Navigation (si existe)
-        if (binding.appBarMain.contentMain.bottomNavView != null) {
-            NavigationUI.setupWithNavController(binding.appBarMain.contentMain.bottomNavView, navController);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        boolean result = super.onCreateOptionsMenu(menu);
-        NavigationView navView = findViewById(R.id.nav_view);
-        if (navView == null) {
-            getMenuInflater().inflate(R.menu.overflow, menu);
-        }
-        return result;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.nav_settings) {
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_settings);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
 }
