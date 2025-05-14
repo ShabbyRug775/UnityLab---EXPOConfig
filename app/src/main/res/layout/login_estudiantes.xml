@@ -60,11 +60,14 @@
         android:layout_marginBottom="32dp" />
 
     <TextView
+        android:id="@+id/textViewNoEstudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¿No eres estudiante?\nDa clic aquí"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true" />
 
 </LinearLayout>
