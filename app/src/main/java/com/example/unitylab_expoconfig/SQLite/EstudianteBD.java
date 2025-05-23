@@ -11,9 +11,11 @@ public class EstudianteBD {
     public static final String COL_NOMBRE = "nombre";
     public static final String COL_APELLIDOS = "apellidos";
     public static final String COL_CORREO = "correo";
+    public static final String COL_BOLETA = "boleta";
     public static final String COL_GRUPO = "grupo";
     public static final String COL_SEMESTRE = "semestre";
     public static final String COL_CARRERA = "carrera";
+    public static final String COL_PASSWORD = "password";
 
     // Sentencia SQL para crear la tabla
     public static final String CREATE_TABLE =
@@ -22,9 +24,11 @@ public class EstudianteBD {
                     COL_NOMBRE + " TEXT NOT NULL, " +
                     COL_APELLIDOS + " TEXT NOT NULL, " +
                     COL_CORREO + " TEXT UNIQUE, " +
+                    COL_BOLETA + " TEXT UNIQUE, " +  // Nueva columna para boleta
                     COL_GRUPO + " TEXT, " +
                     COL_SEMESTRE + " TEXT, " +
-                    COL_CARRERA + " TEXT)";
+                    COL_CARRERA + " TEXT, " +
+                    COL_PASSWORD + " TEXT)";  // Nueva columna para password
 
     // Métodos CRUD
     public static long insertarEstudiante(SQLiteDatabase db, String nombre, String apellidos,
@@ -79,6 +83,14 @@ public class EstudianteBD {
                 null,
                 COL_NOMBRE + " LIKE ?",
                 new String[]{"%" + nombre + "%"},
+                null, null, null);
+    }
+
+    public static Cursor buscarEstudiantePorBoleta(SQLiteDatabase db, String boleta) {
+        return db.query(TABLE_NAME,
+                null,
+                COL_BOLETA + " = ?",
+                new String[]{boleta},
                 null, null, null);
     }
 }

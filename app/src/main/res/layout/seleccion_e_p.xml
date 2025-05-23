@@ -22,7 +22,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/light_guinda"
-        android:text="Ingresar como estudiante"
+        android:text="Soy estudiante"
         android:textColor="#000000" />
 
     <Button
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/light_guinda"
-        android:text="Ingresar como profesor"
+        android:text="Soy profesor"
         android:textColor="#000000"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>

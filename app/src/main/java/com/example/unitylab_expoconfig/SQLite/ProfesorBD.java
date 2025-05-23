@@ -12,6 +12,8 @@ public class ProfesorBD {
     public static final String COL_APELLIDOS = "apellidos";
     public static final String COL_CORREO = "correo";
     public static final String COL_ID_DEPTO = "id_departamento";
+    public static final String COL_NUM_EMPLEADO = "num_empleado";
+    public static final String COL_PASSWORD = "password";
 
     // Sentencia SQL para crear la tabla
     public static final String CREATE_TABLE =
@@ -20,7 +22,9 @@ public class ProfesorBD {
                     COL_NOMBRE + " TEXT NOT NULL, " +
                     COL_APELLIDOS + " TEXT NOT NULL, " +
                     COL_CORREO + " TEXT UNIQUE, " +
-                    COL_ID_DEPTO + " INTEGER)";
+                    COL_NUM_EMPLEADO + " TEXT UNIQUE, " +  // Nueva columna
+                    COL_ID_DEPTO + " INTEGER, " +
+                    COL_PASSWORD + " TEXT)";  // Nueva columna
 
     // Métodos CRUD
     public static long insertarProfesor(SQLiteDatabase db, String nombre, String apellidos, String correo, int idDepto) {
@@ -60,5 +64,13 @@ public class ProfesorBD {
         return db.delete(TABLE_NAME,
                 COL_ID + " = ?",
                 new String[]{String.valueOf(id)});
+    }
+
+    public static Cursor buscarProfesorPorNumEmpleado(SQLiteDatabase db, String numEmpleado) {
+        return db.query(TABLE_NAME,
+                null,
+                COL_NUM_EMPLEADO + " = ?",
+                new String[]{numEmpleado},
+                null, null, null);
     }
 }

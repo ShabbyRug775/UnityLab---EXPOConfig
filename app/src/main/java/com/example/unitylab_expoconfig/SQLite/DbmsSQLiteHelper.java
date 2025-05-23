@@ -51,6 +51,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProfesorBD.obtenerProfesorPorId(db, id);
     }
 
+    public Cursor buscarProfesorPorNumEmpleado(String numEmpleado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProfesorBD.buscarProfesorPorNumEmpleado(db, numEmpleado);
+    }
+
     public int actualizarProfesor(int id, String nombre, String apellidos, String correo, int idDepto) {
         SQLiteDatabase db = this.getWritableDatabase();
         int rows = ProfesorBD.actualizarProfesor(db, id, nombre, apellidos, correo, idDepto);
@@ -88,6 +93,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
     public Cursor buscarEstudiantesPorNombre(String nombre) {
         SQLiteDatabase db = this.getReadableDatabase();
         return EstudianteBD.buscarEstudiantesPorNombre(db, nombre);
+    }
+
+    public Cursor buscarEstudiantesPorBoleta(String boleta) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EstudianteBD.buscarEstudiantePorBoleta(db, boleta);
     }
 
     public int actualizarEstudiante(int id, String nombre, String apellidos, String correo,

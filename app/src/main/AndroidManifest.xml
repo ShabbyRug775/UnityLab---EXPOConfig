@@ -55,6 +55,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.estudiantes.RegistroEstudianteActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <!-- Opcional: Metadata para compatibilidad -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.profesores.RegistroProfesorActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <!-- Opcional: Metadata para compatibilidad -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
