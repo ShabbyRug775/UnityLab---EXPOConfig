@@ -27,12 +27,15 @@ public class ProfesorBD {
                     COL_PASSWORD + " TEXT)";  // Nueva columna
 
     // Métodos CRUD
-    public static long insertarProfesor(SQLiteDatabase db, String nombre, String apellidos, String correo, int idDepto) {
+    public static long insertarProfesor(SQLiteDatabase db, String nombre, String apellidos, String correo, int numEmpleado,int idDepto, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
         values.put(COL_CORREO, correo);
+        values.put(COL_NUM_EMPLEADO, numEmpleado);
         values.put(COL_ID_DEPTO, idDepto);
+        values.put(COL_PASSWORD, password);
+
         return db.insert(TABLE_NAME, null, values);
     }
 
@@ -49,12 +52,14 @@ public class ProfesorBD {
                 null, null, null);
     }
 
-    public static int actualizarProfesor(SQLiteDatabase db, int id, String nombre, String apellidos, String correo, int idDepto) {
+    public static int actualizarProfesor(SQLiteDatabase db, int id, String nombre, String apellidos, String correo, int numEmpleado, int idDepto, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
         values.put(COL_CORREO, correo);
+        values.put(COL_NUM_EMPLEADO, numEmpleado);
         values.put(COL_ID_DEPTO, idDepto);
+        values.put(COL_PASSWORD, password);
         return db.update(TABLE_NAME, values,
                 COL_ID + " = ?",
                 new String[]{String.valueOf(id)});

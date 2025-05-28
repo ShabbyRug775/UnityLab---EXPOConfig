@@ -52,6 +52,8 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
                 editTextApellidos.getText().toString().isEmpty() ||
                 editTextCorreo.getText().toString().isEmpty() ||
                 editTextBoleta.getText().toString().isEmpty() ||
+                editTextGrupo.getText().toString().isEmpty() ||
+                editTextSemestre.getText().toString().isEmpty() ||
                 editTextPassword.getText().toString().isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos obligatorios", Toast.LENGTH_SHORT).show();
             return;
@@ -62,9 +64,11 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
                 editTextNombre.getText().toString(),
                 editTextApellidos.getText().toString(),
                 editTextCorreo.getText().toString(),
+                editTextBoleta.getText().toString(),  // Boleta
                 editTextGrupo.getText().toString(),
                 editTextSemestre.getText().toString(),
-                editTextCarrera.getText().toString()
+                editTextCarrera.getText().toString(),
+                editTextPassword.getText().toString()  // Password
         );
 
         if (id != -1) {

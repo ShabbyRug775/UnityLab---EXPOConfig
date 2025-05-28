@@ -32,14 +32,17 @@ public class EstudianteBD {
 
     // Métodos CRUD
     public static long insertarEstudiante(SQLiteDatabase db, String nombre, String apellidos,
-                                          String correo, String grupo, String semestre, String carrera) {
+                                          String correo, String boleta, String grupo,
+                                          String semestre, String carrera, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
         values.put(COL_CORREO, correo);
+        values.put(COL_BOLETA, boleta);
         values.put(COL_GRUPO, grupo);
         values.put(COL_SEMESTRE, semestre);
         values.put(COL_CARRERA, carrera);
+        values.put(COL_PASSWORD, password);
 
         return db.insert(TABLE_NAME, null, values);
     }
@@ -57,14 +60,16 @@ public class EstudianteBD {
     }
 
     public static int actualizarEstudiante(SQLiteDatabase db, int id, String nombre, String apellidos,
-                                           String correo, String grupo, String semestre, String carrera) {
+                                           String correo, String boleta, String grupo, String semestre, String carrera, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
         values.put(COL_CORREO, correo);
+        values.put(COL_BOLETA, boleta);
         values.put(COL_GRUPO, grupo);
         values.put(COL_SEMESTRE, semestre);
         values.put(COL_CARRERA, carrera);
+        values.put(COL_PASSWORD, password);
 
         return db.update(TABLE_NAME, values,
                 COL_ID + " = ?",

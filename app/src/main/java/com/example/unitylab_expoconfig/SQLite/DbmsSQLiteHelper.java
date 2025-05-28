@@ -24,19 +24,14 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Eliminar todas las tablas existentes
-        db.execSQL("DROP TABLE IF EXISTS " + ProfesorBD.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + EstudianteBD.TABLE_NAME);
 
-        // Crear las tablas nuevamente
-        onCreate(db);
     }
 
     // ==================== MÉTODOS PARA PROFESOR ====================
 
-    public long insertarProfesor(String nombre, String apellidos, String correo, int idDepto) {
+    public long insertarProfesor(String nombre, String apellidos, String correo, int numEmpleado,int idDepto, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = ProfesorBD.insertarProfesor(db, nombre, apellidos, correo, idDepto);
+        long id = ProfesorBD.insertarProfesor(db, nombre, apellidos, correo, numEmpleado, idDepto, password);
         db.close();
         return id;
     }
@@ -56,9 +51,9 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProfesorBD.buscarProfesorPorNumEmpleado(db, numEmpleado);
     }
 
-    public int actualizarProfesor(int id, String nombre, String apellidos, String correo, int idDepto) {
+    public int actualizarProfesor(int id, String nombre, String apellidos, String correo, int numEmpleado, int idDepto, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProfesorBD.actualizarProfesor(db, id, nombre, apellidos, correo, idDepto);
+        int rows = ProfesorBD.actualizarProfesor(db, id, nombre, apellidos, correo, numEmpleado, idDepto, password);
         db.close();
         return rows;
     }
@@ -73,9 +68,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
     // ==================== MÉTODOS PARA ESTUDIANTE ====================
 
     public long insertarEstudiante(String nombre, String apellidos, String correo,
-                                   String grupo, String semestre, String carrera) {
+                                   String boleta, String grupo, String semestre,
+                                   String carrera, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = EstudianteBD.insertarEstudiante(db, nombre, apellidos, correo, grupo, semestre, carrera);
+        long id = EstudianteBD.insertarEstudiante(db, nombre, apellidos, correo,
+                boleta, grupo, semestre, carrera, password);
         db.close();
         return id;
     }
@@ -100,10 +97,10 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return EstudianteBD.buscarEstudiantePorBoleta(db, boleta);
     }
 
-    public int actualizarEstudiante(int id, String nombre, String apellidos, String correo,
-                                    String grupo, String semestre, String carrera) {
+    public int actualizarEstudiante(int id, String nombre, String apellidos, String correo, String boleta,
+                                    String grupo, String semestre, String carrera, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EstudianteBD.actualizarEstudiante(db, id, nombre, apellidos, correo, grupo, semestre, carrera);
+        int rows = EstudianteBD.actualizarEstudiante(db, id, nombre, apellidos, correo, boleta, grupo, semestre, carrera, password);
         db.close();
         return rows;
     }

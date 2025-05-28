@@ -75,6 +75,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".ui.inicio.BienvenidaActivity"
+            android:exported="false">
+        </activity>
+
     </application>
 
 </manifest>
