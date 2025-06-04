@@ -29,4 +29,15 @@
         android:layout_height="150dp"
         android:contentDescription="Ícono de bienvenida"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesión"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/light_guinda"
+        style="@style/Widget.MaterialComponents.Button"/>
+
 </LinearLayout>
