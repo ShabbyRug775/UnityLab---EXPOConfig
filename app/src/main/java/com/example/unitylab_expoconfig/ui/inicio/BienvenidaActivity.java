@@ -7,11 +7,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.unitylab_expoconfig.MainActivity;
 import com.example.unitylab_expoconfig.R;
+import com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity;
+import com.example.unitylab_expoconfig.ui.proyectos.CrearProyectoActivity;
 
 public class BienvenidaActivity extends AppCompatActivity {
+
+    private String tipoUsuario;
+    private String nombreUsuario;
+    private int idUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +29,15 @@ public class BienvenidaActivity extends AppCompatActivity {
         TextView textViewTipoUsuario = findViewById(R.id.textViewTipoUsuario);
         Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
-        String tipoUsuario = getIntent().getStringExtra("tipoUsuario");
-        String nombreUsuario = getIntent().getStringExtra("nombreUsuario");
+        // Nuevos elementos para proyectos
+        CardView cardProyectos = findViewById(R.id.cardProyectos);
+        CardView cardCrearProyecto = findViewById(R.id.cardCrearProyecto);
+        CardView cardMisProyectos = findViewById(R.id.cardMisProyectos);
+
+        // Obtener datos del usuario
+        tipoUsuario = getIntent().getStringExtra("tipoUsuario");
+        nombreUsuario = getIntent().getStringExtra("nombreUsuario");
+        idUsuario = getIntent().getIntExtra("idUsuario", -1);
 
         String mensajeBienvenida = "¡Bienvenido, " + nombreUsuario + "!";
         String tipoMensaje = "Tipo de usuario: " +
@@ -32,12 +46,47 @@ public class BienvenidaActivity extends AppCompatActivity {
         textViewBienvenida.setText(mensajeBienvenida);
         textViewTipoUsuario.setText(tipoMensaje);
 
+        // Configurar acciones para proyectos
+        configurarAccionesProyectos(cardProyectos, cardCrearProyecto, cardMisProyectos);
+
         // Configurar el botón de cerrar sesión
         btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cerrarSesion();
             }
+        });
+
+
+    }
+
+    private void configurarAccionesProyectos(CardView cardProyectos, CardView cardCrearProyecto, CardView cardMisProyectos) {
+        // Ver todos los proyectos
+        cardProyectos.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ListaProyectosActivity.class);
+            intent.putExtra("idUsuario", idUsuario);
+            intent.putExtra("tipoUsuario", tipoUsuario);
+            intent.putExtra("nombreUsuario", nombreUsuario);
+            startActivity(intent);
+        });
+
+        // Crear nuevo proyecto
+        cardCrearProyecto.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CrearProyectoActivity.class);
+            intent.putExtra("idUsuario", idUsuario);
+            intent.putExtra("tipoUsuario", tipoUsuario);
+            intent.putExtra("nombreUsuario", nombreUsuario);
+            startActivity(intent);
+        });
+
+        // Ver mis proyectos
+        cardMisProyectos.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ListaProyectosActivity.class);
+            intent.putExtra("idUsuario", idUsuario);
+            intent.putExtra("tipoUsuario", tipoUsuario);
+            intent.putExtra("nombreUsuario", nombreUsuario);
+            intent.putExtra("filtroInicial", "mis_proyectos"); // Filtro especial
+            startActivity(intent);
         });
     }
 

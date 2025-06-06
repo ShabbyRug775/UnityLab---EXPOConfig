@@ -48,4 +48,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation (libs.cardview)
+    implementation (libs.recyclerview.v131)
+    implementation (libs.coordinatorlayout)
 }

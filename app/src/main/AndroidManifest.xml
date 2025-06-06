@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisos necesarios para funcionalidades de proyectos -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UnityLab_EXPOConfig"
         tools:targetApi="31">
+
+        <!-- Actividad principal -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,64 +27,115 @@
             tools:targetApi="24">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Actividades de inicio y selección -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.inicio.SeleccionEPActivity"
             android:theme="@style/Theme.UnityLab_EXPOConfig"
             android:parentActivityName=".MainActivity">
-
-            <!-- Opcional: Metadata para compatibilidad -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
+
+        <!-- Actividades de estudiantes -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.estudiantes.LoginEstudiante"
             android:theme="@style/Theme.UnityLab_EXPOConfig"
             android:parentActivityName=".MainActivity">
-
-            <!-- Opcional: Metadata para compatibilidad -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
-        <activity
-            android:name="com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"
-            android:theme="@style/Theme.UnityLab_EXPOConfig"
-            android:parentActivityName=".MainActivity">
 
-            <!-- Opcional: Metadata para compatibilidad -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.unitylab_expoconfig.MainActivity" />
-        </activity>
         <activity
             android:name="com.example.unitylab_expoconfig.ui.estudiantes.RegistroEstudianteActivity"
             android:theme="@style/Theme.UnityLab_EXPOConfig"
             android:parentActivityName=".MainActivity">
-
-            <!-- Opcional: Metadata para compatibilidad -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
+
+        <!-- Actividades de profesores -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+
         <activity
             android:name="com.example.unitylab_expoconfig.ui.profesores.RegistroProfesorActivity"
             android:theme="@style/Theme.UnityLab_EXPOConfig"
             android:parentActivityName=".MainActivity">
-
-            <!-- Opcional: Metadata para compatibilidad -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
 
+        <!-- Actividad de bienvenida -->
         <activity
             android:name=".ui.inicio.BienvenidaActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.UnityLab_EXPOConfig">
+        </activity>
+
+        <!-- NUEVAS ACTIVIDADES PARA GESTIÓN DE PROYECTOS -->
+
+        <!-- Lista de proyectos -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName=".ui.inicio.BienvenidaActivity"
+            android:label="@string/proyectos">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.BienvenidaActivity" />
+        </activity>
+
+        <!-- Crear proyecto -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.proyectos.CrearProyectoActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity"
+            android:label="@string/crear_proyecto"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity" />
+        </activity>
+
+        <!-- Editar proyecto -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.proyectos.EditarProyectoActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName="com.example.unitylab_expoconfig.ui.proyectos.DetalleProyectoActivity"
+            android:label="@string/editar_proyecto"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.proyectos.DetalleProyectoActivity" />
+        </activity>
+
+        <!-- Detalle del proyecto -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.proyectos.DetalleProyectoActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity"
+            android:label="@string/detalle_proyecto">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity" />
         </activity>
 
     </application>
