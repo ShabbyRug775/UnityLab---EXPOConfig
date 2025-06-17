@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Icono de estado -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="16dp">
+
+            <ImageView
+                android:id="@+id/ivEstadoCartel"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_print"
+                android:layout_marginBottom="4dp"
+                app:tint="@color/warning" />
+
+            <TextView
+                android:id="@+id/tvEstadoCartel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pendiente"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/warning"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Información del cartel -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Nombre del proyecto y equipo -->
+            <TextView
+                android:id="@+id/tvNombreProyecto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sistema de Gestión Escolar"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_dark"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvNombreEquipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Equipo: Los Desarrolladores"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Información adicional -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/tvMateria"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ing. Software"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:drawableStart="@drawable/ic_book"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/tvGrupo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3CM1"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:drawableStart="@drawable/ic_class"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <!-- Fecha y hora de solicitud -->
+            <TextView
+                android:id="@+id/tvFechaSolicitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Solicitado: 15/01/2024 10:30"
+                android:textSize="11sp"
+                android:textColor="@color/text_hint"
+                android:layout_marginTop="4dp"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical" />
+
+        </LinearLayout>
+
+        <!-- Acciones -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- Switch para marcar como impreso -->
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchImpreso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginBottom="8dp"
+                app:thumbTint="@color/success"
+                app:trackTint="@color/divider_color" />
+
+            <!-- Botón de vista previa -->
+            <ImageButton
+                android:id="@+id/btnVistaPrevia"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_folder_empty"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Ver vista previa"
+                app:tint="@color/primary_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Línea de progreso (solo visible si está imprimiendo) -->
+    <ProgressBar
+        android:id="@+id/progressImpresion"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_gravity="bottom"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="0"
+        android:max="100"
+        android:progressTint="@color/accent_color"
+        android:visibility="gone" />
+
+</androidx.cardview.widget.CardView>
