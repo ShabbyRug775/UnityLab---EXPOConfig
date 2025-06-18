@@ -277,7 +277,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
-                        android:background="@drawable/border_dashed"
+                        android:background="@drawable/spinner_background"
                         android:layout_marginBottom="16dp">
 
                         <!-- Vista previa del cartel generado -->
@@ -286,7 +286,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/cartel_placeholder"
+                            android:src="@drawable/card_background"
                             android:background="@color/white" />
 
                         <!-- Loading overlay -->
@@ -379,7 +379,7 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:layout_marginEnd="8dp"
-                                android:background="@drawable/circle_color"
+                                android:background="@drawable/card_background"
                                 android:backgroundTint="@color/primary_color"
                                 android:clickable="true"
                                 android:focusable="true" />
@@ -389,7 +389,7 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:layout_marginEnd="8dp"
-                                android:background="@drawable/circle_color"
+                                android:background="@drawable/button_accent_outline"
                                 android:backgroundTint="@color/success"
                                 android:clickable="true"
                                 android:focusable="true" />
@@ -399,7 +399,7 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:layout_marginEnd="8dp"
-                                android:background="@drawable/circle_color"
+                                android:background="@drawable/card_background"
                                 android:backgroundTint="@color/accent_color"
                                 android:clickable="true"
                                 android:focusable="true" />
@@ -408,7 +408,7 @@
                                 android:id="@+id/colorRojo"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:background="@drawable/circle_color"
+                                android:background="@drawable/card_background"
                                 android:backgroundTint="@color/error"
                                 android:clickable="true"
                                 android:focusable="true" />
@@ -459,7 +459,7 @@
                             android:id="@+id/ivEstadoCartel"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_info"
+                            android:src="@drawable/ic_recent"
                             android:layout_marginEnd="12dp"
                             app:tint="@color/info_text" />
 
@@ -526,7 +526,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_download"
+                            android:src="@drawable/ic_export"
                             android:layout_marginEnd="16dp"
                             app:tint="@color/primary_color" />
 
@@ -606,7 +606,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_print_queue"
+                            android:src="@drawable/ic_print"
                             android:layout_marginEnd="16dp"
                             app:tint="@color/warning" />
 
@@ -651,7 +651,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="Volver"
-            android:textColor="@color/primary_color"
+            android:textColor="@color/white"
             android:background="@drawable/button_outline"
             style="?android:attr/borderlessButtonStyle" />
 
