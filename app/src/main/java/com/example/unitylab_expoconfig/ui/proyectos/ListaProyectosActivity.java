@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -146,8 +147,8 @@ public class ListaProyectosActivity extends AppCompatActivity {
     private void configurarListView() {
         Log.d(TAG, "Configurando ListView...");
         try {
-            adapter = new ProyectosAdapter(this, listaProyectos);
-            listViewProyectos.setAdapter(adapter);
+            adapter = new ProyectosAdapter(listaProyectos, this);
+            listViewProyectos.setAdapter((ListAdapter) adapter);
 
             listViewProyectos.setOnItemClickListener((parent, view, position, id) -> {
                 Log.d(TAG, "Item clickeado en posición: " + position);
@@ -171,6 +172,14 @@ public class ListaProyectosActivity extends AppCompatActivity {
         Log.d(TAG, "Configurando FAB...");
         try {
             if (fabAgregarProyecto != null) {
+                // Ocultar el FAB si no hay sesión activa (idUsuarioActual == -1)
+                if (idUsuarioActual == -1) {
+                    fabAgregarProyecto.setVisibility(View.GONE); // Oculta completamente el botón
+                    Log.d(TAG, "FAB oculto - No hay sesión activa");
+                } else {
+                    fabAgregarProyecto.setVisibility(View.VISIBLE); // Asegurarse de que sea visible
+                }
+
                 fabAgregarProyecto.setOnClickListener(v -> {
                     Log.d(TAG, "FAB clickeado");
                     try {
@@ -281,6 +290,10 @@ public class ListaProyectosActivity extends AppCompatActivity {
         super.onResume();
         Log.d(TAG, "onResume() - Recargando proyectos");
         cargarProyectos();
+        // Actualizar visibilidad del FAB si cambia el estado de la sesión
+        if (fabAgregarProyecto != null) {
+            fabAgregarProyecto.setVisibility(idUsuarioActual == -1 ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override

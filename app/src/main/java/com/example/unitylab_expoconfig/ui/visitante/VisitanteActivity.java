@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -13,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unitylab_expoconfig.R;
+import com.example.unitylab_expoconfig.ui.inicio.AgendaActivity;
+import com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity;
+import com.example.unitylab_expoconfig.ui.proyectos.Proyecto;
+import com.example.unitylab_expoconfig.ui.proyectos.ProyectosAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class VisitanteActivity extends AppCompatActivity {
         setupStats();
 
         // Configurar RecyclerView de proyectos destacados
-        //setupProyectosDestacados();
+        setupProyectosDestacados();
 
         // Configurar listeners
         setupListeners();
@@ -56,29 +59,22 @@ public class VisitanteActivity extends AppCompatActivity {
         tvMisEvaluaciones.setText("3");
     }
 
-    /*private void setupProyectosDestacados() {
-        List<Proyecto> proyectos = getProyectosDestacados(); // Obtener datos
+    private void setupProyectosDestacados() {
+        List<Proyecto> proyectos = getProyectosDestacados();
 
-        if (proyectos.isEmpty()) {
-            recyclerProyectosDestacados.setVisibility(View.GONE);
-            layoutSinProyectosDestacados.setVisibility(View.VISIBLE);
-        } else {
-            recyclerProyectosDestacados.setVisibility(View.VISIBLE);
-            layoutSinProyectosDestacados.setVisibility(View.GONE);
+        ProyectosAdapter adapter = new ProyectosAdapter(proyectos, this);
 
-            ProyectoAdapter adapter = new ProyectoAdapter(proyectos, this, true);
-            recyclerProyectosDestacados.setLayoutManager(new LinearLayoutManager(this));
-            recyclerProyectosDestacados.setAdapter(adapter);
-        }
-    }*/
+        recyclerProyectosDestacados.setLayoutManager(new LinearLayoutManager(this));
+        recyclerProyectosDestacados.setAdapter(adapter);
+    }
 
-    /*private List<Proyecto> getProyectosDestacados() {
+    private List<Proyecto> getProyectosDestacados() {
         // Esto es solo datos de ejemplo - deberías obtenerlos de tu backend
         List<Proyecto> proyectos = new ArrayList<>();
-        proyectos.add(new Proyecto("Sistema de Riego Automático", "4°A Electrónica", 4.5f));
-        proyectos.add(new Proyecto("App para Control Parental", "5°B Informática", 4.2f));
+        //proyectos.add(new Proyecto("Sistema de Riego Automático", "4°A Electrónica", 4.5f));
+        //proyectos.add(new Proyecto("App para Control Parental", "5°B Informática", 4.2f));
         return proyectos;
-    }*/
+    }
 
     private void setupListeners() {
         // Card de funciones principales
@@ -103,31 +99,31 @@ public class VisitanteActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });*/
 
-        /*cardVerAgenda.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AgendaVisitanteActivity.class);
+        cardVerAgenda.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AgendaActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        });*/
+        });
 
         /*btnComoEvaluar.setOnClickListener(v -> {
             Toast.makeText(this, "Guía de evaluación abierta", Toast.LENGTH_SHORT).show();
             // Abrir PDF/webview con instrucciones
-        });
+        });*/
 
-        btnMapaUbicaciones.setOnClickListener(v -> {
+        /*btnMapaUbicaciones.setOnClickListener(v -> {
             Intent intent = new Intent(this, MapaActivity.class);
             startActivity(intent);
-        });
+        });*/
 
-        btnFeedbackEvento.setOnClickListener(v -> {
+        /*btnFeedbackEvento.setOnClickListener(v -> {
             Intent intent = new Intent(this, FeedbackActivity.class);
             startActivity(intent);
-        });
+        });*/
 
         btnVerTodosProyectos.setOnClickListener(v -> {
-            Intent intent = new Intent(this, TodosProyectosActivity.class);
+            Intent intent = new Intent(this, ListaProyectosActivity.class);
             startActivity(intent);
-        });*/
+        });
 
         btnSalir.setOnClickListener(v -> {
             finish();

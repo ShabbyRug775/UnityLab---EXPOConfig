@@ -167,6 +167,19 @@
                 android:value="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity" />
         </activity>
 
+        <!-- Agenda -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.inicio.AgendaActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName="com.example.unitylab_expoconfig.ui.proyectos.ListaProyectosActivity"
+            android:label="@string/detalle_proyecto">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.visitante.VisitanteActivity" />
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -1,114 +1,75 @@
 package com.example.unitylab_expoconfig.ui.proyectos;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unitylab_expoconfig.R;
 
 import java.util.List;
 
-public class ProyectosAdapter extends BaseAdapter {
-    private Context context;
+public class ProyectosAdapter extends RecyclerView.Adapter<ProyectosAdapter.ProyectoViewHolder> {
+
     private List<Proyecto> proyectos;
+    private Context context;
     private LayoutInflater inflater;
 
-    public ProyectosAdapter(Context context, List<Proyecto> proyectos) {
-        this.context = context;
+    // Constructor mejorado (con parámetro para destacados)
+    public ProyectosAdapter(List<Proyecto> proyectos, Context context) {
         this.proyectos = proyectos;
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ProyectoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_proyecto, parent, false);
+        return new ProyectoViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ProyectoViewHolder holder, int position) {
+        Proyecto proyecto = proyectos.get(position);
+        holder.bind(proyecto, false);
+
+        // Opcional: Manejar clicks en items
+        holder.itemView.setOnClickListener(v -> {
+            // Aquí puedes lanzar una Activity de detalle si lo necesitas
+        });
+    }
+
+    @Override
+    public int getItemCount() {
         return proyectos.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return proyectos.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return proyectos.get(position).getId();
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_proyecto, parent, false);
-            holder = new ViewHolder();
-            holder.tvNombreProyecto = convertView.findViewById(R.id.tvNombreProyecto);
-            holder.tvNombreEquipo = convertView.findViewById(R.id.tvNombreEquipo);
-            holder.tvMateria = convertView.findViewById(R.id.tvMateria);
-            holder.tvGrupo = convertView.findViewById(R.id.tvGrupo);
-            holder.tvEstado = convertView.findViewById(R.id.tvEstado);
-            holder.tvProfesor = convertView.findViewById(R.id.tvProfesor);
-            holder.tvEstudianteLider = convertView.findViewById(R.id.tvEstudianteLider);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        Proyecto proyecto = proyectos.get(position);
-
-        // Configurar los datos
-        holder.tvNombreProyecto.setText(proyecto.getNombreProyecto());
-        holder.tvNombreEquipo.setText("Equipo: " + proyecto.getNombreEquipo());
-        holder.tvMateria.setText("Materia: " + proyecto.getMateria());
-        holder.tvGrupo.setText("Grupo: " + proyecto.getGrupo());
-        holder.tvEstado.setText(proyecto.getEstado());
-
-        // Configurar el color del estado
-        holder.tvEstado.setTextColor(proyecto.getColorEstado());
-
-        // Configurar profesor (si está disponible)
-        if (proyecto.getNombreProfesor() != null && !proyecto.getNombreProfesor().trim().isEmpty()) {
-            holder.tvProfesor.setText("Profesor: " + proyecto.getNombreProfesor());
-            holder.tvProfesor.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvProfesor.setVisibility(View.GONE);
-        }
-
-        // Configurar estudiante líder (si está disponible)
-        if (proyecto.getNombreEstudianteLider() != null && !proyecto.getNombreEstudianteLider().trim().isEmpty()) {
-            holder.tvEstudianteLider.setText("Líder: " + proyecto.getNombreEstudianteLider());
-            holder.tvEstudianteLider.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvEstudianteLider.setVisibility(View.GONE);
-        }
-
-        return convertView;
-    }
-
-    // Metodo para actualizar la lista de proyectos
+    // Métodos adicionales para manipular datos
     public void actualizarProyectos(List<Proyecto> nuevosProyectos) {
-        this.proyectos.clear();
-        this.proyectos.addAll(nuevosProyectos);
+        proyectos.clear();
+        proyectos.addAll(nuevosProyectos);
         notifyDataSetChanged();
     }
 
-    // Metodo para agregar un proyecto
     public void agregarProyecto(Proyecto proyecto) {
-        this.proyectos.add(proyecto);
-        notifyDataSetChanged();
+        proyectos.add(proyecto);
+        notifyItemInserted(proyectos.size() - 1);
     }
 
-    // Metodo para eliminar un proyecto
     public void eliminarProyecto(int position) {
         if (position >= 0 && position < proyectos.size()) {
-            this.proyectos.remove(position);
-            notifyDataSetChanged();
+            proyectos.remove(position);
+            notifyItemRemoved(position);
         }
     }
 
-    // Metodo para obtener un proyecto específico
     public Proyecto getProyecto(int position) {
         if (position >= 0 && position < proyectos.size()) {
             return proyectos.get(position);
@@ -116,20 +77,57 @@ public class ProyectosAdapter extends BaseAdapter {
         return null;
     }
 
-    // Metodo para filtrar proyectos por estado
-    public void filtrarPorEstado(String estado) {
-        // Este metodo podria implementarse para filtrar la lista actual
-        // Por ahora, se deja como referencia para futuras implementaciones
-    }
+    // ViewHolder optimizado
+    public static class ProyectoViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvNombreProyecto;
+        private final TextView tvNombreEquipo;
+        private final TextView tvMateria;
+        private final TextView tvGrupo;
+        private final TextView tvEstado;
+        private final TextView tvProfesor;
+        private final TextView tvEstudianteLider;
 
-    // ViewHolder para optimizar el rendimiento
-    private static class ViewHolder {
-        TextView tvNombreProyecto;
-        TextView tvNombreEquipo;
-        TextView tvMateria;
-        TextView tvGrupo;
-        TextView tvEstado;
-        TextView tvProfesor;
-        TextView tvEstudianteLider;
+        public ProyectoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvNombreProyecto = itemView.findViewById(R.id.tvNombreProyecto);
+            tvNombreEquipo = itemView.findViewById(R.id.tvNombreEquipo);
+            tvMateria = itemView.findViewById(R.id.tvMateria);
+            tvGrupo = itemView.findViewById(R.id.tvGrupo);
+            tvEstado = itemView.findViewById(R.id.tvEstado);
+            tvProfesor = itemView.findViewById(R.id.tvProfesor);
+            tvEstudianteLider = itemView.findViewById(R.id.tvEstudianteLider);
+        }
+
+        public void bind(Proyecto proyecto, boolean esDestacado) {
+            // Configurar datos básicos
+            tvNombreProyecto.setText(proyecto.getNombreProyecto());
+            tvNombreEquipo.setText("Equipo: " + proyecto.getNombreEquipo());
+            tvMateria.setText("Materia: " + proyecto.getMateria());
+            tvGrupo.setText("Grupo: " + proyecto.getGrupo());
+            tvEstado.setText(proyecto.getEstado());
+            tvEstado.setTextColor(proyecto.getColorEstado());
+
+            // Manejar campos opcionales
+            if (proyecto.getNombreProfesor() != null && !proyecto.getNombreProfesor().isEmpty()) {
+                tvProfesor.setText("Profesor: " + proyecto.getNombreProfesor());
+                tvProfesor.setVisibility(View.VISIBLE);
+            } else {
+                tvProfesor.setVisibility(View.GONE);
+            }
+
+            if (proyecto.getNombreEstudianteLider() != null && !proyecto.getNombreEstudianteLider().isEmpty()) {
+                tvEstudianteLider.setText("Líder: " + proyecto.getNombreEstudianteLider());
+                tvEstudianteLider.setVisibility(View.VISIBLE);
+            } else {
+                tvEstudianteLider.setVisibility(View.GONE);
+            }
+
+            // Estilo para destacados (opcional)
+            if (esDestacado) {
+                itemView.setBackgroundColor(Color.parseColor("#FFFDE7")); // Amarillo claro
+            } else {
+                itemView.setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
     }
 }

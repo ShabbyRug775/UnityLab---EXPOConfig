@@ -659,7 +659,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Salir del Sistema"
-            android:textColor="@color/accent_color"
+            android:textColor="@color/black"
             android:background="@drawable/button_accent_outline"
             android:padding="16dp"
             android:textSize="16sp"
