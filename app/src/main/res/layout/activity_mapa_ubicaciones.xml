@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/background_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Mapa de Ubicaciones"
+            android:textColor="@color/text_primary"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Subtítulo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Distribución de stands y espacios"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Leyenda -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/card_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Leyenda"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Disponible -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Disponible"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary" />
+
+                    </LinearLayout>
+
+                    <!-- Ocupado -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/lugar_ocupado"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ocupado"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary" />
+
+                    </LinearLayout>
+
+                    <!-- Seleccionado -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/lugar_seleccionado"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seleccionado"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Mapa principal -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/card_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Lugares exteriores superiores (1-10) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lugares\nexteriores"
+                        android:textSize="10sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center"
+                        android:minWidth="60dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <!-- Lugares 1-10 -->
+                        <TextView
+                            android:id="@+id/lugar_1"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="1"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_2"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="2"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_3"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="3"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_4"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="4"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_5"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="5"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_6"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="6"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_7"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="7"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_8"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="8"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_9"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="9"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_10"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="10"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Lugares interiores (11-25) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lugares en\ninterior"
+                        android:textSize="10sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center"
+                        android:minWidth="60dp" />
+
+                    <!-- Contenedor del salón interior -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@drawable/salon_interior_background"
+                        android:padding="8dp">
+
+                        <!-- Fila 1: 13, 16, 19, 22, 25 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:id="@+id/lugar_13"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="13"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_16"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="16"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_19"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="19"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_22"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="22"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_25"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="25"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                        <!-- Fila 2: 12, 15, 18, 21, 24 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:id="@+id/lugar_12"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="12"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_15"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="15"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_18"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="18"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_21"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="21"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_24"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="24"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                        <!-- Fila 3: 11, 14, 17, 20, 23 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/lugar_11"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="11"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_14"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="14"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_17"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="17"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_20"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="20"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/lugar_23"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/lugar_disponible"
+                                android:text="23"
+                                android:gravity="center"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Lugares exteriores inferiores (26-35) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lugares\nexteriores"
+                        android:textSize="10sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center"
+                        android:minWidth="60dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <!-- Lugares 26-35 -->
+                        <TextView
+                            android:id="@+id/lugar_26"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="26"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_27"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="27"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_28"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="28"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_29"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="29"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_30"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="30"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_31"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="31"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_32"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="32"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_33"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="33"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_34"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="34"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/lugar_35"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/lugar_disponible"
+                            android:text="35"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Información del lugar seleccionado -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardInfoLugar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/info_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_place"
+                        android:layout_marginEnd="12dp"
+                        app:tint="@color/info_text" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Información del Lugar"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/info_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Número:"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/txtNumeroLugar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text=""
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Estado:"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/txtEstadoLugar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text=""
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Equipo:"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/txtEquipoAsignado"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text=""
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ubicación:"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/txtUbicacionLugar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text=""
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botones de acción -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/layoutBotonesAccion">
+
+            <Button
+                android:id="@+id/btnAsignarLugar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Asignar Lugar"
+                android:textColor="@color/white"
+                android:background="@drawable/button_primary" />
+
+            <Button
+                android:id="@+id/btnLiberarLugar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Liberar Lugar"
+                android:textColor="@color/primary_color"
+                android:background="@drawable/button_outline" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
