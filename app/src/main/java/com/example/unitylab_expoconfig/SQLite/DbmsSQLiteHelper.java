@@ -1,10 +1,10 @@
 package com.example.unitylab_expoconfig.SQLite;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
 import android.database.sqlite.SQLiteException;
 
@@ -24,6 +24,10 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(ProfesorBD.CREATE_TABLE);
         db.execSQL(EstudianteBD.CREATE_TABLE);
         db.execSQL(ProyectoBD.CREATE_TABLE);
+        db.execSQL(AdministradorBD.CREATE_TABLE);
+
+        // Insertar administrador por defecto (opcional)
+        insertarAdminPorDefecto(db);
     }
 
     @Override
@@ -31,13 +35,29 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             // Agregar la tabla de proyectos si se está actualizando desde versión 1
             db.execSQL(ProyectoBD.CREATE_TABLE);
+            db.execSQL(AdministradorBD.CREATE_TABLE);
         }
 
     }
 
+    // Metodo para insertar un administrador por defecto
+    private void insertarAdminPorDefecto(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put(AdministradorBD.COL_NOMBRE, "Administrador Principal");
+        values.put(AdministradorBD.COL_NUM_EMPLEADO, "ADM001");
+        values.put(AdministradorBD.COL_PASSWORD, "admin123"); // En producción usar hash
+
+        try {
+            db.insert(AdministradorBD.TABLE_NAME, null, values);
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Error al insertar admin por defecto: " + e.getMessage());
+        }
+    }
+
     // ==================== MÉTODOS PARA PROFESOR ====================
 
-    public long insertarProfesor(String nombre, String apellidos, String correo, int numEmpleado,int idDepto, String password) {
+    public long insertarProfesor(String nombre, String apellidos, String correo,
+                                 int numEmpleado, int idDepto, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         long id = ProfesorBD.insertarProfesor(db, nombre, apellidos, correo, numEmpleado, idDepto, password);
         db.close();
@@ -54,6 +74,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProfesorBD.obtenerProfesorPorId(db, id);
     }
 
+    // Metodo para buscar profesor por número de empleado
     public Cursor buscarProfesorPorNumEmpleado(String numEmpleado) {
         SQLiteDatabase db = this.getReadableDatabase();
         return ProfesorBD.buscarProfesorPorNumEmpleado(db, numEmpleado);
@@ -77,10 +98,10 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     public long insertarEstudiante(String nombre, String apellidos, String correo,
                                    String boleta, String grupo, String semestre,
-                                   String carrera, String password) {
+                                   String carrera, String turno,String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         long id = EstudianteBD.insertarEstudiante(db, nombre, apellidos, correo,
-                boleta, grupo, semestre, carrera, password);
+                boleta, grupo, semestre, carrera, turno, password);
         db.close();
         return id;
     }
@@ -106,9 +127,9 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
     }
 
     public int actualizarEstudiante(int id, String nombre, String apellidos, String correo, String boleta,
-                                    String grupo, String semestre, String carrera, String password) {
+                                    String grupo, String semestre, String carrera, String turno, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EstudianteBD.actualizarEstudiante(db, id, nombre, apellidos, correo, boleta, grupo, semestre, carrera, password);
+        int rows = EstudianteBD.actualizarEstudiante(db, id, nombre, apellidos, correo, boleta, grupo, semestre, carrera, turno, password);
         db.close();
         return rows;
     }
@@ -199,6 +220,89 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         int rows = ProyectoBD.eliminarProyecto(db, id);
         db.close();
         return rows;
+    }
+
+    // ==================== MÉTODOS PARA ADMINISTRADOR ====================
+
+    /**
+     * Inserta un nuevo administrador en la base de datos
+     * @param nombre Nombre completo del administrador
+     * @param numEmpleado Número de empleado único
+     * @param password Contraseña del administrador
+     * @return ID del nuevo registro insertado o -1 si hubo error
+     */
+    public long insertarAdministrador(String nombre, String numEmpleado, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = AdministradorBD.insertarAdministrador(db, nombre, numEmpleado, password);
+        db.close();
+        return id;
+    }
+
+    /**
+     * Obtiene todos los administradores de la base de datos
+     * @return Cursor con los resultados ordenados por nombre
+     */
+    public Cursor obtenerTodosAdministradores() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.obtenerTodosAdministradores(db);
+    }
+
+    /**
+     * Obtiene un administrador por su ID
+     * @param id ID del administrador
+     * @return Cursor con el resultado o null si no existe
+     */
+    public Cursor obtenerAdministradorPorId(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.obtenerAdministradorPorId(db, id);
+    }
+
+    /**
+     * Obtiene un administrador por su número de empleado
+     * @param numEmpleado Número de empleado a buscar
+     * @return Cursor con el resultado o null si no existe
+     */
+    public Cursor obtenerAdministradorPorNumEmpleado(String numEmpleado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.obtenerAdministradorPorNumEmpleado(db, numEmpleado);
+    }
+
+    /**
+     * Actualiza los datos de un administrador
+     * @param id ID del administrador a actualizar
+     * @param nombre Nuevo nombre
+     * @param numEmpleado Nuevo número de empleado
+     * @param password Nueva contraseña
+     * @return Número de filas afectadas
+     */
+    public int actualizarAdministrador(int id, String nombre, String numEmpleado, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AdministradorBD.actualizarAdministrador(db, id, nombre, numEmpleado, password);
+        db.close();
+        return rows;
+    }
+
+    /**
+     * Elimina un administrador de la base de datos
+     * @param id ID del administrador a eliminar
+     * @return Número de filas afectadas
+     */
+    public int eliminarAdministrador(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AdministradorBD.eliminarAdministrador(db, id);
+        db.close();
+        return rows;
+    }
+
+    /**
+     * Verifica las credenciales de un administrador
+     * @param numEmpleado Número de empleado
+     * @param password Contraseña
+     * @return Cursor con los datos del administrador si las credenciales son correctas, null en caso contrario
+     */
+    public Cursor verificarCredencialesAdministrador(String numEmpleado, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.verificarCredenciales(db, numEmpleado, password);
     }
 
     // ==================== MÉTODOS ADICIONALES ====================

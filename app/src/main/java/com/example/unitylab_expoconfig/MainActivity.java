@@ -2,60 +2,81 @@ package com.example.unitylab_expoconfig;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+import androidx.cardview.widget.CardView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // 1. Primero mostramos la pantalla de inicio
         setContentView(R.layout.inicio_main);
 
-        // 2. Configuramos los botones del inicio
-        Button btnEstudiante = findViewById(R.id.button2);
-        Button btnInvitado = findViewById(R.id.button3);
+        // Configurar click listeners para cada CardView
+        CardView cardAdmin = findViewById(R.id.cardAdministrador);
+        CardView cardProfesor = findViewById(R.id.cardProfesor);
+        CardView cardAlumno = findViewById(R.id.cardAlumno);
+        CardView cardVisitante = findViewById(R.id.cardVisitante);
 
-        btnEstudiante.setOnClickListener(v -> {
+        // Listener para Administrador
+        cardAdmin.setOnClickListener(v -> {
             try {
-                // Usa el paquete completo para el Intent
                 Intent intent = new Intent(MainActivity.this,
-                        Class.forName("com.example.unitylab_expoconfig.ui.inicio.SeleccionEPActivity"));
+                        Class.forName("com.example.unitylab_expoconfig.ui.administrador.LoginAdministrador"));
                 startActivity(intent);
-
-                // Opcional: añadir animación
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                // Manejo de error si la clase no se encuentra
-                Toast.makeText(this, "Error al cargar la pantalla", Toast.LENGTH_SHORT).show();
+                handleActivityError(e);
             }
         });
 
-        btnInvitado.setOnClickListener(v -> {
-            // Modo invitado (puedes personalizar esto)
-            //loadMainAppLayout();
-            //setupNavigation();
-            // Opcional: Deshabilitar algunas funciones para invitados
+        // Listener para Profesor
+        cardProfesor.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(MainActivity.this,
+                        Class.forName("com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"));
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            } catch (ClassNotFoundException e) {
+                handleActivityError(e);
+            }
+        });
+
+        // Listener para Alumno
+        cardAlumno.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(MainActivity.this,
+                        Class.forName("com.example.unitylab_expoconfig.ui.estudiantes.LoginEstudiante"));
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            } catch (ClassNotFoundException e) {
+                handleActivityError(e);
+            }
+        });
+
+        // Listener para Visitante
+        cardVisitante.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(MainActivity.this,
+                        Class.forName("com.example.unitylab_expoconfig.ui.visitante.VisitanteActivity"));
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            } catch (ClassNotFoundException e) {
+                handleActivityError(e);
+            }
         });
     }
 
+    // Metodo para manejar errores de clase no encontrada
+    private void handleActivityError(ClassNotFoundException e) {
+        e.printStackTrace();
+        Toast.makeText(this, "Error: Pantalla no disponible", Toast.LENGTH_SHORT).show();
 
-
+        // Opcional: Log para depuración
+        Log.e("MainActivity", "Error al cargar actividad", e);
+    }
 
 }

@@ -15,6 +15,7 @@ public class EstudianteBD {
     public static final String COL_GRUPO = "grupo";
     public static final String COL_SEMESTRE = "semestre";
     public static final String COL_CARRERA = "carrera";
+    public static final String COL_TURNO = "turno";
     public static final String COL_PASSWORD = "password";
 
     // Sentencia SQL para crear la tabla
@@ -28,12 +29,13 @@ public class EstudianteBD {
                     COL_GRUPO + " TEXT, " +
                     COL_SEMESTRE + " TEXT, " +
                     COL_CARRERA + " TEXT, " +
+                    COL_TURNO + " TEXT, " +
                     COL_PASSWORD + " TEXT)";  // Nueva columna para password
 
     // Métodos CRUD
     public static long insertarEstudiante(SQLiteDatabase db, String nombre, String apellidos,
                                           String correo, String boleta, String grupo,
-                                          String semestre, String carrera, String password) {
+                                          String semestre, String carrera, String turno, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
@@ -42,6 +44,7 @@ public class EstudianteBD {
         values.put(COL_GRUPO, grupo);
         values.put(COL_SEMESTRE, semestre);
         values.put(COL_CARRERA, carrera);
+        values.put(COL_TURNO, turno);
         values.put(COL_PASSWORD, password);
 
         return db.insert(TABLE_NAME, null, values);
@@ -60,7 +63,7 @@ public class EstudianteBD {
     }
 
     public static int actualizarEstudiante(SQLiteDatabase db, int id, String nombre, String apellidos,
-                                           String correo, String boleta, String grupo, String semestre, String carrera, String password) {
+                                           String correo, String boleta, String grupo, String semestre, String carrera, String turno, String password) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_APELLIDOS, apellidos);
@@ -69,6 +72,7 @@ public class EstudianteBD {
         values.put(COL_GRUPO, grupo);
         values.put(COL_SEMESTRE, semestre);
         values.put(COL_CARRERA, carrera);
+        values.put(COL_TURNO, turno);
         values.put(COL_PASSWORD, password);
 
         return db.update(TABLE_NAME, values,

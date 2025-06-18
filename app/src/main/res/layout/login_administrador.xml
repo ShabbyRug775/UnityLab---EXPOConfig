@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Acceso de Profesor"
+        android:text="Acceso Administrativo"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/primary_dark"
@@ -23,15 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/primary_color">
+        app:boxBackgroundMode="outline">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextBoleta"
+            android:id="@+id/editTextNumEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Número de empleado"
-            android:inputType="number"
+            android:inputType="text"
             android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -41,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/primary_color"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -63,30 +61,18 @@
         android:textSize="16sp"
         android:backgroundTint="@color/primary_color"
         android:textColor="@color/white"
-        android:padding="14dp"
-        android:layout_marginBottom="16dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
 
     <!-- Enlace a otro tipo de login -->
     <TextView
-        android:id="@+id/textViewNoProfesor"
+        android:id="@+id/textViewNoAdmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿No eres profesor? Has clic aquí"
+        android:text="¿No eres administrador? Has clic aquí"
         android:textColor="@color/primary_color"
         android:textSize="14sp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:focusable="true"/>
-
-    <!-- Enlace a registro -->
-    <TextView
-        android:id="@+id/textViewRegistrarse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="¿Primer acceso? Regístrate aquí"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"/>
 

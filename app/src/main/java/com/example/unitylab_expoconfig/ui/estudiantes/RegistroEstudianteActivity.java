@@ -3,7 +3,10 @@ package com.example.unitylab_expoconfig.ui.estudiantes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,8 +18,10 @@ import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
 
 public class RegistroEstudianteActivity extends AppCompatActivity {
 
-    private EditText editTextNombre, editTextApellidos, editTextCorreo, editTextBoleta,
-            editTextGrupo, editTextSemestre, editTextCarrera, editTextPassword;
+    private EditText editNombre, editApellidos, editCorreo, editBoleta,
+            editGrupo, editPassword, editConfirmarPassword;
+    private AutoCompleteTextView spinnerSemestre, spinnerCarrera, spinnerTurno;
+    private CheckBox checkTerminos;
     private DbmsSQLiteHelper dbHelper;
 
     @Override
@@ -27,17 +32,24 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
         dbHelper = new DbmsSQLiteHelper(this);
 
         // Inicializar vistas
-        editTextNombre = findViewById(R.id.editTextNombre);
-        editTextApellidos = findViewById(R.id.editTextApellidos);
-        editTextCorreo = findViewById(R.id.editTextCorreo);
-        editTextBoleta = findViewById(R.id.editTextBoleta);
-        editTextGrupo = findViewById(R.id.editTextGrupo);
-        editTextSemestre = findViewById(R.id.editTextSemestre);
-        editTextCarrera = findViewById(R.id.editTextCarrera);
-        editTextPassword = findViewById(R.id.editTextPassword);
+        editNombre = findViewById(R.id.editNombre);
+        editApellidos = findViewById(R.id.editApellidos);
+        editCorreo = findViewById(R.id.editCorreo);
+        editBoleta = findViewById(R.id.editBoleta);
+        editGrupo = findViewById(R.id.editGrupo);
+        editPassword = findViewById(R.id.editPassword);
+        editConfirmarPassword = findViewById(R.id.editConfirmarPassword);
+        checkTerminos = findViewById(R.id.checkTerminos);
 
-        Button buttonRegistrar = findViewById(R.id.buttonRegistrar);
-        TextView textViewYaRegistrado = findViewById(R.id.textViewYaRegistrado);
+        // Configurar spinners
+        spinnerSemestre = findViewById(R.id.spinnerSemestre);
+        spinnerCarrera = findViewById(R.id.spinnerCarrera);
+        spinnerTurno = findViewById(R.id.spinnerTurno);
+
+        configurarSpinners();
+
+        Button buttonRegistrar = findViewById(R.id.btnRegistrarse);
+        TextView textViewYaRegistrado = findViewById(R.id.tvIniciarSesion);
 
         buttonRegistrar.setOnClickListener(v -> registrarEstudiante());
         textViewYaRegistrado.setOnClickListener(v -> {
@@ -46,29 +58,77 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
         });
     }
 
+    private void configurarSpinners() {
+        // Carreras disponibles
+        String[] carreras = new String[]{"ISC", "IIA", "LCD"};
+        ArrayAdapter<String> carreraAdapter = new ArrayAdapter<>(
+                this, R.layout.dropdown_menu_item, carreras);
+        spinnerCarrera.setAdapter(carreraAdapter);
+
+        // Semestres disponibles
+        String[] semestres = new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
+        ArrayAdapter<String> semestreAdapter = new ArrayAdapter<>(
+                this, R.layout.dropdown_menu_item, semestres);
+        spinnerSemestre.setAdapter(semestreAdapter);
+
+        // Turnos disponibles
+        String[] turnos = new String[]{"Matutino", "Vespertino", "Mixto"};
+        ArrayAdapter<String> turnoAdapter = new ArrayAdapter<>(
+                this, R.layout.dropdown_menu_item, turnos);
+        spinnerTurno.setAdapter(turnoAdapter);
+    }
+
     private void registrarEstudiante() {
-        // Validar campos
-        if (editTextNombre.getText().toString().isEmpty() ||
-                editTextApellidos.getText().toString().isEmpty() ||
-                editTextCorreo.getText().toString().isEmpty() ||
-                editTextBoleta.getText().toString().isEmpty() ||
-                editTextGrupo.getText().toString().isEmpty() ||
-                editTextSemestre.getText().toString().isEmpty() ||
-                editTextPassword.getText().toString().isEmpty()) {
+        // Validar campos vacíos
+        if (editNombre.getText().toString().isEmpty() ||
+                editApellidos.getText().toString().isEmpty() ||
+                editCorreo.getText().toString().isEmpty() ||
+                editBoleta.getText().toString().isEmpty() ||
+                editGrupo.getText().toString().isEmpty() ||
+                spinnerSemestre.getText().toString().isEmpty() ||
+                spinnerCarrera.getText().toString().isEmpty() ||
+                spinnerTurno.getText().toString().isEmpty() ||
+                editPassword.getText().toString().isEmpty() ||
+                editConfirmarPassword.getText().toString().isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos obligatorios", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validar contraseñas coincidan
+        if (!editPassword.getText().toString().equals(editConfirmarPassword.getText().toString())) {
+            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validar términos y condiciones
+        if (!checkTerminos.isChecked()) {
+            Toast.makeText(this, "Debe aceptar los términos y condiciones", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validar formato de correo
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(editCorreo.getText().toString()).matches()) {
+            Toast.makeText(this, "Ingrese un correo electrónico válido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validar longitud de contraseña
+        if (editPassword.getText().toString().length() < 6) {
+            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Insertar en la base de datos
         long id = dbHelper.insertarEstudiante(
-                editTextNombre.getText().toString(),
-                editTextApellidos.getText().toString(),
-                editTextCorreo.getText().toString(),
-                editTextBoleta.getText().toString(),  // Boleta
-                editTextGrupo.getText().toString(),
-                editTextSemestre.getText().toString(),
-                editTextCarrera.getText().toString(),
-                editTextPassword.getText().toString()  // Password
+                editNombre.getText().toString(),
+                editApellidos.getText().toString(),
+                editCorreo.getText().toString(),
+                editBoleta.getText().toString(),
+                editGrupo.getText().toString(),
+                spinnerSemestre.getText().toString(),
+                spinnerCarrera.getText().toString(),
+                spinnerTurno.getText().toString(),
+                editPassword.getText().toString()
         );
 
         if (id != -1) {
@@ -76,7 +136,7 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginEstudiante.class));
             finish();
         } else {
-            Toast.makeText(this, "Error al registrar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al registrar. ¿Ya existe un estudiante con esta boleta?", Toast.LENGTH_SHORT).show();
         }
     }
 

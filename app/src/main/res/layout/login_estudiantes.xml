@@ -1,84 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:gravity="center"
-    android:background="#7A2265"> <!-- Guinda oscuro -->
+    android:background="@color/background_light"
+    android:gravity="center">
 
+    <!-- Título -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Iniciar sesión"
-        android:textColor="#F4CDEB"
-        android:textSize="28sp"
+        android:text="Acceso de Estudiante"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
+        android:textColor="@color/primary_dark"
+        android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Campo Número de Boleta -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Número de boleta"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/editTextBoleta"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#000000"
-        android:background="#F4CDEB"
         android:layout_marginBottom="16dp"
-        android:padding="10dp" />
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primary_color"
+        app:hintTextColor="@color/primary_color">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextBoleta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Número de boleta"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Contraseña"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:inputType="textPassword"
-        android:backgroundTint="#000000"
-        android:background="#F4CDEB"
         android:layout_marginBottom="24dp"
-        android:padding="10dp" />
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primary_color"
+        app:passwordToggleEnabled="true"
+        app:hintTextColor="@color/primary_color">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Botón Login -->
     <Button
         android:id="@+id/buttonLogin"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:text="Ingresar"
-        android:textColor="#4B0055"
-        android:textSize="18sp"
-        android:background="#F4CDEB"
-        android:layout_marginBottom="32dp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar Sesión"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:backgroundTint="@color/primary_color"
+        android:textColor="@color/white"
+        android:padding="14dp"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
+    <!-- Enlace a otro tipo de login -->
     <TextView
         android:id="@+id/textViewNoEstudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿No eres estudiante?\nDa clic aquí"
-        android:textColor="#FFFFFF"
-        android:textAlignment="center"
-        android:textSize="16sp"
+        android:text="¿No eres estudiante? Has clic aquí"
+        android:textColor="@color/primary_color"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"/>
 
+    <!-- Enlace a registro -->
     <TextView
         android:id="@+id/textViewRegistrarse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
+        android:text="¿Primer acceso? Regístrate aquí"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"/>
 
 </LinearLayout>

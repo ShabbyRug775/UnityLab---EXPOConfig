@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:gravity="center">
 
         <!-- Logo y título -->
         <LinearLayout
@@ -166,7 +167,8 @@
                         android:hint="Carrera *"
                         android:inputType="none"
                         android:drawableStart="@drawable/ic_school"
-                        android:drawablePadding="12dp" />
+                        android:drawablePadding="12dp"
+                        android:completionThreshold="1"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -184,7 +186,8 @@
                         android:hint="Semestre *"
                         android:inputType="none"
                         android:drawableStart="@drawable/ic_calendar"
-                        android:drawablePadding="12dp" />
+                        android:drawablePadding="12dp"
+                        android:completionThreshold="1"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -220,7 +223,8 @@
                         android:hint="Turno *"
                         android:inputType="none"
                         android:drawableStart="@drawable/ic_access_time"
-                        android:drawablePadding="12dp" />
+                        android:drawablePadding="12dp"
+                        android:completionThreshold="1"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

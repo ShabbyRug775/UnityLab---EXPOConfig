@@ -31,7 +31,7 @@ public class CrearProyectoActivity extends AppCompatActivity {
             editGrupo, editSemestre, editCarrera, editHerramientas,
             editArquitectura, editFunciones, editUrlCartel;
     private Spinner spinnerProfesor, spinnerEstado;
-    private Button btnGuardarProyecto, btnCancelar;
+    private Button btnCrearProyecto, btnCancelar;
     private DbmsSQLiteHelper dbHelper;
     private int idUsuarioActual;
     private String tipoUsuario;
@@ -82,7 +82,7 @@ public class CrearProyectoActivity extends AppCompatActivity {
             spinnerProfesor = findViewById(R.id.spinnerProfesor);
             spinnerEstado = findViewById(R.id.spinnerEstado);
 
-            btnGuardarProyecto = findViewById(R.id.btnGuardarProyecto);
+            btnCrearProyecto = findViewById(R.id.btnCrearProyecto);
             btnCancelar = findViewById(R.id.btnCancelar);
 
             Log.d(TAG, "Vistas inicializadas correctamente");
@@ -173,7 +173,7 @@ public class CrearProyectoActivity extends AppCompatActivity {
     }
 
     private void configurarBotones() {
-        btnGuardarProyecto.setOnClickListener(v -> guardarProyecto());
+        btnCrearProyecto.setOnClickListener(v -> guardarProyecto());
         btnCancelar.setOnClickListener(v -> finish());
     }
 
