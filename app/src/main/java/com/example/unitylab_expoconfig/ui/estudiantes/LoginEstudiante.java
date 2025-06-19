@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
 import com.example.unitylab_expoconfig.SQLite.EstudianteBD;
-import com.example.unitylab_expoconfig.ui.inicio.BienvenidaActivity;
+import com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity;
 
 public class LoginEstudiante extends AppCompatActivity {
 
@@ -72,7 +72,7 @@ public class LoginEstudiante extends AppCompatActivity {
                 String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EstudianteBD.COL_NOMBRE));
 
                 // Redirigir a Bienvenida con datos del estudiante
-                Intent intent = new Intent(this, BienvenidaActivity.class);
+                Intent intent = new Intent(this, EstudianteActivity.class);
                 intent.putExtra("tipoUsuario", "estudiante");
                 intent.putExtra("idUsuario", idEstudiante);
                 intent.putExtra("nombreUsuario", nombre);

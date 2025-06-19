@@ -49,29 +49,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Información Básica del Proyecto"
+                        android:text="Información del Proyecto"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_dark"
                         android:layout_marginBottom="16dp" />
-
-                    <!-- Academia -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Academia *"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
-
-                    <Spinner
-                        android:id="@+id/spinnerAcademia"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="@drawable/spinner_background"
-                        android:padding="12dp" />
 
                     <!-- Profesor (Autocompletado) -->
                     <com.google.android.material.textfield.TextInputLayout
@@ -130,7 +112,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Configuración del proyecto -->
+            <!-- Sección para agregar equipo -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,13 +129,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Configuración del Proyecto"
+                        android:text="Información del Equipo"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary_dark"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Materia -->
+                    <!-- Nombre del equipo -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -161,16 +143,16 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editMateria"
+                            android:id="@+id/editNombreEquipo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Materia *"
+                            android:hint="Nombre del Equipo *"
                             android:inputType="textCapWords"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Número máximo de equipos -->
+                    <!-- Número de alumnos -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -178,16 +160,16 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editMaxEquipos"
+                            android:id="@+id/editNumAlumnos"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Número Máximo de Equipos"
+                            android:hint="Número de Alumnos *"
                             android:inputType="number"
-                            android:text="20" />
+                            android:text="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Fecha límite de inscripción -->
+                    <!-- Descripción del equipo -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -195,37 +177,57 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editFechaLimite"
+                            android:id="@+id/editDescripcionEquipo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Fecha Límite de Inscripción"
-                            android:inputType="date"
-                            android:focusable="false"
-                            android:clickable="true" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Requisitos del proyecto -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editRequisitos"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Requisitos y Especificaciones"
+                            android:hint="Descripción del Equipo"
                             android:inputType="textMultiLine"
-                            android:minLines="3"
-                            android:maxLines="6"
+                            android:minLines="2"
+                            android:maxLines="4"
                             android:gravity="top" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
+                    <!-- Lugar del equipo (stand) -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lugar (Stand) *"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="8dp" />
 
+                    <Spinner
+                        android:id="@+id/spinnerLugarEquipo"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/spinner_background"
+                        android:padding="12dp" />
+
+                    <!-- Subir cartel (opcional) -->
+                    <Button
+                        android:id="@+id/btnSubirCartel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Subir Cartel del Equipo (Opcional)"
+                        android:textColor="@color/black"
+                        android:background="@drawable/button_outline"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <ImageView
+                        android:id="@+id/imgPreviewCartel"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone"
+                        android:scaleType="centerCrop"
+                        android:background="@color/card_background" />
+
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Clave de acceso automática -->

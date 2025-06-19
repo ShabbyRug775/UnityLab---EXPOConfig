@@ -62,10 +62,10 @@ public class VisitanteActivity extends AppCompatActivity {
     private void setupProyectosDestacados() {
         List<Proyecto> proyectos = getProyectosDestacados();
 
-        ProyectosAdapter adapter = new ProyectosAdapter(proyectos, this);
+        //ProyectosAdapter adapter = new ProyectosAdapter(proyectos, this);
 
         recyclerProyectosDestacados.setLayoutManager(new LinearLayoutManager(this));
-        recyclerProyectosDestacados.setAdapter(adapter);
+        //recyclerProyectosDestacados.setAdapter(adapter);
     }
 
     private List<Proyecto> getProyectosDestacados() {

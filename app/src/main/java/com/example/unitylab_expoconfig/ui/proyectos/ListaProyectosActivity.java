@@ -2,22 +2,16 @@ package com.example.unitylab_expoconfig.ui.proyectos;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -25,20 +19,18 @@ import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
 import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ListaProyectosActivity extends AppCompatActivity {
     private static final String TAG = "ListaProyectos";
 
     private ListView listViewProyectos;
     private FloatingActionButton fabAgregarProyecto;
-    private Spinner spinnerFiltro;
-    private LinearLayout tvSinProyectos;  // CAMBIADO A LinearLayout
+    private LinearLayout tvSinProyectos;
     private DbmsSQLiteHelper dbHelper;
+    private SQLiteDatabase db;
     private ProyectosAdapter adapter;
     private List<Proyecto> listaProyectos;
     private int idUsuarioActual;
@@ -46,183 +38,82 @@ public class ListaProyectosActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "=== INICIANDO ListaProyectosActivity ===");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lista_proyectos);
 
-        try {
-            super.onCreate(savedInstanceState);
-            Log.d(TAG, "super.onCreate() completado");
+        // Inicializar la lista de proyectos ANTES de usarla
+        listaProyectos = new ArrayList<>(); // <-- Esta línea es crucial
 
-            // VERIFICAR SI EL LAYOUT EXISTE
-            setContentView(R.layout.activity_lista_proyectos);
-            Log.d(TAG, "setContentView() completado");
+        // Obtener datos del usuario
+        Intent intent = getIntent();
+        idUsuarioActual = intent.getIntExtra("idUsuario", -1);
+        tipoUsuario = intent.getStringExtra("tipoUsuario");
 
-            // Obtener datos del intent
-            Intent intent = getIntent();
-            idUsuarioActual = intent.getIntExtra("idUsuario", -1);
-            tipoUsuario = intent.getStringExtra("tipoUsuario");
-
-            Log.d(TAG, "Datos recibidos: ID=" + idUsuarioActual + ", Tipo=" + tipoUsuario);
-
-            // Verificar toolbar OPCIONAL (comentar si no existe en el layout)
-            try {
-                Toolbar toolbar = findViewById(R.id.toolbar);
-                if (toolbar != null) {
-                    setSupportActionBar(toolbar);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setTitle("Proyectos");
-                    Log.d(TAG, "Toolbar configurado");
-                } else {
-                    Log.w(TAG, "Toolbar no encontrado en el layout");
-                }
-            } catch (Exception e) {
-                Log.w(TAG, "Error configurando toolbar: " + e.getMessage());
-            }
-
-            dbHelper = new DbmsSQLiteHelper(this);
-            listaProyectos = new ArrayList<>();
-            Log.d(TAG, "Variables inicializadas");
-
-            inicializarVistas();
-            Log.d(TAG, "Vistas inicializadas");
-
-            configurarListView();
-            Log.d(TAG, "ListView configurado");
-
-            configurarFAB();
-            Log.d(TAG, "FAB configurado");
-
-            cargarProyectos();
-            Log.d(TAG, "Proyectos cargados");
-
-            Log.d(TAG, "=== ListaProyectosActivity CREADA EXITOSAMENTE ===");
-
-        } catch (Exception e) {
-            Log.e(TAG, "ERROR EN onCreate(): " + e.getMessage());
-            e.printStackTrace();
-
-            // Mostrar error al usuario
-            Toast.makeText(this, "Error al cargar la pantalla: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            finish(); // Cerrar la actividad si hay error crítico
+        // Configurar toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Mis Proyectos");
         }
-    }
 
-    private void inicializarVistas() {
-        Log.d(TAG, "Inicializando vistas...");
-        try {
-            // BUSCAR VISTAS BÁSICAS PRIMERO
-            listViewProyectos = findViewById(R.id.listViewProyectos);
-            if (listViewProyectos == null) {
-                throw new RuntimeException("listViewProyectos no encontrado en el layout");
+        // Inicializar base de datos
+        dbHelper = new DbmsSQLiteHelper(this);
+        db = dbHelper.getReadableDatabase();
+
+        // Inicializar vistas
+        listViewProyectos = findViewById(R.id.listViewProyectos);
+        fabAgregarProyecto = findViewById(R.id.fabAgregarProyecto);
+        tvSinProyectos = findViewById(R.id.tvSinProyectos);
+
+        // Configurar adaptador con la lista ya inicializada
+        adapter = new ProyectosAdapter(listaProyectos, this, idUsuarioActual, tipoUsuario);
+        listViewProyectos.setAdapter(adapter);
+
+        // Configurar click listener para ListView
+        listViewProyectos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Proyecto proyecto = listaProyectos.get(position);
+                verDetallesProyecto(proyecto);
             }
-            Log.d(TAG, "ListView encontrado");
+        });
 
-            // VISTAS OPCIONALES (comentar si no existen)
-            try {
-                fabAgregarProyecto = findViewById(R.id.fabAgregarProyecto);
-                Log.d(TAG, "FAB " + (fabAgregarProyecto != null ? "encontrado" : "no encontrado"));
-            } catch (Exception e) {
-                Log.w(TAG, "FAB no encontrado: " + e.getMessage());
-            }
+        // Configurar FAB
+        configurarFAB();
 
-            try {
-                spinnerFiltro = findViewById(R.id.spinnerFiltro);
-                Log.d(TAG, "Spinner " + (spinnerFiltro != null ? "encontrado" : "no encontrado"));
-            } catch (Exception e) {
-                Log.w(TAG, "Spinner no encontrado: " + e.getMessage());
-            }
-
-            try {
-                tvSinProyectos = findViewById(R.id.tvSinProyectos);  // Ahora es LinearLayout
-                Log.d(TAG, "LinearLayout sin proyectos " + (tvSinProyectos != null ? "encontrado" : "no encontrado"));
-            } catch (Exception e) {
-                Log.w(TAG, "LinearLayout sin proyectos no encontrado: " + e.getMessage());
-            }
-
-            Log.d(TAG, "Vistas inicializadas correctamente");
-        } catch (Exception e) {
-            Log.e(TAG, "Error al inicializar vistas: " + e.getMessage());
-            throw e; // Re-lanzar para que se maneje en onCreate
-        }
-    }
-
-    private void configurarListView() {
-        Log.d(TAG, "Configurando ListView...");
-        try {
-            adapter = new ProyectosAdapter(listaProyectos, this);
-            listViewProyectos.setAdapter((ListAdapter) adapter);
-
-            listViewProyectos.setOnItemClickListener((parent, view, position, id) -> {
-                Log.d(TAG, "Item clickeado en posición: " + position);
-                try {
-                    Proyecto proyecto = listaProyectos.get(position);
-                    verDetallesProyecto(proyecto);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error al hacer click en item: " + e.getMessage());
-                    Toast.makeText(this, "Error al abrir proyecto", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            Log.d(TAG, "ListView configurado exitosamente");
-        } catch (Exception e) {
-            Log.e(TAG, "Error al configurar ListView: " + e.getMessage());
-            // No re-lanzar, continuar sin ListView clickeable
-        }
+        // Cargar proyectos
+        cargarProyectos();
     }
 
     private void configurarFAB() {
-        Log.d(TAG, "Configurando FAB...");
-        try {
-            if (fabAgregarProyecto != null) {
-                // Ocultar el FAB si no hay sesión activa (idUsuarioActual == -1)
-                if (idUsuarioActual == -1) {
-                    fabAgregarProyecto.setVisibility(View.GONE); // Oculta completamente el botón
-                    Log.d(TAG, "FAB oculto - No hay sesión activa");
-                } else if(Objects.equals(tipoUsuario, "profesor")){
-                    fabAgregarProyecto.setVisibility(View.VISIBLE); // Asegurarse de que sea visible
-                } else {
-                    fabAgregarProyecto.setVisibility(View.GONE); // Oculta completamente el botón
-                }
-
-                fabAgregarProyecto.setOnClickListener(v -> {
-                    Log.d(TAG, "FAB clickeado");
-                    try {
-                        Intent intent = new Intent(this, CrearProyectoActivity.class);
-                        intent.putExtra("idUsuario", idUsuarioActual);
-                        intent.putExtra("tipoUsuario", tipoUsuario);
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error al abrir CrearProyecto: " + e.getMessage());
-                        Toast.makeText(this, "Error al abrir formulario", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Log.d(TAG, "FAB configurado exitosamente");
-            } else {
-                Log.w(TAG, "FAB no disponible, saltando configuración");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error al configurar FAB: " + e.getMessage());
+        // Mostrar FAB solo para profesores
+        if ("profesor".equals(tipoUsuario)) {
+            fabAgregarProyecto.setVisibility(View.VISIBLE);
+            fabAgregarProyecto.setOnClickListener(v -> {
+                Intent intent = new Intent(this, CrearProyectoActivity.class);
+                intent.putExtra("idUsuario", idUsuarioActual);
+                intent.putExtra("tipoUsuario", tipoUsuario);
+                startActivity(intent);
+            });
+        } else {
+            fabAgregarProyecto.setVisibility(View.GONE);
         }
     }
 
     private void cargarProyectos() {
-        Log.d(TAG, "Cargando proyectos...");
+        Cursor cursor = null;
         try {
-            Cursor cursor = dbHelper.obtenerTodosProyectos();
-            actualizarListaProyectos(cursor);
-            if (cursor != null) {
-                cursor.close();
+            // Obtener proyectos según el tipo de usuario
+            if ("profesor".equals(tipoUsuario)) {
+                cursor = ProyectoBD.obtenerProyectosPorProfesor(db, idUsuarioActual);
+            } else if ("estudiante".equals(tipoUsuario)) {
+                cursor = ProyectoBD.obtenerTodosProyectos(db);
+            } else {
+                cursor = ProyectoBD.obtenerTodosProyectos(db);
             }
-            Log.d(TAG, "Proyectos cargados exitosamente. Total: " + listaProyectos.size());
-        } catch (Exception e) {
-            Log.e(TAG, "Error al cargar proyectos: " + e.getMessage());
-            e.printStackTrace();
-            Toast.makeText(this, "Error al cargar proyectos: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
 
-    private void actualizarListaProyectos(Cursor cursor) {
-        Log.d(TAG, "Actualizando lista de proyectos...");
-        try {
+            // Limpiar la lista existente
             listaProyectos.clear();
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -230,58 +121,46 @@ public class ListaProyectosActivity extends AppCompatActivity {
                     Proyecto proyecto = new Proyecto();
                     proyecto.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID)));
                     proyecto.setNombreProyecto(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
-                    proyecto.setNombreEquipo(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_EQUIPO)));
-                    proyecto.setMateria(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_MATERIA)));
-                    proyecto.setGrupo(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_GRUPO)));
-                    proyecto.setEstado(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ESTADO)));
+                    proyecto.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
+                    proyecto.setFechaCreacion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION)));
+                    proyecto.setIdEquipo(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_EQUIPO)));
 
                     listaProyectos.add(proyecto);
-                    Log.d(TAG, "Proyecto agregado: " + proyecto.getNombreProyecto());
                 } while (cursor.moveToNext());
             }
 
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
+            // Notificar al adaptador que los datos cambiaron
+            adapter.notifyDataSetChanged();
 
-            // Mostrar/ocultar LinearLayout de sin proyectos
-            if (tvSinProyectos != null) {
-                if (listaProyectos.isEmpty()) {
-                    tvSinProyectos.setVisibility(View.VISIBLE);
-                    listViewProyectos.setVisibility(View.GONE);
-                    Log.d(TAG, "Mostrando mensaje 'sin proyectos'");
-                } else {
-                    tvSinProyectos.setVisibility(View.GONE);
-                    listViewProyectos.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "Ocultando mensaje 'sin proyectos'");
-                }
+            // Mostrar u ocultar mensaje de "sin proyectos"
+            if (listaProyectos.isEmpty()) {
+                tvSinProyectos.setVisibility(View.VISIBLE);
+                listViewProyectos.setVisibility(View.GONE);
+            } else {
+                tvSinProyectos.setVisibility(View.GONE);
+                listViewProyectos.setVisibility(View.VISIBLE);
             }
-
-            Log.d(TAG, "Lista actualizada con " + listaProyectos.size() + " proyectos");
         } catch (Exception e) {
-            Log.e(TAG, "Error al actualizar lista: " + e.getMessage());
+            Toast.makeText(this, "Error al cargar proyectos", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
     private void verDetallesProyecto(Proyecto proyecto) {
-        Log.d(TAG, "Abriendo detalles del proyecto: " + proyecto.getNombreProyecto());
-        try {
-            Intent intent = new Intent(this, DetalleProyectoActivity.class);
-            intent.putExtra("idProyecto", proyecto.getId());
-            intent.putExtra("idUsuario", idUsuarioActual);
-            intent.putExtra("tipoUsuario", tipoUsuario);
-            startActivity(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "Error al abrir detalles: " + e.getMessage());
-            Toast.makeText(this, "Error al abrir detalles del proyecto", Toast.LENGTH_SHORT).show();
-        }
+        Intent intent = new Intent(this, DetalleProyectoActivity.class);
+        intent.putExtra("idProyecto", proyecto.getId());
+        intent.putExtra("idUsuario", idUsuarioActual);
+        intent.putExtra("tipoUsuario", tipoUsuario);
+        startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Simplemente cerrar la actividad actual
             finish();
             return true;
         }
@@ -291,19 +170,16 @@ public class ListaProyectosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume() - Recargando proyectos");
         cargarProyectos();
-        // Actualizar visibilidad del FAB si cambia el estado de la sesión
-        if (fabAgregarProyecto != null) {
-            fabAgregarProyecto.setVisibility(idUsuarioActual == -1 ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy()");
+        if (db != null) {
+            db.close();
+        }
         if (dbHelper != null) {
-            dbHelper.cerrarConexion();
+            dbHelper.close();
         }
         super.onDestroy();
     }

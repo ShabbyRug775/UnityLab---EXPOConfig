@@ -50,6 +50,15 @@
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
         </activity>
 
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+
         <!-- Actividades de profesores -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"
@@ -67,6 +76,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.inicio.ProfesorActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.profesores.RegistroProfesorActivity" />
         </activity>
 
         <!-- Actividades de administrador -->

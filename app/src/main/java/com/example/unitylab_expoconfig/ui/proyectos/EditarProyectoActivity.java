@@ -29,8 +29,7 @@ public class EditarProyectoActivity extends AppCompatActivity {
 
     // Views del layout
     private EditText editNombreProyecto, editDescripcion, editNombreEquipo, editMateria,
-            editGrupo, editSemestre, editCarrera, editHerramientas,
-            editArquitectura, editFunciones, editUrlCartel;
+            editGrupo, editSemestre, editCarrera;
     private Spinner spinnerProfesor, spinnerEstado;
     private Button btnGuardarCambios, btnCancelar;
 
@@ -140,10 +139,6 @@ public class EditarProyectoActivity extends AppCompatActivity {
             editGrupo = findViewById(R.id.editGrupo);
             editSemestre = findViewById(R.id.editSemestre);
             editCarrera = findViewById(R.id.editCarrera);
-            editHerramientas = findViewById(R.id.editHerramientas);
-            editArquitectura = findViewById(R.id.editArquitectura);
-            editFunciones = findViewById(R.id.editFunciones);
-            editUrlCartel = findViewById(R.id.editUrlCartel);
 
             // Spinners
             spinnerProfesor = findViewById(R.id.spinnerProfesor);
@@ -229,19 +224,9 @@ public class EditarProyectoActivity extends AppCompatActivity {
                 proyectoActual.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID)));
                 proyectoActual.setNombreProyecto(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
                 proyectoActual.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
-                proyectoActual.setNombreEquipo(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_EQUIPO)));
-                proyectoActual.setMateria(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_MATERIA)));
-                proyectoActual.setGrupo(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_GRUPO)));
-                proyectoActual.setSemestre(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_SEMESTRE)));
-                proyectoActual.setCarrera(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_CARRERA)));
-                proyectoActual.setHerramientasUtilizadas(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_HERRAMIENTAS)));
-                proyectoActual.setArquitectura(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ARQUITECTURA)));
-                proyectoActual.setFuncionesPrincipales(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_FUNCIONES)));
+                //proyectoActual.setIdEquipo(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_EQUIPO)));
                 proyectoActual.setIdProfesor(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROFESOR)));
-                proyectoActual.setIdEstudianteLider(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_ESTUDIANTE_LIDER)));
                 proyectoActual.setFechaCreacion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION)));
-                proyectoActual.setEstado(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ESTADO)));
-                proyectoActual.setUrlCartel(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_URL_CARTEL)));
 
                 cursor.close();
 
@@ -276,21 +261,10 @@ public class EditarProyectoActivity extends AppCompatActivity {
             // Prellenar campos de texto
             setTextSafe(editNombreProyecto, proyectoActual.getNombreProyecto());
             setTextSafe(editDescripcion, proyectoActual.getDescripcion());
-            setTextSafe(editNombreEquipo, proyectoActual.getNombreEquipo());
-            setTextSafe(editMateria, proyectoActual.getMateria());
-            setTextSafe(editGrupo, proyectoActual.getGrupo());
-            setTextSafe(editSemestre, proyectoActual.getSemestre());
-            setTextSafe(editCarrera, proyectoActual.getCarrera());
-            setTextSafe(editHerramientas, proyectoActual.getHerramientasUtilizadas());
-            setTextSafe(editArquitectura, proyectoActual.getArquitectura());
-            setTextSafe(editFunciones, proyectoActual.getFuncionesPrincipales());
-            setTextSafe(editUrlCartel, proyectoActual.getUrlCartel());
+            //setTextSafe(editNombreEquipo, proyectoActual.getNombreEquipo());
 
             // Seleccionar profesor en spinner
             seleccionarProfesorEnSpinner();
-
-            // Seleccionar estado en spinner
-            seleccionarEstadoEnSpinner();
 
             Log.d(TAG, "Campos prellenados exitosamente");
 
@@ -317,23 +291,6 @@ public class EditarProyectoActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.w(TAG, "Error al seleccionar profesor: " + e.getMessage());
-        }
-    }
-
-    private void seleccionarEstadoEnSpinner() {
-        try {
-            String estadoActual = proyectoActual.getEstado();
-            String[] estados = {"ACTIVO", "EN_DESARROLLO", "COMPLETADO", "PAUSADO", "CANCELADO"};
-
-            for (int i = 0; i < estados.length; i++) {
-                if (estados[i].equals(estadoActual)) {
-                    spinnerEstado.setSelection(i);
-                    Log.d(TAG, "Estado seleccionado en posición: " + i);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Error al seleccionar estado: " + e.getMessage());
         }
     }
 
@@ -392,16 +349,6 @@ public class EditarProyectoActivity extends AppCompatActivity {
             // Obtener datos del formulario
             String nombreProyecto = editNombreProyecto.getText().toString().trim();
             String descripcion = editDescripcion.getText().toString().trim();
-            String nombreEquipo = editNombreEquipo.getText().toString().trim();
-            String materia = editMateria.getText().toString().trim();
-            String grupo = editGrupo.getText().toString().trim();
-            String semestre = editSemestre.getText().toString().trim();
-            String carrera = editCarrera.getText().toString().trim();
-            String herramientas = editHerramientas.getText().toString().trim();
-            String arquitectura = editArquitectura.getText().toString().trim();
-            String funciones = editFunciones.getText().toString().trim();
-            String urlCartel = editUrlCartel.getText().toString().trim();
-            String estado = spinnerEstado.getSelectedItem().toString();
 
             // Verificar spinner de profesor
             if (spinnerProfesor.getSelectedItemPosition() == -1 || profesorIds.isEmpty()) {
@@ -410,13 +357,13 @@ public class EditarProyectoActivity extends AppCompatActivity {
             }
 
             int idProfesor = profesorIds.get(spinnerProfesor.getSelectedItemPosition());
+            int idEquipo = Integer.parseInt(editNombreEquipo.getText().toString().trim());
 
             Log.d(TAG, "Actualizando proyecto en la base de datos...");
 
             // Actualizar en la base de datos
             int resultado = dbHelper.actualizarProyecto(idProyecto, nombreProyecto, descripcion,
-                    nombreEquipo, materia, grupo, semestre, carrera, herramientas, arquitectura,
-                    funciones, idProfesor, estado, urlCartel);
+                    idEquipo, idProfesor);
 
             if (resultado > 0) {
                 Log.d(TAG, "Proyecto actualizado exitosamente");

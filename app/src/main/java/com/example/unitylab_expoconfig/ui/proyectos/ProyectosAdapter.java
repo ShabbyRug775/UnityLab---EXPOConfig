@@ -1,72 +1,93 @@
 package com.example.unitylab_expoconfig.ui.proyectos;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unitylab_expoconfig.R;
 
 import java.util.List;
 
-public class ProyectosAdapter extends RecyclerView.Adapter<ProyectosAdapter.ProyectoViewHolder> {
-
+public class ProyectosAdapter extends BaseAdapter {
     private List<Proyecto> proyectos;
     private Context context;
+    private int idUsuarioActual;
+    private String tipoUsuario;
     private LayoutInflater inflater;
 
-    // Constructor mejorado (con parámetro para destacados)
-    public ProyectosAdapter(List<Proyecto> proyectos, Context context) {
+    public ProyectosAdapter(List<Proyecto> proyectos, Context context, int idUsuario, String tipoUsuario) {
         this.proyectos = proyectos;
         this.context = context;
+        this.idUsuarioActual = idUsuario;
+        this.tipoUsuario = tipoUsuario;
         this.inflater = LayoutInflater.from(context);
     }
 
-    @NonNull
     @Override
-    public ProyectoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_proyecto, parent, false);
-        return new ProyectoViewHolder(view);
+    public int getCount() {
+        return proyectos != null ? proyectos.size() : 0;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProyectoViewHolder holder, int position) {
-        Proyecto proyecto = proyectos.get(position);
-        holder.bind(proyecto, false);
+    public Proyecto getItem(int position) {
+        return proyectos.get(position);
+    }
 
-        // Opcional: Manejar clicks en items
-        holder.itemView.setOnClickListener(v -> {
-            // Aquí puedes lanzar una Activity de detalle si lo necesitas
+    @Override
+    public long getItemId(int position) {
+        return proyectos.get(position).getId();
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.item_proyecto, parent, false);
+            holder = new ViewHolder();
+            holder.tvNombreProyecto = convertView.findViewById(R.id.tvNombreProyecto);
+            holder.tvDescripcion = convertView.findViewById(R.id.tvDescripcion);
+            holder.tvFechaCreacion = convertView.findViewById(R.id.tvFechaCreacion);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        Proyecto proyecto = getItem(position);
+        holder.tvNombreProyecto.setText(proyecto.getNombreProyecto());
+        holder.tvDescripcion.setText(proyecto.getDescripcion());
+        holder.tvFechaCreacion.setText(formatearFecha(proyecto.getFechaCreacion()));
+
+        // Configurar el click listener
+        convertView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetalleProyectoActivity.class);
+            intent.putExtra("idProyecto", proyecto.getId());
+            intent.putExtra("idUsuario", idUsuarioActual);
+            intent.putExtra("tipoUsuario", tipoUsuario);
+            context.startActivity(intent);
         });
+
+        return convertView;
     }
 
-    @Override
-    public int getItemCount() {
-        return proyectos.size();
-    }
-
-    // Métodos adicionales para manipular datos
     public void actualizarProyectos(List<Proyecto> nuevosProyectos) {
-        proyectos.clear();
-        proyectos.addAll(nuevosProyectos);
+        this.proyectos = nuevosProyectos;
         notifyDataSetChanged();
     }
 
     public void agregarProyecto(Proyecto proyecto) {
         proyectos.add(proyecto);
-        notifyItemInserted(proyectos.size() - 1);
+        notifyDataSetChanged();
     }
 
     public void eliminarProyecto(int position) {
         if (position >= 0 && position < proyectos.size()) {
             proyectos.remove(position);
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
         }
     }
 
@@ -77,57 +98,17 @@ public class ProyectosAdapter extends RecyclerView.Adapter<ProyectosAdapter.Proy
         return null;
     }
 
-    // ViewHolder optimizado
-    public static class ProyectoViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvNombreProyecto;
-        private final TextView tvNombreEquipo;
-        private final TextView tvMateria;
-        private final TextView tvGrupo;
-        private final TextView tvEstado;
-        private final TextView tvProfesor;
-        private final TextView tvEstudianteLider;
-
-        public ProyectoViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvNombreProyecto = itemView.findViewById(R.id.tvNombreProyecto);
-            tvNombreEquipo = itemView.findViewById(R.id.tvNombreEquipo);
-            tvMateria = itemView.findViewById(R.id.tvMateria);
-            tvGrupo = itemView.findViewById(R.id.tvGrupo);
-            tvEstado = itemView.findViewById(R.id.tvEstado);
-            tvProfesor = itemView.findViewById(R.id.tvProfesor);
-            tvEstudianteLider = itemView.findViewById(R.id.tvEstudianteLider);
+    private String formatearFecha(String fechaOriginal) {
+        try {
+            return "Creado: " + fechaOriginal.substring(0, 10);
+        } catch (Exception e) {
+            return "Creado: " + fechaOriginal;
         }
+    }
 
-        public void bind(Proyecto proyecto, boolean esDestacado) {
-            // Configurar datos básicos
-            tvNombreProyecto.setText(proyecto.getNombreProyecto());
-            tvNombreEquipo.setText("Equipo: " + proyecto.getNombreEquipo());
-            tvMateria.setText("Materia: " + proyecto.getMateria());
-            tvGrupo.setText("Grupo: " + proyecto.getGrupo());
-            tvEstado.setText(proyecto.getEstado());
-            tvEstado.setTextColor(proyecto.getColorEstado());
-
-            // Manejar campos opcionales
-            if (proyecto.getNombreProfesor() != null && !proyecto.getNombreProfesor().isEmpty()) {
-                tvProfesor.setText("Profesor: " + proyecto.getNombreProfesor());
-                tvProfesor.setVisibility(View.VISIBLE);
-            } else {
-                tvProfesor.setVisibility(View.GONE);
-            }
-
-            if (proyecto.getNombreEstudianteLider() != null && !proyecto.getNombreEstudianteLider().isEmpty()) {
-                tvEstudianteLider.setText("Líder: " + proyecto.getNombreEstudianteLider());
-                tvEstudianteLider.setVisibility(View.VISIBLE);
-            } else {
-                tvEstudianteLider.setVisibility(View.GONE);
-            }
-
-            // Estilo para destacados (opcional)
-            if (esDestacado) {
-                itemView.setBackgroundColor(Color.parseColor("#FFFDE7")); // Amarillo claro
-            } else {
-                itemView.setBackgroundColor(Color.TRANSPARENT);
-            }
-        }
+    static class ViewHolder {
+        TextView tvNombreProyecto;
+        TextView tvDescripcion;
+        TextView tvFechaCreacion;
     }
 }

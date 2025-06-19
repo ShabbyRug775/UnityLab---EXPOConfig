@@ -2,6 +2,8 @@ package com.example.unitylab_expoconfig.ui.proyectos;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -16,26 +19,33 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
+import com.example.unitylab_expoconfig.SQLite.EquipoDB;
 import com.example.unitylab_expoconfig.SQLite.ProfesorBD;
+import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class CrearProyectoActivity extends AppCompatActivity {
     private static final String TAG = "CrearProyecto"; // Para logs
 
-    private EditText editNombreProyecto, editDescripcion, editNombreEquipo, editMateria,
-            editGrupo, editSemestre, editCarrera, editHerramientas,
-            editArquitectura, editFunciones, editUrlCartel;
-    private Spinner spinnerProfesor, spinnerEstado;
-    private Button btnCrearProyecto, btnCancelar;
+    // Campos del proyecto
+    private EditText editNombreProyecto, editDescripcionProyecto, editProfesorResponsable;
+
+    // Campos del equipo
+    private EditText editNombreEquipo, editNumAlumnos, editDescripcionEquipo;
+    private Spinner spinnerLugarEquipo;
+    private Button btnSubirCartel;
+    private ImageView imgPreviewCartel;
+
+    // Otros controles
+    private Button btnCrearProyecto, btnCancelar, btnGenerarClave;
+    private String cartelPath = ""; // Ruta del archivo del cartel
     private DbmsSQLiteHelper dbHelper;
+    private SQLiteDatabase db;
     private int idUsuarioActual;
     private String tipoUsuario;
-    private List<Integer> profesorIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,38 +62,38 @@ public class CrearProyectoActivity extends AppCompatActivity {
         Log.d(TAG, "Usuario actual: ID=" + idUsuarioActual + ", Tipo=" + tipoUsuario);
 
         dbHelper = new DbmsSQLiteHelper(this);
-        profesorIds = new ArrayList<>();
+        db = dbHelper.getWritableDatabase();
 
         inicializarVistas();
         configurarSpinners();
         configurarBotones();
 
-        // Si es estudiante, prellenar algunos campos con sus datos
-        if ("estudiante".equals(tipoUsuario)) {
-            prellenarDatosEstudiante();
+        // Prellenar datos según el tipo de usuario
+        if ("profesor".equals(tipoUsuario)) {
+            prellenarDatosProfesor();
         }
     }
 
     private void inicializarVistas() {
         Log.d(TAG, "Inicializando vistas...");
         try {
+            // Campos del proyecto
             editNombreProyecto = findViewById(R.id.editNombreProyecto);
-            editDescripcion = findViewById(R.id.editDescripcion);
+            editDescripcionProyecto = findViewById(R.id.editDescripcionProyecto);
+            editProfesorResponsable = findViewById(R.id.editProfesorResponsable);
+
+            // Campos del equipo
             editNombreEquipo = findViewById(R.id.editNombreEquipo);
-            editMateria = findViewById(R.id.editMateria);
-            editGrupo = findViewById(R.id.editGrupo);
-            editSemestre = findViewById(R.id.editSemestre);
-            editCarrera = findViewById(R.id.editCarrera);
-            editHerramientas = findViewById(R.id.editHerramientas);
-            editArquitectura = findViewById(R.id.editArquitectura);
-            editFunciones = findViewById(R.id.editFunciones);
-            editUrlCartel = findViewById(R.id.editUrlCartel);
+            editNumAlumnos = findViewById(R.id.editNumAlumnos);
+            editDescripcionEquipo = findViewById(R.id.editDescripcionEquipo);
+            spinnerLugarEquipo = findViewById(R.id.spinnerLugarEquipo);
+            btnSubirCartel = findViewById(R.id.btnSubirCartel);
+            imgPreviewCartel = findViewById(R.id.imgPreviewCartel);
 
-            spinnerProfesor = findViewById(R.id.spinnerProfesor);
-            spinnerEstado = findViewById(R.id.spinnerEstado);
-
+            // Botones
             btnCrearProyecto = findViewById(R.id.btnCrearProyecto);
             btnCancelar = findViewById(R.id.btnCancelar);
+            btnGenerarClave = findViewById(R.id.btnGenerarClave);
 
             Log.d(TAG, "Vistas inicializadas correctamente");
         } catch (Exception e) {
@@ -95,90 +105,73 @@ public class CrearProyectoActivity extends AppCompatActivity {
     private void configurarSpinners() {
         Log.d(TAG, "Configurando spinners...");
         try {
-            // Configurar spinner de estado
-            String[] estados = {"ACTIVO", "EN_DESARROLLO", "COMPLETADO", "PAUSADO", "CANCELADO"};
-            ArrayAdapter<String> estadoAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, estados);
-            estadoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerEstado.setAdapter(estadoAdapter);
-            Log.d(TAG, "Spinner de estado configurado");
+            // Configurar spinner de lugares (stands)
+            String[] lugares = new String[50]; // Asumiendo 50 stands disponibles
+            for (int i = 0; i < lugares.length; i++) {
+                lugares[i] = "Stand " + (i + 1);
+            }
 
-            // Configurar spinner de profesores
-            cargarProfesores();
+            ArrayAdapter<String> lugarAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, lugares);
+            lugarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerLugarEquipo.setAdapter(lugarAdapter);
+
+            Log.d(TAG, "Spinner de lugares configurado");
+
         } catch (Exception e) {
             Log.e(TAG, "Error al configurar spinners: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void cargarProfesores() {
-        Log.d(TAG, "Cargando profesores...");
+    private void prellenarDatosProfesor() {
+        Log.d(TAG, "Prellenando datos del profesor...");
         try {
-            Cursor cursor = dbHelper.obtenerTodosProfesores();
-            List<String> profesorNombres = new ArrayList<>();
-            profesorIds.clear();
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(ProfesorBD.COL_ID));
+            if ("profesor".equals(tipoUsuario)) {
+                // Obtener datos del profesor actual
+                Cursor cursor = ProfesorBD.obtenerProfesorPorId(db, idUsuarioActual);
+                if (cursor != null && cursor.moveToFirst()) {
                     String nombre = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_NOMBRE));
                     String apellidos = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_APELLIDOS));
 
-                    profesorIds.add(id);
-                    profesorNombres.add(nombre + " " + apellidos);
-                    Log.d(TAG, "Profesor cargado: ID=" + id + ", Nombre=" + nombre + " " + apellidos);
-                } while (cursor.moveToNext());
-                cursor.close();
-                Log.d(TAG, "Total profesores cargados: " + profesorNombres.size());
-            } else {
-                Log.w(TAG, "No se encontraron profesores en la base de datos");
-                Toast.makeText(this, "No hay profesores disponibles. Registra un profesor primero.", Toast.LENGTH_LONG).show();
-            }
+                    editProfesorResponsable.setText(nombre + " " + apellidos);
 
-            ArrayAdapter<String> profesorAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, profesorNombres);
-            profesorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerProfesor.setAdapter(profesorAdapter);
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error al cargar profesores: " + e.getMessage());
-            e.printStackTrace();
-            Toast.makeText(this, "Error al cargar profesores: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void prellenarDatosEstudiante() {
-        Log.d(TAG, "Prellenando datos del estudiante...");
-        try {
-            // Obtener datos del estudiante actual para prellenar algunos campos
-            Cursor cursor = dbHelper.obtenerEstudiantePorId(idUsuarioActual);
-            if (cursor != null && cursor.moveToFirst()) {
-                String grupo = cursor.getString(cursor.getColumnIndexOrThrow("grupo"));
-                String semestre = cursor.getString(cursor.getColumnIndexOrThrow("semestre"));
-                String carrera = cursor.getString(cursor.getColumnIndexOrThrow("carrera"));
-
-                editGrupo.setText(grupo);
-                editSemestre.setText(semestre);
-                editCarrera.setText(carrera);
-
-                Log.d(TAG, "Datos prellenados: Grupo=" + grupo + ", Semestre=" + semestre + ", Carrera=" + carrera);
-                cursor.close();
-            } else {
-                Log.w(TAG, "No se pudieron obtener datos del estudiante con ID: " + idUsuarioActual);
+                    Log.d(TAG, "Datos prellenados: Nombre=" + nombre + " " + apellidos);
+                    cursor.close();
+                } else {
+                    Log.w(TAG, "No se pudieron obtener datos del profesor con ID: " + idUsuarioActual);
+                }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error al prellenar datos del estudiante: " + e.getMessage());
+            Log.e(TAG, "Error al prellenar datos del profesor: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void configurarBotones() {
-        btnCrearProyecto.setOnClickListener(v -> guardarProyecto());
+        btnCrearProyecto.setOnClickListener(v -> guardarProyectoYEquipo());
         btnCancelar.setOnClickListener(v -> finish());
+
+        btnSubirCartel.setOnClickListener(v -> {
+            // Implementar lógica para subir imagen del cartel
+            // Esto abriría el selector de archivos/galería
+            // Por simplicidad, aquí solo simulamos que se subió
+            cartelPath = "/path/to/cartel.jpg";
+            imgPreviewCartel.setVisibility(View.VISIBLE);
+            //imgPreviewCartel.setImageResource(R.drawable.placeholder_image);
+            Toast.makeText(this, "Cartel subido (simulado)", Toast.LENGTH_SHORT).show();
+        });
+
+        btnGenerarClave.setOnClickListener(v -> {
+            // Generar clave aleatoria para el proyecto
+            String clave = "PROJ-" + new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()) +
+                    "-" + generarCodigoAleatorio(6);
+            Toast.makeText(this, "Clave generada: " + clave, Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void guardarProyecto() {
-        Log.d(TAG, "=== INICIANDO GUARDADO DE PROYECTO ===");
+    private void guardarProyectoYEquipo() {
+        Log.d(TAG, "=== INICIANDO GUARDADO DE PROYECTO Y EQUIPO ===");
 
         try {
             if (!validarCampos()) {
@@ -186,64 +179,57 @@ public class CrearProyectoActivity extends AppCompatActivity {
                 return;
             }
 
-            // Obtener datos del formulario
-            String nombreProyecto = editNombreProyecto.getText().toString().trim();
-            String descripcion = editDescripcion.getText().toString().trim();
+            // Obtener datos del formulario para el equipo
             String nombreEquipo = editNombreEquipo.getText().toString().trim();
-            String materia = editMateria.getText().toString().trim();
-            String grupo = editGrupo.getText().toString().trim();
-            String semestre = editSemestre.getText().toString().trim();
-            String carrera = editCarrera.getText().toString().trim();
-            String herramientas = editHerramientas.getText().toString().trim();
-            String arquitectura = editArquitectura.getText().toString().trim();
-            String funciones = editFunciones.getText().toString().trim();
-            String urlCartel = editUrlCartel.getText().toString().trim();
-            String estado = spinnerEstado.getSelectedItem().toString();
+            int numAlumnos = Integer.parseInt(editNumAlumnos.getText().toString().trim());
+            String descripcionEquipo = editDescripcionEquipo.getText().toString().trim();
+            int lugar = spinnerLugarEquipo.getSelectedItemPosition() + 1; // +1 para que empiece en 1
 
-            Log.d(TAG, "Datos del formulario:");
-            Log.d(TAG, "- Nombre: " + nombreProyecto);
-            Log.d(TAG, "- Equipo: " + nombreEquipo);
-            Log.d(TAG, "- Materia: " + materia);
-            Log.d(TAG, "- Estado: " + estado);
-
-            // Verificar spinner de profesor
-            if (spinnerProfesor.getSelectedItemPosition() == -1 || profesorIds.isEmpty()) {
-                Log.e(TAG, "No hay profesor seleccionado o no hay profesores disponibles");
-                Toast.makeText(this, "Error: No hay profesor seleccionado", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Obtener el profesor seleccionado
-            int idProfesor = profesorIds.get(spinnerProfesor.getSelectedItemPosition());
-            Log.d(TAG, "Profesor seleccionado ID: " + idProfesor);
+            // Obtener datos del formulario para el proyecto
+            String nombreProyecto = editNombreProyecto.getText().toString().trim();
+            String descripcionProyecto = editDescripcionProyecto.getText().toString().trim();
 
             // Obtener fecha actual
             String fechaCreacion = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     .format(new Date());
-            Log.d(TAG, "Fecha creación: " + fechaCreacion);
 
-            // Determinar el ID del estudiante líder
-            int idEstudianteLider;
-            if ("estudiante".equals(tipoUsuario)) {
-                idEstudianteLider = idUsuarioActual;
-                Log.d(TAG, "Estudiante líder: " + idEstudianteLider);
-            } else {
-                // Si es profesor, por ahora no asignamos estudiante líder
-                idEstudianteLider = -1;
-                Log.d(TAG, "No se asigna estudiante líder (usuario es profesor)");
+            // Primero insertar el equipo
+            Log.d(TAG, "Insertando equipo en la base de datos...");
+            long idEquipo = EquipoDB.insertarEquipo(
+                    db,
+                    nombreEquipo,
+                    nombreProyecto, // Nombre del proyecto como nombreProyecto en equipo
+                    numAlumnos,
+                    descripcionEquipo,
+                    lugar,
+                    cartelPath,
+                    0, // cantEval inicial
+                    0, // promedio inicial
+                    0  // cantVisitas inicial
+            );
+
+            if (idEquipo == -1) {
+                Log.e(TAG, "Error al insertar equipo");
+                Toast.makeText(this, "Error al crear el equipo", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            // Intentar insertar en la base de datos
+            Log.d(TAG, "Equipo creado con ID: " + idEquipo);
+
+            // Luego insertar el proyecto con referencia al equipo
             Log.d(TAG, "Insertando proyecto en la base de datos...");
-            long resultado = dbHelper.insertarProyecto(nombreProyecto, descripcion, nombreEquipo,
-                    materia, grupo, semestre, carrera, herramientas, arquitectura, funciones,
-                    idProfesor, idEstudianteLider, fechaCreacion, estado, urlCartel);
+            long idProyecto = ProyectoBD.insertarProyecto(
+                    db,
+                    nombreProyecto,
+                    descripcionProyecto,
+                    idUsuarioActual,
+                    (int) idEquipo,
+                    fechaCreacion
+            );
 
-            Log.d(TAG, "Resultado de inserción: " + resultado);
-
-            if (resultado != -1) {
-                Log.d(TAG, "Proyecto creado exitosamente con ID: " + resultado);
-                Toast.makeText(this, "Proyecto creado exitosamente", Toast.LENGTH_SHORT).show();
+            if (idProyecto != -1) {
+                Log.d(TAG, "Proyecto creado exitosamente con ID: " + idProyecto);
+                Toast.makeText(this, "Proyecto y equipo creados exitosamente", Toast.LENGTH_SHORT).show();
 
                 // Regresar a la lista de proyectos
                 Intent intent = new Intent(this, ListaProyectosActivity.class);
@@ -252,12 +238,14 @@ public class CrearProyectoActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Log.e(TAG, "Error: la inserción devolvió -1");
-                Toast.makeText(this, "Error al crear el proyecto en la base de datos", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error: la inserción del proyecto devolvió -1");
+                // Si falla el proyecto, eliminar el equipo creado para mantener consistencia
+                EquipoDB.eliminarEquipo(db, (int) idEquipo);
+                Toast.makeText(this, "Error al crear el proyecto", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "Excepción al guardar proyecto: " + e.getMessage());
+            Log.e(TAG, "Excepción al guardar proyecto y equipo: " + e.getMessage());
             e.printStackTrace();
             Toast.makeText(this, "Error inesperado: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -266,62 +254,61 @@ public class CrearProyectoActivity extends AppCompatActivity {
     private boolean validarCampos() {
         Log.d(TAG, "Validando campos...");
 
+        // Validar campos del proyecto
         if (TextUtils.isEmpty(editNombreProyecto.getText())) {
-            Log.w(TAG, "Validación falló: Nombre del proyecto vacío");
             editNombreProyecto.setError("El nombre del proyecto es obligatorio");
             editNombreProyecto.requestFocus();
             return false;
         }
 
+        // Validar campos del equipo
         if (TextUtils.isEmpty(editNombreEquipo.getText())) {
-            Log.w(TAG, "Validación falló: Nombre del equipo vacío");
             editNombreEquipo.setError("El nombre del equipo es obligatorio");
             editNombreEquipo.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(editMateria.getText())) {
-            Log.w(TAG, "Validación falló: Materia vacía");
-            editMateria.setError("La materia es obligatoria");
-            editMateria.requestFocus();
+        if (TextUtils.isEmpty(editNumAlumnos.getText())) {
+            editNumAlumnos.setError("El número de alumnos es obligatorio");
+            editNumAlumnos.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(editGrupo.getText())) {
-            Log.w(TAG, "Validación falló: Grupo vacío");
-            editGrupo.setError("El grupo es obligatorio");
-            editGrupo.requestFocus();
+        try {
+            int num = Integer.parseInt(editNumAlumnos.getText().toString());
+            if (num <= 0) {
+                editNumAlumnos.setError("Debe haber al menos 1 alumno");
+                editNumAlumnos.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            editNumAlumnos.setError("Número inválido");
+            editNumAlumnos.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(editSemestre.getText())) {
-            Log.w(TAG, "Validación falló: Semestre vacío");
-            editSemestre.setError("El semestre es obligatorio");
-            editSemestre.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(editCarrera.getText())) {
-            Log.w(TAG, "Validación falló: Carrera vacía");
-            editCarrera.setError("La carrera es obligatoria");
-            editCarrera.requestFocus();
-            return false;
-        }
-
-        if (spinnerProfesor.getSelectedItemPosition() == -1) {
-            Log.w(TAG, "Validación falló: No hay profesor seleccionado");
-            Toast.makeText(this, "Debe seleccionar un profesor", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        Log.d(TAG, "Validación exitosa");
         return true;
+    }
+
+    private String generarCodigoAleatorio(int longitud) {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < longitud; i++) {
+            int index = (int) (Math.random() * caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+
+        return sb.toString();
     }
 
     @Override
     protected void onDestroy() {
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
         if (dbHelper != null) {
-            dbHelper.cerrarConexion();
+            dbHelper.close();
         }
         super.onDestroy();
         Log.d(TAG, "CrearProyectoActivity destruida");

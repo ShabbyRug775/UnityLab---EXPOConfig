@@ -26,7 +26,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/tvEstado"
                 android:text="Nombre del Proyecto"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -34,30 +33,13 @@
                 android:ellipsize="end"
                 android:maxLines="1" />
 
-            <TextView
-                android:id="@+id/tvEstado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="ACTIVO"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:background="@drawable/badge_estado"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
-
         </RelativeLayout>
 
         <!-- Información del equipo -->
         <TextView
-            android:id="@+id/tvNombreEquipo"
+            android:id="@+id/tvDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Equipo: Los Desarrolladores"
             android:textSize="14sp"
             android:textColor="@color/text_primary"
             android:layout_marginBottom="4dp"
@@ -65,74 +47,16 @@
             android:drawablePadding="8dp"
             android:gravity="center_vertical" />
 
-        <!-- Información académica -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvFechaCreacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="4dp">
-
-            <TextView
-                android:id="@+id/tvMateria"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Materia: Ingeniería de Software"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:drawableStart="@drawable/ic_book"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical"
-                android:ellipsize="end"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/tvGrupo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Grupo: 3CM1"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginStart="8dp"
-                android:drawableStart="@drawable/ic_class"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical" />
-
-        </LinearLayout>
-
-        <!-- Información de personas involucradas -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvProfesor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Profesor: Dr. Juan Pérez"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="2dp"
-                android:drawableStart="@drawable/ic_teacher"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvEstudianteLider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Líder: María García"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:drawableStart="@drawable/ic_person"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical"
-                android:visibility="gone" />
-
-        </LinearLayout>
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="4dp"
+            android:drawableStart="@drawable/ic_group"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical" />
 
         <!-- Línea divisoria sutil -->
         <View

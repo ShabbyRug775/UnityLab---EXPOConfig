@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class EquipoDB {
     // Constantes para la tabla EQUIPO
     public static final String TABLE_NAME = "EQUIPO";
-    public static final String COL_ID = "IDEquipo";
+    public static final String COL_ID_EQUIPO = "IDEquipo";
     public static final String COL_NOMBRE = "Nombre";
     public static final String COL_NOMBRE_PROYECTO = "NombreProyecto";
     public static final String COL_NUM_ALUMNOS = "Numero_Alumnos";
@@ -21,7 +21,7 @@ public class EquipoDB {
     // Sentencia SQL para crear la tabla
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_ID_EQUIPO + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COL_NOMBRE + " VARCHAR(100) NOT NULL, " +
                     COL_NOMBRE_PROYECTO + " VARCHAR(50), " +
                     COL_NUM_ALUMNOS + " INTEGER, " +
@@ -57,7 +57,7 @@ public class EquipoDB {
     public static Cursor obtenerEquipoPorId(SQLiteDatabase db, int id) {
         return db.query(TABLE_NAME,
                 null,
-                COL_ID + " = ?",
+                COL_ID_EQUIPO + " = ?",
                 new String[]{String.valueOf(id)},
                 null, null, null);
     }
@@ -93,7 +93,7 @@ public class EquipoDB {
         values.put(COL_CANT_VISITAS, cantVisitas);
 
         return db.update(TABLE_NAME, values,
-                COL_ID + " = ?",
+                COL_ID_EQUIPO + " = ?",
                 new String[]{String.valueOf(id)});
     }
 
@@ -103,7 +103,7 @@ public class EquipoDB {
         values.put(COL_CANT_EVAL, nuevaEvaluacion);
 
         return db.update(TABLE_NAME, values,
-                COL_ID + " = ?",
+                COL_ID_EQUIPO + " = ?",
                 new String[]{String.valueOf(id)});
     }
 
@@ -112,13 +112,13 @@ public class EquipoDB {
         values.put(COL_CANT_VISITAS, COL_CANT_VISITAS + " + 1");
 
         return db.update(TABLE_NAME, values,
-                COL_ID + " = ?",
+                COL_ID_EQUIPO + " = ?",
                 new String[]{String.valueOf(id)});
     }
 
     public static int eliminarEquipo(SQLiteDatabase db, int id) {
         return db.delete(TABLE_NAME,
-                COL_ID + " = ?",
+                COL_ID_EQUIPO + " = ?",
                 new String[]{String.valueOf(id)});
     }
 

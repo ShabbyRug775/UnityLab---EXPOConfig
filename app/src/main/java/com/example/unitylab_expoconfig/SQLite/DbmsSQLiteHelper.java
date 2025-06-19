@@ -145,15 +145,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     // ==================== MÉTODOS PARA PROYECTO ====================
 
-    public long insertarProyecto(String nombreProyecto, String descripcion, String nombreEquipo,
-                                 String materia, String grupo, String semestre, String carrera,
-                                 String herramientas, String arquitectura, String funciones,
-                                 int idProfesor, int idEstudianteLider, String fechaCreacion,
-                                 String estado, String urlCartel) {
+    public long insertarProyecto(String nombreProyecto, String descripcion,
+                                 int idProfesor, int idEquipo, String fechaCreacion) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = ProyectoBD.insertarProyecto(db, nombreProyecto, descripcion, nombreEquipo,
-                materia, grupo, semestre, carrera, herramientas, arquitectura, funciones,
-                idProfesor, idEstudianteLider, fechaCreacion, estado, urlCartel);
+        long id = ProyectoBD.insertarProyecto(db, nombreProyecto, descripcion,
+                idProfesor, idEquipo, fechaCreacion);
         db.close();
         return id;
     }
@@ -168,11 +164,6 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProyectoBD.obtenerProyectoPorId(db, id);
     }
 
-    public Cursor obtenerProyectosPorEstudiante(int idEstudiante) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.obtenerProyectosPorEstudiante(db, idEstudiante);
-    }
-
     public Cursor obtenerProyectosPorProfesor(int idProfesor) {
         SQLiteDatabase db = this.getReadableDatabase();
         return ProyectoBD.obtenerProyectosPorProfesor(db, idProfesor);
@@ -183,36 +174,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProyectoBD.buscarProyectosPorNombre(db, nombre);
     }
 
-    public Cursor buscarProyectosPorMateria(String materia) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.buscarProyectosPorMateria(db, materia);
-    }
-
-    public Cursor obtenerProyectosPorCarrera(String carrera) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.obtenerProyectosPorCarrera(db, carrera);
-    }
-
-    public Cursor obtenerProyectosConDetalles() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.obtenerProyectosConDetalles(db);
-    }
-
-    public int actualizarProyecto(int id, String nombreProyecto, String descripcion, String nombreEquipo,
-                                  String materia, String grupo, String semestre, String carrera,
-                                  String herramientas, String arquitectura, String funciones,
-                                  int idProfesor, String estado, String urlCartel) {
+    public int actualizarProyecto(int id, String nombreProyecto, String descripcion,
+                                  int idProfesor, int idEquipo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProyectoBD.actualizarProyecto(db, id, nombreProyecto, descripcion, nombreEquipo,
-                materia, grupo, semestre, carrera, herramientas, arquitectura, funciones,
-                idProfesor, estado, urlCartel);
-        db.close();
-        return rows;
-    }
-
-    public int cambiarEstadoProyecto(int id, String nuevoEstado) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProyectoBD.cambiarEstadoProyecto(db, id, nuevoEstado);
+        int rows = ProyectoBD.actualizarProyecto(db, id, nombreProyecto, descripcion,
+                idProfesor, idEquipo);
         db.close();
         return rows;
     }
@@ -449,51 +415,6 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-        }
-    }
-
-    // Metodo para forzar recreación de la base de datos (solo para testing)
-    public void recrearBaseDatos() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        try {
-            Log.d(TAG, "Recreando base de datos...");
-            db.execSQL("DROP TABLE IF EXISTS PROYECTO");
-            db.execSQL("DROP TABLE IF EXISTS ESTUDIANTE");
-            db.execSQL("DROP TABLE IF EXISTS PROFESOR");
-
-            // Recrear todas las tablas
-            onCreate(db);
-            Log.d(TAG, "Base de datos recreada exitosamente");
-        } catch (Exception e) {
-            Log.e(TAG, "Error al recrear base de datos: " + e.getMessage());
-        }
-    }
-
-    // Metodo para probar inserción básica
-    public void probarInsercionProyecto() {
-        Log.d(TAG, "=== PROBANDO INSERCIÓN DE PROYECTO ===");
-        try {
-            long resultado = insertarProyecto(
-                    "Proyecto de Prueba",
-                    "Descripción de prueba",
-                    "Equipo Test",
-                    "Materia Test",
-                    "1A",
-                    "1",
-                    "ISC",
-                    "Java",
-                    "MVC",
-                    "CRUD",
-                    1, // ID profesor (debe existir)
-                    1, // ID estudiante (debe existir)
-                    "2024-01-01 10:00:00",
-                    "ACTIVO",
-                    ""
-            );
-            Log.d(TAG, "Resultado de inserción de prueba: " + resultado);
-        } catch (Exception e) {
-            Log.e(TAG, "Error en inserción de prueba: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
