@@ -25,6 +25,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(EstudianteBD.CREATE_TABLE);
         db.execSQL(ProyectoBD.CREATE_TABLE);
         db.execSQL(AdministradorBD.CREATE_TABLE);
+        db.execSQL(EquipoDB.CREATE_TABLE);
 
         // Insertar administrador por defecto (opcional)
         insertarAdminPorDefecto(db);
@@ -36,6 +37,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
             // Agregar la tabla de proyectos si se está actualizando desde versión 1
             db.execSQL(ProyectoBD.CREATE_TABLE);
             db.execSQL(AdministradorBD.CREATE_TABLE);
+            db.execSQL(EquipoDB.CREATE_TABLE);
         }
 
     }
@@ -220,6 +222,81 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         int rows = ProyectoBD.eliminarProyecto(db, id);
         db.close();
         return rows;
+    }
+
+    // ==================== MÉTODOS PARA EQUIPO ====================
+
+    public long insertarEquipo(String nombre, String nombreProyecto, int numAlumnos,
+                               String descripcion, int lugar, String cartel,
+                               int cantEval, float promedio, int cantVisitas) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = EquipoDB.insertarEquipo(db, nombre, nombreProyecto, numAlumnos,
+                descripcion, lugar, cartel,
+                cantEval, promedio, cantVisitas);
+        db.close();
+        return id;
+    }
+
+    public Cursor obtenerTodosEquipos() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.obtenerTodosEquipos(db);
+    }
+
+    public Cursor obtenerEquipoPorId(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.obtenerEquipoPorId(db, id);
+    }
+
+    public Cursor buscarEquiposPorNombre(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.buscarEquiposPorNombre(db, nombre);
+    }
+
+    public Cursor buscarEquiposPorProyecto(String proyecto) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.buscarEquiposPorProyecto(db, proyecto);
+    }
+
+    public int actualizarEquipo(int id, String nombre, String nombreProyecto, int numAlumnos,
+                                String descripcion, int lugar, String cartel,
+                                int cantEval, float promedio, int cantVisitas) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EquipoDB.actualizarEquipo(db, id, nombre, nombreProyecto, numAlumnos,
+                descripcion, lugar, cartel,
+                cantEval, promedio, cantVisitas);
+        db.close();
+        return rows;
+    }
+
+    public int actualizarPromedioEquipo(int id, float nuevoPromedio, int nuevaEvaluacion) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EquipoDB.actualizarPromedio(db, id, nuevoPromedio, nuevaEvaluacion);
+        db.close();
+        return rows;
+    }
+
+    public int incrementarVisitasEquipo(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EquipoDB.incrementarVisitas(db, id);
+        db.close();
+        return rows;
+    }
+
+    public int eliminarEquipo(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EquipoDB.eliminarEquipo(db, id);
+        db.close();
+        return rows;
+    }
+
+    public Cursor obtenerEquiposPorPromedio() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.obtenerEquiposPorPromedio(db);
+    }
+
+    public Cursor obtenerEquiposPorLugar(int lugar) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoDB.obtenerEquiposPorLugar(db, lugar);
     }
 
     // ==================== MÉTODOS PARA ADMINISTRADOR ====================
