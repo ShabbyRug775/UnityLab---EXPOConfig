@@ -1,6 +1,7 @@
 package com.example.unitylab_expoconfig.ui.inicio;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unitylab_expoconfig.MainActivity;
 import com.example.unitylab_expoconfig.R;
+import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
+import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+import com.example.unitylab_expoconfig.SQLite.EstudianteBD;
+import com.example.unitylab_expoconfig.ui.cartel.GenerarCartelActivity;
+import com.example.unitylab_expoconfig.ui.equipos.UnirseAEquipoActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class EstudianteActivity extends AppCompatActivity {
@@ -69,7 +75,7 @@ public class EstudianteActivity extends AppCompatActivity {
         // Configurar listeners para cada card
         if (cardRegistrarEquipo != null) {
             cardRegistrarEquipo.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, UnirseAEquipoActivity.class);
                 intent.putExtra("idUsuario", idUsuarioActual);
                 intent.putExtra("nombreUsuario", nombreUsuario);
                 startActivity(intent);
@@ -78,9 +84,13 @@ public class EstudianteActivity extends AppCompatActivity {
 
         if (cardGenerarCartel != null) {
             cardGenerarCartel.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("idUsuario", idUsuarioActual);
-                startActivity(intent);
+                if (idEquipoActual != -1) {
+                    Intent intent = new Intent(this, GenerarCartelActivity.class);
+                    intent.putExtra("equipo_id", idEquipoActual);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Primero debes unirte a un equipo", Toast.LENGTH_SHORT).show();
+                }
             });
         }
 
@@ -101,6 +111,73 @@ public class EstudianteActivity extends AppCompatActivity {
         }
     }
 
+    // En EstudianteActivity.java
+
+    private int idEquipoActual = -1; // Añadir esta variable como campo de clase
+
+    private void configurarEstadoEquipo() {
+        CardView cardMiEquipo = findViewById(R.id.cardMiEquipo);
+        CardView cardEstadoEquipo = findViewById(R.id.cardEstadoEquipo);
+        TextView tvMensajeEstado = findViewById(R.id.tvMensajeEstado);
+        ImageView ivEstadoParticipacion = findViewById(R.id.ivEstadoParticipacion);
+        TextView tvEstadoParticipacion = findViewById(R.id.tvEstadoParticipacion);
+
+        // Obtener instancia de la base de datos
+        DbmsSQLiteHelper dbHelper = new DbmsSQLiteHelper(this);
+
+        try {
+            // Verificar si el estudiante tiene equipo
+            Cursor cursorEstudiante = dbHelper.buscarEstudiantesPorBoleta(boleta);
+            if (cursorEstudiante != null && cursorEstudiante.moveToFirst()) {
+                int idEquipoIndex = cursorEstudiante.getColumnIndex(EstudianteBD.COL_ID_EQUIPO);
+                if (!cursorEstudiante.isNull(idEquipoIndex)) {
+                    idEquipoActual = cursorEstudiante.getInt(idEquipoIndex);
+
+                    // Obtener información del equipo
+                    Cursor cursorEquipo = dbHelper.obtenerEquipoPorId(idEquipoActual);
+                    if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
+                        cardMiEquipo.setVisibility(View.VISIBLE);
+                        cardEstadoEquipo.setVisibility(View.GONE);
+
+                        // Configurar datos del equipo
+                        TextView tvNombreEquipo = findViewById(R.id.tvNombreEquipo);
+                        TextView tvProyectoEquipo = findViewById(R.id.tvProyectoEquipo);
+
+                        String nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
+                        String nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
+
+                        tvNombreEquipo.setText(nombreEquipo);
+                        tvProyectoEquipo.setText("Proyecto: " + nombreProyecto);
+
+                        // Configurar estadísticas del equipo
+                        TextView tvEvaluacionesRecibidas = findViewById(R.id.tvEvaluacionesRecibidas);
+                        TextView tvPromedioCalificacion = findViewById(R.id.tvPromedioCalificacion);
+
+                        int cantEval = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
+                        float promedio = cursorEquipo.getFloat(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
+
+                        tvEvaluacionesRecibidas.setText(String.valueOf(cantEval));
+                        tvPromedioCalificacion.setText(String.format("%.1f", promedio));
+
+                        cursorEquipo.close();
+                    }
+                } else {
+                    // No tiene equipo
+                    cardMiEquipo.setVisibility(View.GONE);
+                    cardEstadoEquipo.setVisibility(View.VISIBLE);
+                    tvMensajeEstado.setText("Aún no te has registrado en ningún proyecto. ¡Busca un proyecto disponible y únete con tu equipo!");
+                    ivEstadoParticipacion.setImageResource(R.drawable.ic_warning);
+                    tvEstadoParticipacion.setText("Sin equipo");
+                }
+                cursorEstudiante.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error al verificar estado del equipo: " + e.getMessage());
+        } finally {
+            dbHelper.cerrarConexion();
+        }
+    }
+
     private void configurarAccionesRapidas() {
         View linearVerAgenda = findViewById(R.id.linearVerAgenda);
         View linearProyectosDisponibles = findViewById(R.id.linearProyectosDisponibles);
@@ -118,35 +195,6 @@ public class EstudianteActivity extends AppCompatActivity {
                 intent.putExtra("idUsuario", idUsuarioActual);
                 startActivity(intent);
             });
-        }
-    }
-
-    private void configurarEstadoEquipo() {
-        CardView cardMiEquipo = findViewById(R.id.cardMiEquipo);
-        CardView cardEstadoEquipo = findViewById(R.id.cardEstadoEquipo);
-        TextView tvMensajeEstado = findViewById(R.id.tvMensajeEstado);
-        ImageView ivEstadoParticipacion = findViewById(R.id.ivEstadoParticipacion);
-        TextView tvEstadoParticipacion = findViewById(R.id.tvEstadoParticipacion);
-
-        // Aquí deberías verificar en tu base de datos si el estudiante tiene equipo registrado
-        boolean tieneEquipo = false; // Cambiar según la lógica de tu aplicación
-
-        if (tieneEquipo) {
-            cardMiEquipo.setVisibility(View.VISIBLE);
-            cardEstadoEquipo.setVisibility(View.GONE);
-
-            // Configurar datos del equipo (deberías obtenerlos de tu base de datos)
-            RecyclerView recyclerIntegrantes = findViewById(R.id.recyclerIntegrantes);
-            // Configurar adaptador para los integrantes del equipo
-
-        } else {
-            cardMiEquipo.setVisibility(View.GONE);
-            cardEstadoEquipo.setVisibility(View.VISIBLE);
-
-            // Personalizar mensaje según el estado
-            tvMensajeEstado.setText("Aún no te has registrado en ningún proyecto. ¡Busca un proyecto disponible y únete con tu equipo!");
-            ivEstadoParticipacion.setImageResource(R.drawable.ic_warning);
-            tvEstadoParticipacion.setText("Sin equipo");
         }
     }
 

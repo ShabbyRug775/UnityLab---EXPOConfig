@@ -1,5 +1,8 @@
 package com.example.unitylab_expoconfig.ui.proyectos;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unitylab_expoconfig.R;
@@ -164,8 +168,7 @@ public class CrearProyectoActivity extends AppCompatActivity {
 
         btnGenerarClave.setOnClickListener(v -> {
             // Generar clave aleatoria para el proyecto
-            String clave = "PROJ-" + new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()) +
-                    "-" + generarCodigoAleatorio(6);
+            String clave = generarCodigoAleatorio(6);
             Toast.makeText(this, "Clave generada: " + clave, Toast.LENGTH_SHORT).show();
         });
     }
@@ -193,6 +196,8 @@ public class CrearProyectoActivity extends AppCompatActivity {
             String fechaCreacion = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     .format(new Date());
 
+            String claveAcceso = generarCodigoAleatorio(6); // Código de 6 caracteres
+
             // Primero insertar el equipo
             Log.d(TAG, "Insertando equipo en la base de datos...");
             long idEquipo = EquipoDB.insertarEquipo(
@@ -205,7 +210,8 @@ public class CrearProyectoActivity extends AppCompatActivity {
                     cartelPath,
                     0, // cantEval inicial
                     0, // promedio inicial
-                    0  // cantVisitas inicial
+                    0,  // cantVisitas inicial
+                    claveAcceso
             );
 
             if (idEquipo == -1) {
@@ -300,6 +306,21 @@ public class CrearProyectoActivity extends AppCompatActivity {
         }
 
         return sb.toString();
+    }
+
+    private void mostrarClaveGenerada(String clave) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Código de acceso del equipo");
+        builder.setMessage("Comparte este código con los miembros del equipo:\n\n" + clave);
+        builder.setPositiveButton("Copiar", (dialog, which) -> {
+            // Copiar al portapapeles
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Código equipo", clave);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Código copiado", Toast.LENGTH_SHORT).show();
+        });
+        builder.setNegativeButton("OK", null);
+        builder.show();
     }
 
     @Override

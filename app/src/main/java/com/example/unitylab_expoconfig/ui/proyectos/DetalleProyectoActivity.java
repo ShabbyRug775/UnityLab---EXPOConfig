@@ -97,6 +97,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         TextView tvEstado = findViewById(R.id.tvEstado);
         TextView tvFechaCreacion = findViewById(R.id.tvFechaCreacion);
         TextView tvNombreEquipo = findViewById(R.id.tvNombreEquipo);
+        TextView tvCodigoAcceso = findViewById(R.id.tvCodigoAcceso);
 
         // Proyecto
         tvNombre.setText(cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
@@ -109,6 +110,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         // Equipo (si existe)
         if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
             tvNombreEquipo.setText("Equipo: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE)));
+            tvCodigoAcceso.setText("Clave de acceso: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CLAVE_ACCESO)));
 
             // Mostrar más datos del equipo si es necesario
             TextView tvNumAlumnos = findViewById(R.id.tvNumAlumnos);

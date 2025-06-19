@@ -24,7 +24,7 @@ public class CartelUtils {
 
             while (cursor != null && cursor.moveToNext()) {
                 EstadisticaEquipo estadistica = new EstadisticaEquipo();
-                estadistica.idEquipo = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_ID));
+                estadistica.idEquipo = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_ID_EQUIPO));
                 estadistica.nombreEquipo = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
                 estadistica.nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
                 estadistica.cantidadVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));

@@ -17,6 +17,7 @@ public class EquipoDB {
     public static final String COL_CANT_EVAL = "CantEval";
     public static final String COL_PROMEDIO = "Promedio";
     public static final String COL_CANT_VISITAS = "CantVisitas";
+    public static final String COL_CLAVE_ACCESO = "ClaveAcceso"; // Clave unica para unirse a un equipo
 
     // Sentencia SQL para crear la tabla
     public static final String CREATE_TABLE =
@@ -30,12 +31,13 @@ public class EquipoDB {
                     COL_CARTEL + " VARCHAR(100), " +
                     COL_CANT_EVAL + " INTEGER DEFAULT 0, " +
                     COL_PROMEDIO + " FLOAT DEFAULT 0, " +
-                    COL_CANT_VISITAS + " INTEGER DEFAULT 0)";
+                    COL_CANT_VISITAS + " INTEGER DEFAULT 0," +
+                    COL_CLAVE_ACCESO + " VARCHAR(6) UNIQUE)"; // Nueva columna
 
     // Métodos CRUD
     public static long insertarEquipo(SQLiteDatabase db, String nombre, String nombreProyecto,
                                       int numAlumnos, String descripcion, int lugar,
-                                      String cartel, int cantEval, float promedio, int cantVisitas) {
+                                      String cartel, int cantEval, float promedio, int cantVisitas, String claveAcceso) {
         ContentValues values = new ContentValues();
         values.put(COL_NOMBRE, nombre);
         values.put(COL_NOMBRE_PROYECTO, nombreProyecto);
@@ -46,6 +48,7 @@ public class EquipoDB {
         values.put(COL_CANT_EVAL, cantEval);
         values.put(COL_PROMEDIO, promedio);
         values.put(COL_CANT_VISITAS, cantVisitas);
+        values.put(COL_CLAVE_ACCESO, claveAcceso);
 
         return db.insert(TABLE_NAME, null, values);
     }

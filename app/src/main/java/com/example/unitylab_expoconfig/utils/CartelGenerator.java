@@ -88,7 +88,7 @@ public class CartelGenerator {
 
             if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
                 info = new EquipoInfo();
-                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_ID));
+                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_ID_EQUIPO));
                 info.nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
                 info.nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
                 info.descripcionCorta = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
@@ -102,13 +102,6 @@ public class CartelGenerator {
                 cursorProyecto = dbHelper.buscarProyectosPorNombre(info.nombreProyecto);
                 if (cursorProyecto != null && cursorProyecto.moveToFirst()) {
                     info.descripcionProyecto = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION));
-                    info.materia = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_MATERIA));
-                    info.grupo = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_GRUPO));
-                    info.semestre = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_SEMESTRE));
-                    info.carrera = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_CARRERA));
-                    info.herramientas = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_HERRAMIENTAS));
-                    info.arquitectura = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ARQUITECTURA));
-                    info.funciones = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FUNCIONES));
                     info.fechaCreacion = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION));
 
                     int idProfesor = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROFESOR));

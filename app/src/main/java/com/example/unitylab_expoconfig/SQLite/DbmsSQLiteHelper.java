@@ -194,11 +194,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     public long insertarEquipo(String nombre, String nombreProyecto, int numAlumnos,
                                String descripcion, int lugar, String cartel,
-                               int cantEval, float promedio, int cantVisitas) {
+                               int cantEval, float promedio, int cantVisitas, String claveAcceso) {
         SQLiteDatabase db = this.getWritableDatabase();
         long id = EquipoDB.insertarEquipo(db, nombre, nombreProyecto, numAlumnos,
                 descripcion, lugar, cartel,
-                cantEval, promedio, cantVisitas);
+                cantEval, promedio, cantVisitas, claveAcceso);
         db.close();
         return id;
     }
