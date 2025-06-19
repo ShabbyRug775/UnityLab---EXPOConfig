@@ -29,6 +29,7 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ListaProyectosActivity extends AppCompatActivity {
     private static final String TAG = "ListaProyectos";
@@ -176,8 +177,10 @@ public class ListaProyectosActivity extends AppCompatActivity {
                 if (idUsuarioActual == -1) {
                     fabAgregarProyecto.setVisibility(View.GONE); // Oculta completamente el botón
                     Log.d(TAG, "FAB oculto - No hay sesión activa");
-                } else {
+                } else if(Objects.equals(tipoUsuario, "profesor")){
                     fabAgregarProyecto.setVisibility(View.VISIBLE); // Asegurarse de que sea visible
+                } else {
+                    fabAgregarProyecto.setVisibility(View.GONE); // Oculta completamente el botón
                 }
 
                 fabAgregarProyecto.setOnClickListener(v -> {

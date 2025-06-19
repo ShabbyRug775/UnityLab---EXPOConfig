@@ -26,14 +26,14 @@ public class AdminActivity extends AppCompatActivity {
 
         // CardViews principales
         CardView cardAsignarHorarios = findViewById(R.id.cardAsignarHorarios);
-        CardView cardGestionarProfesores = findViewById(R.id.cardGestionarProfesores);
-        CardView cardFechasExposicion = findViewById(R.id.cardFechasExposicion);
+        //CardView cardGestionarProfesores = findViewById(R.id.cardGestionarProfesores);
+        //CardView cardFechasExposicion = findViewById(R.id.cardFechasExposicion);
         CardView cardColaImpresion = findViewById(R.id.cardColaImpresion);
 
         // Opciones adicionales
         View linearEditarProfesores = findViewById(R.id.linearEditarProfesores);
         View linearEliminarProfesores = findViewById(R.id.linearEliminarProfesores);
-        View linearConfigurarEspacios = findViewById(R.id.linearConfigurarEspacios);
+        //View linearConfigurarEspacios = findViewById(R.id.linearConfigurarEspacios);
 
         // Configurar listeners para los CardViews principales
         cardAsignarHorarios.setOnClickListener(v -> {
@@ -42,17 +42,17 @@ public class AdminActivity extends AppCompatActivity {
             // startActivity(intent);
         });
 
-        cardGestionarProfesores.setOnClickListener(v -> {
+        /*cardGestionarProfesores.setOnClickListener(v -> {
             // Aquí iría la lógica para gestionar profesores
             // Intent intent = new Intent(this, GestionarProfesoresActivity.class);
             // startActivity(intent);
-        });
+        });*/
 
-        cardFechasExposicion.setOnClickListener(v -> {
+        /*cardFechasExposicion.setOnClickListener(v -> {
             // Aquí iría la lógica para fechas de exposición
             // Intent intent = new Intent(this, FechasExposicionActivity.class);
             // startActivity(intent);
-        });
+        });*/
 
         cardColaImpresion.setOnClickListener(v -> {
             Intent intent = new Intent(AdminActivity.this, ImpresionActivity.class);
@@ -73,11 +73,11 @@ public class AdminActivity extends AppCompatActivity {
             // startActivity(intent);
         });
 
-        linearConfigurarEspacios.setOnClickListener(v -> {
+        /*linearConfigurarEspacios.setOnClickListener(v -> {
             // Aquí iría la lógica para configurar espacios
             // Intent intent = new Intent(this, ConfigurarEspaciosActivity.class);
             // startActivity(intent);
-        });
+        });*/
 
         // Configurar el botón de cerrar sesión
         btnCerrarSesion.setOnClickListener(v -> cerrarSesion());

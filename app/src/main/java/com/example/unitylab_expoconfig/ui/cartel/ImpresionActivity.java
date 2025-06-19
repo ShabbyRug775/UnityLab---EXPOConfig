@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.unitylab_expoconfig.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +32,11 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
 
     private CartelAdapter cartelAdapter;
     private List<Cartel> listaCarteles = new ArrayList<>();
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cola_impresion);
-
-        // Inicializar Firestore
-        db = FirebaseFirestore.getInstance();
 
         // Configurar Toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -65,7 +59,7 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
         setupListeners();
 
         // Cargar datos desde Firestore
-        cargarCarteles();
+        //cargarCarteles();
     }
 
     private void initViews() {
@@ -93,8 +87,8 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
     }
 
     private void setupListeners() {
-        btnMarcarTodosImpresos.setOnClickListener(v -> marcarTodosComoImpresos());
-        fabActualizar.setOnClickListener(v -> cargarCarteles());
+        //btnMarcarTodosImpresos.setOnClickListener(v -> marcarTodosComoImpresos());
+        //fabActualizar.setOnClickListener(v -> cargarCarteles());
 
         spinnerFiltroEstado.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
@@ -118,10 +112,10 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
     @Override
     public void onEstadoChanged(Cartel cartel, boolean isImpreso) {
         String nuevoEstado = isImpreso ? "impreso" : "pendiente";
-        actualizarEstadoCartel(cartel, nuevoEstado);
+        //actualizarEstadoCartel(cartel, nuevoEstado);
     }
 
-    private void cargarCarteles() {
+    /*private void cargarCarteles() {
         db.collection("carteles")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -135,7 +129,7 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
                         actualizarUI();
                     }
                 });
-    }
+    }*/
 
     private void filtrarCarteles(String filtro) {
         List<Cartel> listaFiltrada = new ArrayList<>();
@@ -154,19 +148,19 @@ public class ImpresionActivity extends AppCompatActivity implements CartelAdapte
         actualizarEstadisticas(listaFiltrada);
     }
 
-    private void marcarTodosComoImpresos() {
+    /*private void marcarTodosComoImpresos() {
         for (Cartel cartel : listaCarteles) {
             if (!cartel.getEstado().equals("impreso")) {
                 actualizarEstadoCartel(cartel, "impreso");
             }
         }
-    }
+    }*/
 
-    private void actualizarEstadoCartel(Cartel cartel, String nuevoEstado) {
+    /*private void actualizarEstadoCartel(Cartel cartel, String nuevoEstado) {
         db.collection("carteles").document(cartel.getId())
                 .update("estado", nuevoEstado)
                 .addOnSuccessListener(aVoid -> cargarCarteles());
-    }
+    }*/
 
     private void actualizarUI() {
         actualizarEstadisticas(listaCarteles);

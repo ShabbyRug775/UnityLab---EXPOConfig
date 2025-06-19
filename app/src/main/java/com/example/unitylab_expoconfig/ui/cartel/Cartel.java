@@ -19,8 +19,8 @@ public class Cartel {
     public Cartel(int id, int idProyecto, String nombreProyecto, String equipo,
                   String materia, String grupo, String estado,
                   String fechaSolicitud, String urlArchivo, int progresoImpresion) {
-        this.id = id;
-        this.idProyecto = idProyecto;
+        //this.id = id;
+        //this.idProyecto = idProyecto;
         this.nombreProyecto = nombreProyecto;
         this.equipo = equipo;
         this.materia = materia;
