@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filtros_estado_carteles">
+        <item>Todos</item>
+        <item>Pendientes</item>
+        <item>Impresos</item>
+    </string-array>
+</resources>

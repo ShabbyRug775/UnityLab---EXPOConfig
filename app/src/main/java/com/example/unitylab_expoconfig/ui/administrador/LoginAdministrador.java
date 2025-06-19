@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.AdministradorBD;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.ui.inicio.BienvenidaActivity;
+import com.example.unitylab_expoconfig.ui.inicio.AdminActivity;
 
 public class LoginAdministrador extends AppCompatActivity {
 
@@ -64,7 +64,7 @@ public class LoginAdministrador extends AppCompatActivity {
             int idAdmin = cursor.getInt(cursor.getColumnIndexOrThrow(AdministradorBD.COL_ID));
             String nombre = cursor.getString(cursor.getColumnIndexOrThrow(AdministradorBD.COL_NOMBRE));
 
-            Intent intent = new Intent(this, BienvenidaActivity.class);
+            Intent intent = new Intent(this, AdminActivity.class);
             intent.putExtra("tipoUsuario", "administrador");
             intent.putExtra("idUsuario", idAdmin);
             intent.putExtra("nombreUsuario", nombre);

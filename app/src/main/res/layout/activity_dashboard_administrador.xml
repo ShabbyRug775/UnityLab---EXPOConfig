@@ -465,6 +465,20 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Botón de cerrar sesión -->
+        <Button
+            android:id="@+id/btnCerrarSesionAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Cerrar Sesión"
+            android:textColor="@color/black"
+            android:background="@drawable/button_error_outline"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            style="?android:attr/borderlessButtonStyle" />
+
     </LinearLayout>
 
 </ScrollView>

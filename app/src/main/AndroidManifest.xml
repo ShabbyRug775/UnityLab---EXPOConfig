@@ -31,16 +31,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Actividades de inicio y selección -->
-        <activity
-            android:name="com.example.unitylab_expoconfig.ui.inicio.SeleccionEPActivity"
-            android:theme="@style/Theme.UnityLab_EXPOConfig"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.unitylab_expoconfig.MainActivity" />
-        </activity>
-
         <!-- Actividades de estudiantes -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.estudiantes.LoginEstudiante"
@@ -80,6 +70,15 @@
         </activity>
 
         <!-- Actividades de administrador -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.inicio.AdminActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+
         <activity
             android:name="com.example.unitylab_expoconfig.ui.administrador.LoginAdministrador"
             android:theme="@style/Theme.UnityLab_EXPOConfig"
@@ -178,6 +177,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.ui.visitante.VisitanteActivity" />
         </activity>
+
+        <!-- Cola de impresión -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.cartel.ImpresionActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:exported="false"
+            android:parentActivityName="com.example.unitylab_expoconfig.ui.inicio.AdminActivity"
+            android:label="@string/detalle_proyecto">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.BienvenidaActivity" />
+        </activity>
+
+
 
 
     </application>
