@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".ui.cartel.QRScannerActivity">
+
+    <!-- Área principal de la cámara/escáner -->
+    <FrameLayout
+        android:id="@+id/frameLayoutCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Aquí se insertará la vista de la cámara del ZXing -->
+        <!-- La biblioteca ZXing se encarga de mostrar la cámara automáticamente -->
+
+    </FrameLayout>
+
+    <!-- Overlay con instrucciones y controles -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header con instrucciones -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_qr_scanner"
+                        android:layout_marginEnd="12dp"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Escanear Código QR"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary_dark" />
+
+                    <Button
+                        android:id="@+id/btnCerrar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cerrar"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="@drawable/button_outline_small"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Apunta la cámara hacia el código QR del cartel para registrar una visita o realizar una evaluación."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:lineSpacingMultiplier="1.3" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Espacio flexible para centrar el marco -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Marco visual para guiar el escaneo -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
+
+            <!-- Marco del QR -->
+            <View
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:background="@drawable/qr_frame_border" />
+
+            <!-- Línea de escaneo animada (opcional) -->
+            <View
+                android:id="@+id/scanningLine"
+                android:layout_width="220dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:background="@color/accent_color"
+                android:visibility="gone" />
+
+            <!-- Esquinas del marco -->
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-125dp"
+                android:layout_marginStart="-125dp"
+                android:src="@drawable/qr_corner_top_left"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-125dp"
+                android:layout_marginEnd="-125dp"
+                android:src="@drawable/qr_corner_top_right"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="-125dp"
+                android:layout_marginStart="-125dp"
+                android:src="@drawable/qr_corner_bottom_left"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="-125dp"
+                android:layout_marginEnd="-125dp"
+                android:src="@drawable/qr_corner_bottom_right"
+                app:tint="@color/white" />
+
+        </FrameLayout>
+
+        <!-- Espacio flexible -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Panel inferior con controles y estado -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Estado del escáner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <View
+                        android:id="@+id/indicadorEstado"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/circle_indicator"
+                        android:backgroundTint="@color/success"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvEstadoEscaner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Listo para escanear"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/tvContadorEscaneos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 escaneos"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <!-- Botones de acción -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnActivarFlash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Flash"
+                        android:textColor="@color/text_secondary"
+                        android:background="@drawable/button_outline"
+                        android:drawableTop="@drawable/ic_flash_off"
+                        android:drawableTint="@color/text_secondary"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <Button
+                        android:id="@+id/btnCambiarCamara"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Cambiar"
+                        android:textColor="@color/text_secondary"
+                        android:background="@drawable/button_outline"
+                        android:drawableTop="@drawable/ic_camera_switch"
+                        android:drawableTint="@color/text_secondary"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                </LinearLayout>
+
+                <!-- Mensaje de ayuda -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="💡 Asegúrate de que el código QR esté bien iluminado y centrado en el marco"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="12dp"
+                    android:textAlignment="center"
+                    android:lineSpacingMultiplier="1.2" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <!-- Overlay de carga/procesando -->
+    <LinearLayout
+        android:id="@+id/layoutProcesando"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#80000000"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:gravity="center">
+
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:indeterminateTint="@color/primary_color" />
+
+                <TextView
+                    android:id="@+id/tvMensajeProcesando"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Procesando código QR..."
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

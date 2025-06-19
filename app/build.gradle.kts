@@ -53,4 +53,13 @@ dependencies {
     implementation (libs.cardview)
     implementation (libs.recyclerview.v131)
     implementation (libs.coordinatorlayout)
+
+
+    implementation (libs.core)
+    implementation (libs.zxing.android.embedded)
+
+
+    implementation ("androidx.core:core:1.10.1")
+
+
 }
