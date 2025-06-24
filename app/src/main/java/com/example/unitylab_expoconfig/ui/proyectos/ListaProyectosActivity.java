@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class ListaProyectosActivity extends AppCompatActivity {
     private List<Proyecto> listaProyectos;
     private int idUsuarioActual;
     private String tipoUsuario;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,11 +121,11 @@ public class ListaProyectosActivity extends AppCompatActivity {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     Proyecto proyecto = new Proyecto();
-                    proyecto.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID)));
-                    proyecto.setNombreProyecto(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
+                    proyecto.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROYECTO)));
+                    proyecto.setNombreProyecto(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE)));
                     proyecto.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
-                    proyecto.setFechaCreacion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION)));
-                    proyecto.setIdEquipo(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_EQUIPO)));
+                    proyecto.setFechaCreacion(cursor.getString(cursor.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
+                    proyecto.setIdEquipo(cursor.getInt(cursor.getColumnIndexOrThrow(ProyectoBD.COL_ID_EVENTO)));
 
                     listaProyectos.add(proyecto);
                 } while (cursor.moveToNext());
@@ -149,6 +151,7 @@ public class ListaProyectosActivity extends AppCompatActivity {
             }
         }
     }
+
 
     private void verDetallesProyecto(Proyecto proyecto) {
         Intent intent = new Intent(this, DetalleProyectoActivity.class);

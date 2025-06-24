@@ -15,7 +15,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+//import com.example.unitylab_expoconfig.SQLite.EquipoDB;
 import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 import com.example.unitylab_expoconfig.SQLite.ProfesorBD;
 
@@ -44,93 +44,93 @@ public class CartelGenerator {
     /**
      * Genera el cartel completo para un equipo específico
      */
-    public CartelResult generarCartel(int idEquipo) {
-        try {
-            // Obtener información del equipo y proyecto relacionado
-            EquipoInfo equipoInfo = obtenerInfoEquipo(idEquipo);
-            if (equipoInfo == null) {
-                return new CartelResult(false, "No se encontró información del equipo");
-            }
-
-            // Generar QR code
-            String qrData = generarDataQR(idEquipo);
-            Bitmap qrBitmap = generarQRCode(qrData);
-
-            // Crear el XML del cartel
-            String xmlCartel = generarXMLCartel(equipoInfo, qrData);
-
-            // Convertir a PDF
-            String pdfPath = convertirToPDF(equipoInfo, qrBitmap);
-
-            // Actualizar estado en base de datos
-            actualizarEstadoCartel(idEquipo, pdfPath);
-
-            return new CartelResult(true, "Cartel generado exitosamente", pdfPath, xmlCartel);
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error generando cartel: " + e.getMessage(), e);
-            return new CartelResult(false, "Error al generar cartel: " + e.getMessage());
-        }
-    }
+//    public CartelResult generarCartel(int idEquipo) {
+//        try {
+//            // Obtener información del equipo y proyecto relacionado
+//            EquipoInfo equipoInfo = obtenerInfoEquipo(idEquipo);
+//            if (equipoInfo == null) {
+//                return new CartelResult(false, "No se encontró información del equipo");
+//            }
+//
+//            // Generar QR code
+//            String qrData = generarDataQR(idEquipo);
+//            Bitmap qrBitmap = generarQRCode(qrData);
+//
+//            // Crear el XML del cartel
+//            String xmlCartel = generarXMLCartel(equipoInfo, qrData);
+//
+//            // Convertir a PDF
+//            String pdfPath = convertirToPDF(equipoInfo, qrBitmap);
+//
+//            // Actualizar estado en base de datos
+//            actualizarEstadoCartel(idEquipo, pdfPath);
+//
+//            return new CartelResult(true, "Cartel generado exitosamente", pdfPath, xmlCartel);
+//
+//        } catch (Exception e) {
+//            Log.e(TAG, "Error generando cartel: " + e.getMessage(), e);
+//            return new CartelResult(false, "Error al generar cartel: " + e.getMessage());
+//        }
+//    }
 
     /**
      * Obtiene la información del equipo y proyecto desde la base de datos
      */
-    private EquipoInfo obtenerInfoEquipo(int idEquipo) {
-        EquipoInfo info = null;
-        Cursor cursorEquipo = null;
-        Cursor cursorProyecto = null;
-        Cursor cursorProfesor = null;
-
-        try {
-            // Obtener información del equipo
-            cursorEquipo = dbHelper.obtenerEquipoPorId(idEquipo);
-
-            if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
-                info = new EquipoInfo();
-                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_ID_EQUIPO));
-                info.nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
-                info.nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
-                info.descripcionCorta = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
-                info.lugar = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
-                info.numeroAlumnos = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
-                info.cantEvaluaciones = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
-                info.promedio = cursorEquipo.getFloat(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
-                info.cantVisitas = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
-
-                // Buscar proyecto relacionado por nombre (ya que no hay FK directa)
-                cursorProyecto = dbHelper.buscarProyectosPorNombre(info.nombreProyecto);
-                if (cursorProyecto != null && cursorProyecto.moveToFirst()) {
-                    info.descripcionProyecto = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION));
-                    info.fechaCreacion = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION));
-
-                    int idProfesor = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROFESOR));
-
-                    // Obtener información del profesor
-                    cursorProfesor = dbHelper.obtenerProfesorPorId(idProfesor);
-                    if (cursorProfesor != null && cursorProfesor.moveToFirst()) {
-                        String nombreProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("nombre"));
-                        String apellidosProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("apellidos"));
-                        info.nombreProfesor = nombreProfesor + " " + (apellidosProfesor != null ? apellidosProfesor : "");
-                    }
-                }
-
-                // Establecer valores por defecto para el evento (como no hay tabla de eventos)
-                info.nombreEvento = "Exposición de Proyectos " + info.carrera;
-                info.ubicacionEvento = "Campus ESCOM-IPN";
-                info.fechaEvento = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            }
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error al obtener información del equipo: " + e.getMessage(), e);
-        } finally {
-            if (cursorEquipo != null) cursorEquipo.close();
-            if (cursorProyecto != null) cursorProyecto.close();
-            if (cursorProfesor != null) cursorProfesor.close();
-        }
-
-        return info;
-    }
+//    private EquipoInfo obtenerInfoEquipo(int idEquipo) {
+//        EquipoInfo info = null;
+//        Cursor cursorEquipo = null;
+//        Cursor cursorProyecto = null;
+//        Cursor cursorProfesor = null;
+//
+//        try {
+//            // Obtener información del equipo
+//            cursorEquipo = dbHelper.obtenerEquipoPorId(idEquipo);
+//
+//            if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
+//                info = new EquipoInfo();
+//                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_ID_EQUIPO));
+//                info.nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
+//                info.nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
+//                info.descripcionCorta = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
+//                info.lugar = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
+//                info.numeroAlumnos = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
+//                info.cantEvaluaciones = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
+//                info.promedio = cursorEquipo.getFloat(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
+//                info.cantVisitas = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
+//
+//                // Buscar proyecto relacionado por nombre (ya que no hay FK directa)
+//                cursorProyecto = dbHelper.buscarProyectosPorNombre(info.nombreProyecto);
+//                if (cursorProyecto != null && cursorProyecto.moveToFirst()) {
+//                    info.descripcionProyecto = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION));
+//                    info.fechaCreacion = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION));
+//
+//                    int idProfesor = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROFESOR));
+//
+//                    // Obtener información del profesor
+//                    cursorProfesor = dbHelper.obtenerProfesorPorId(idProfesor);
+//                    if (cursorProfesor != null && cursorProfesor.moveToFirst()) {
+//                        String nombreProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("nombre"));
+//                        String apellidosProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("apellidos"));
+//                        info.nombreProfesor = nombreProfesor + " " + (apellidosProfesor != null ? apellidosProfesor : "");
+//                    }
+//                }
+//
+//                // Establecer valores por defecto para el evento (como no hay tabla de eventos)
+//                info.nombreEvento = "Exposición de Proyectos " + info.carrera;
+//                info.ubicacionEvento = "Campus ESCOM-IPN";
+//                info.fechaEvento = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//            }
+//
+//        } catch (Exception e) {
+//            Log.e(TAG, "Error al obtener información del equipo: " + e.getMessage(), e);
+//        } finally {
+//            if (cursorEquipo != null) cursorEquipo.close();
+//            if (cursorProyecto != null) cursorProyecto.close();
+//            if (cursorProfesor != null) cursorProfesor.close();
+//        }
+//
+//        return info;
+//    }
 
     /**
      * Genera los datos para el código QR
@@ -423,30 +423,30 @@ public class CartelGenerator {
     /**
      * Actualiza el estado del cartel en la base de datos
      */
-    private void actualizarEstadoCartel(int idEquipo, String rutaPdf) {
-        try {
-            // Obtener datos actuales del equipo
-            Cursor cursor = dbHelper.obtenerEquipoPorId(idEquipo);
-            if (cursor != null && cursor.moveToFirst()) {
-                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
-                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
-                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
-                String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
-                int lugar = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
-                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
-                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
-                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
-
-                // Actualizar con la nueva ruta del cartel
-                dbHelper.actualizarEquipo(idEquipo, nombre, nombreProyecto, numAlumnos,
-                        descripcion, lugar, rutaPdf, cantEval, promedio, cantVisitas);
-            }
-            if (cursor != null) cursor.close();
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error al actualizar estado del cartel: " + e.getMessage(), e);
-        }
-    }
+//    private void actualizarEstadoCartel(int idEquipo, String rutaPdf) {
+//        try {
+//            // Obtener datos actuales del equipo
+//            Cursor cursor = dbHelper.obtenerEquipoPorId(idEquipo);
+//            if (cursor != null && cursor.moveToFirst()) {
+//                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
+//                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
+//                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
+//                String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
+//                int lugar = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
+//                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
+//                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
+//                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
+//
+//                // Actualizar con la nueva ruta del cartel
+//                dbHelper.actualizarEquipo(idEquipo, nombre, nombreProyecto, numAlumnos,
+//                        descripcion, lugar, rutaPdf, cantEval, promedio, cantVisitas);
+//            }
+//            if (cursor != null) cursor.close();
+//
+//        } catch (Exception e) {
+//            Log.e(TAG, "Error al actualizar estado del cartel: " + e.getMessage(), e);
+//        }
+//    }
 
     /**
      * Incrementa el contador de visitas cuando se escanea el QR

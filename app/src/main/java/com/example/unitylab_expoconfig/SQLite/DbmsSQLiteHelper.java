@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteException;
 public class DbmsSQLiteHelper extends SQLiteOpenHelper {
     private static final String TAG = "DbmsSQLiteHelper";
     // Versión de la base de datos
-    private static final int DATABASE_VERSION = 2;
-    private static final String DATABASE_NAME = "EscuelaDB";
+    private static final int DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "ExpoConfigDB";
 
     public DbmsSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,48 +20,196 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Crear todas las tablas
-        db.execSQL(ProfesorBD.CREATE_TABLE);
-        db.execSQL(EstudianteBD.CREATE_TABLE);
-        db.execSQL(ProyectoBD.CREATE_TABLE);
-        db.execSQL(AdministradorBD.CREATE_TABLE);
-        db.execSQL(EquipoDB.CREATE_TABLE);
+        Log.d(TAG, "Creando base de datos ExpoConfig...");
 
-        // Insertar administrador por defecto (opcional)
-        insertarAdminPorDefecto(db);
+        try {
+            // Crear las tablas en el orden correcto para evitar problemas de foreign key
+            db.execSQL(AcademiasBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Academias creada");
+
+            db.execSQL(AdministradorBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Administrador creada");
+
+            db.execSQL(ProfesorBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Profesor creada");
+
+            db.execSQL(EventoBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Evento creada");
+
+            db.execSQL(ProyectoBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Proyecto creada");
+
+            // Crear Alumno primero (sin foreign key a Equipo por dependencia circular)
+            db.execSQL(AlumnoBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Alumno creada");
+
+            // Crear Equipo después (con foreign key a Alumno)
+            db.execSQL(EquipoBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Equipo creada");
+
+            db.execSQL(VisitanteBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Visitante creada");
+
+            db.execSQL(EvaluacionBD.CREATE_TABLE);
+            Log.d(TAG, "Tabla Evaluacion creada");
+
+            // Insertar datos de prueba
+            insertarDatosPorDefecto(db);
+
+            Log.d(TAG, "Base de datos ExpoConfig creada exitosamente");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error al crear la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            // Agregar la tabla de proyectos si se está actualizando desde versión 1
-            db.execSQL(ProyectoBD.CREATE_TABLE);
-            db.execSQL(AdministradorBD.CREATE_TABLE);
-            db.execSQL(EquipoDB.CREATE_TABLE);
-        }
+        Log.d(TAG, "Actualizando base de datos de versión " + oldVersion + " a " + newVersion);
 
+        if (oldVersion < 3) {
+            // Eliminar todas las tablas y recrear
+            db.execSQL("DROP TABLE IF EXISTS " + EvaluacionBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + VisitanteBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AlumnoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + EquipoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + ProyectoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + ProfesorBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AdministradorBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + EventoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AcademiasBD.TABLE_NAME);
+
+            // Recrear todas las tablas
+            onCreate(db);
+        }
     }
 
-    // Metodo para insertar un administrador por defecto
-    private void insertarAdminPorDefecto(SQLiteDatabase db) {
-        ContentValues values = new ContentValues();
-        values.put(AdministradorBD.COL_NOMBRE, "Administrador Principal");
-        values.put(AdministradorBD.COL_NUM_EMPLEADO, "ADM001");
-        values.put(AdministradorBD.COL_PASSWORD, "admin123"); // En producción usar hash
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Habilitar foreign keys
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
+    }
 
+    // Metodo para insertar datos por defecto
+    private void insertarDatosPorDefecto(SQLiteDatabase db) {
         try {
-            db.insert(AdministradorBD.TABLE_NAME, null, values);
-        } catch (SQLiteException e) {
-            Log.e(TAG, "Error al insertar admin por defecto: " + e.getMessage());
+            Log.d(TAG, "Insertando datos por defecto...");
+
+            // Insertar Academias
+            AcademiasBD.insertarAcademia(db, "Academia de Ingeniería en Sistemas");
+            AcademiasBD.insertarAcademia(db, "Academia de Ciencias Básicas");
+            AcademiasBD.insertarAcademia(db, "Academia de Matemáticas");
+            AcademiasBD.insertarAcademia(db, "Academia de Ingeniería Industrial");
+            AcademiasBD.insertarAcademia(db, "Academia de Ciencias Sociales");
+
+            // Insertar Administradores
+            AdministradorBD.insertarAdministrador(db, 10001, "Carlos", "Mendoza", "López", "admin123");
+            AdministradorBD.insertarAdministrador(db, 10002, "María", "González", "Ramírez", "admin456");
+            AdministradorBD.insertarAdministrador(db, 10003, "Roberto", "Sánchez", "Torres", "admin789");
+
+            // Insertar Profesores
+            ProfesorBD.insertarProfesor(db, 20001, "Ana", "García", "Hernández", "prof123", "ana.garcia@instituto.edu.mx", "555-0101", "Activo", 1, 10001);
+            ProfesorBD.insertarProfesor(db, 20002, "Luis", "Martínez", "Pérez", "prof456", "luis.martinez@instituto.edu.mx", "555-0102", "Activo", 1, 10001);
+            ProfesorBD.insertarProfesor(db, 20003, "Elena", "Rodríguez", "Morales", "prof789", "elena.rodriguez@instituto.edu.mx", "555-0103", "Activo", 2, 10002);
+
+            // Insertar Eventos
+            EventoBD.insertarEvento(db, "Expo Ciencias 2025", "Exposición anual de proyectos científicos", "Auditorio Principal", "2025-05-15", "2025-05-17", "Lunes a Miércoles", "09:00:00", "18:00:00", 0);
+            EventoBD.insertarEvento(db, "Feria Tecnológica", "Muestra de proyectos tecnológicos innovadores", "Centro de Convenciones", "2025-06-10", "2025-06-12", "Martes a Jueves", "10:00:00", "19:00:00", 0);
+
+            // Insertar Proyectos
+            ProyectoBD.insertarProyecto(db, "Sistema de Gestión Académica", "Plataforma web para administración de calificaciones y horarios estudiantiles", "SGA-2025-001", 20001, 1);
+            ProyectoBD.insertarProyecto(db, "Robot Clasificador de Residuos", "Sistema automatizado para separación inteligente de basura reciclable", "RCR-2025-002", 20002, 2);
+
+            Log.d(TAG, "Datos por defecto insertados exitosamente");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error al insertar datos por defecto: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // ==================== MÉTODOS PARA PROFESOR ====================
+    // ==================== METODOS PARA ACADEMIAS ====================
 
-    public long insertarProfesor(String nombre, String apellidos, String correo,
-                                 int numEmpleado, int idDepto, String password) {
+    public long insertarAcademia(String nombre) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = ProfesorBD.insertarProfesor(db, nombre, apellidos, correo, numEmpleado, idDepto, password);
+        long id = AcademiasBD.insertarAcademia(db, nombre);
+        db.close();
+        return id;
+    }
+
+    public Cursor obtenerTodasAcademias() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AcademiasBD.obtenerTodasAcademias(db);
+    }
+
+    public Cursor obtenerAcademiaPorId(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AcademiasBD.obtenerAcademiaPorId(db, id);
+    }
+
+    public int actualizarAcademia(int id, String nombre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AcademiasBD.actualizarAcademia(db, id, nombre);
+        db.close();
+        return rows;
+    }
+
+    public int eliminarAcademia(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AcademiasBD.eliminarAcademia(db, id);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS PARA ADMINISTRADOR ====================
+
+    public long insertarAdministrador(int numeroEmpleado, String nombre, String apellido1, String apellido2, String contraseña) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = AdministradorBD.insertarAdministrador(db, numeroEmpleado, nombre, apellido1, apellido2, contraseña);
+        db.close();
+        return id;
+    }
+
+    public Cursor obtenerTodosAdministradores() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.obtenerTodosAdministradores(db);
+    }
+
+    public Cursor obtenerAdministradorPorNumeroEmpleado(int numeroEmpleado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.obtenerAdministradorPorNumeroEmpleado(db, numeroEmpleado);
+    }
+
+    public Cursor verificarCredencialesAdministrador(int numeroEmpleado, String contraseña) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AdministradorBD.verificarCredenciales(db, numeroEmpleado, contraseña);
+    }
+
+    public int actualizarAdministrador(int numeroEmpleado, String nombre, String apellido1, String apellido2, String contraseña) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AdministradorBD.actualizarAdministrador(db, numeroEmpleado, nombre, apellido1, apellido2, contraseña);
+        db.close();
+        return rows;
+    }
+
+    public int eliminarAdministrador(int numeroEmpleado) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AdministradorBD.eliminarAdministrador(db, numeroEmpleado);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS PARA PROFESOR ====================
+
+    public long insertarProfesor(int numeroEmpleado, String nombre, String apellido1, String apellido2,
+                                 String contraseña, String correo, String telefono, String estado,
+                                 Integer idAcademia, Integer numeroEmpleadoAdministrador) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = ProfesorBD.insertarProfesor(db, numeroEmpleado, nombre, apellido1, apellido2, contraseña, correo, telefono, estado, idAcademia, numeroEmpleadoAdministrador);
         db.close();
         return id;
     }
@@ -71,87 +219,112 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProfesorBD.obtenerTodosProfesores(db);
     }
 
-    public Cursor obtenerProfesorPorId(int id) {
+    public Cursor obtenerProfesorPorNumeroEmpleado(int numeroEmpleado) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return ProfesorBD.obtenerProfesorPorId(db, id);
+        return ProfesorBD.obtenerProfesorPorNumeroEmpleado(db, numeroEmpleado);
     }
 
-    // Metodo para buscar profesor por número de empleado
-    public Cursor buscarProfesorPorNumEmpleado(String numEmpleado) {
+    public Cursor obtenerNombreCompletoProfesor(int numeroEmpleado) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return ProfesorBD.buscarProfesorPorNumEmpleado(db, numEmpleado);
+        return ProfesorBD.obtenerNombreCompletoProfesor(db, numeroEmpleado);
     }
 
-    public int actualizarProfesor(int id, String nombre, String apellidos, String correo, int numEmpleado, int idDepto, String password) {
+    public Cursor obtenerProfesoresPorAcademia(int idAcademia) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProfesorBD.obtenerProfesoresPorAcademia(db, idAcademia);
+    }
+
+    public Cursor verificarCredencialesProfesor(int numeroEmpleado, String contraseña) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProfesorBD.verificarCredenciales(db, numeroEmpleado, contraseña);
+    }
+
+    public Cursor obtenerProfesoresConAcademia() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProfesorBD.obtenerProfesoresConAcademia(db);
+    }
+
+    public int actualizarProfesor(int numeroEmpleado, String nombre, String apellido1, String apellido2,
+                                  String contraseña, String correo, String telefono, String estado,
+                                  Integer idAcademia, Integer numeroEmpleadoAdministrador) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProfesorBD.actualizarProfesor(db, id, nombre, apellidos, correo, numEmpleado, idDepto, password);
+        int rows = ProfesorBD.actualizarProfesor(db, numeroEmpleado, nombre, apellido1, apellido2, contraseña, correo, telefono, estado, idAcademia, numeroEmpleadoAdministrador);
         db.close();
         return rows;
     }
 
-    public int eliminarProfesor(int id) {
+    public int eliminarProfesor(int numeroEmpleado) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProfesorBD.eliminarProfesor(db, id);
+        int rows = ProfesorBD.eliminarProfesor(db, numeroEmpleado);
         db.close();
         return rows;
     }
 
-    // ==================== MÉTODOS PARA ESTUDIANTE ====================
+    // ==================== MetodoS PARA EVENTO ====================
 
-    public long insertarEstudiante(String nombre, String apellidos, String correo,
-                                   String boleta, String grupo, String semestre,
-                                   String carrera, String turno,String password) {
+    public long insertarEvento(String nombre, String descripcion, String ubicacion, String fechaInicio,
+                               String fechaFin, String diasPresentacion, String horaInicio, String horaFin, int asistencia) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = EstudianteBD.insertarEstudiante(db, nombre, apellidos, correo,
-                boleta, grupo, semestre, carrera, turno, password);
+        long id = EventoBD.insertarEvento(db, nombre, descripcion, ubicacion, fechaInicio, fechaFin, diasPresentacion, horaInicio, horaFin, asistencia);
         db.close();
         return id;
     }
 
-    public Cursor obtenerTodosEstudiantes() {
+    public Cursor obtenerTodosEventos() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EstudianteBD.obtenerTodosEstudiantes(db);
+        return EventoBD.obtenerTodosEventos(db);
     }
 
-    public Cursor obtenerEstudiantePorId(int id) {
+    public Cursor obtenerEventoPorId(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EstudianteBD.obtenerEstudiantePorId(db, id);
+        return EventoBD.obtenerEventoPorId(db, id);
     }
 
-    public Cursor buscarEstudiantesPorNombre(String nombre) {
+    public Cursor obtenerEventosActivos() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EstudianteBD.buscarEstudiantesPorNombre(db, nombre);
+        return EventoBD.obtenerEventosActivos(db);
     }
 
-    public Cursor buscarEstudiantesPorBoleta(String boleta) {
+    public Cursor obtenerEventosProximos() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EstudianteBD.buscarEstudiantePorBoleta(db, boleta);
+        return EventoBD.obtenerEventosProximos(db);
     }
 
-    public int actualizarEstudiante(int id, String nombre, String apellidos, String correo, String boleta,
-                                    String grupo, String semestre, String carrera, String turno, String password) {
+    public int actualizarEvento(int id, String nombre, String descripcion, String ubicacion, String fechaInicio,
+                                String fechaFin, String diasPresentacion, String horaInicio, String horaFin, int asistencia) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EstudianteBD.actualizarEstudiante(db, id, nombre, apellidos, correo, boleta, grupo, semestre, carrera, turno, password);
+        int rows = EventoBD.actualizarEvento(db, id, nombre, descripcion, ubicacion, fechaInicio, fechaFin, diasPresentacion, horaInicio, horaFin, asistencia);
         db.close();
         return rows;
     }
 
-    public int eliminarEstudiante(int id) {
+    public int incrementarAsistenciaEvento(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EstudianteBD.eliminarEstudiante(db, id);
+        int rows = EventoBD.incrementarAsistencia(db, id);
         db.close();
         return rows;
     }
 
-    // ==================== MÉTODOS PARA PROYECTO ====================
-
-    public long insertarProyecto(String nombreProyecto, String descripcion,
-                                 int idProfesor, int idEquipo, String fechaCreacion) {
+    public int eliminarEvento(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = ProyectoBD.insertarProyecto(db, nombreProyecto, descripcion,
-                idProfesor, idEquipo, fechaCreacion);
+        int rows = EventoBD.eliminarEvento(db, id);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS PARA PROYECTO ====================
+
+    public long insertarProyecto(String nombre, String descripcion, String clave, Integer numeroEmpleadoProfesor, Integer idEvento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = ProyectoBD.insertarProyecto(db, nombre, descripcion, clave, numeroEmpleadoProfesor, idEvento);
         db.close();
         return id;
+    }
+
+    //Obtener proyecto por clave
+    public Cursor buscarProyectosPorClave(String clave) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProyectoBD.buscarProyectosPorClave(db, clave);
     }
 
     public Cursor obtenerTodosProyectos() {
@@ -164,21 +337,34 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return ProyectoBD.obtenerProyectoPorId(db, id);
     }
 
-    public Cursor obtenerProyectosPorProfesor(int idProfesor) {
+    public Cursor obtenerProyectosPorProfesor(int numeroEmpleadoProfesor) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.obtenerProyectosPorProfesor(db, idProfesor);
+        return ProyectoBD.obtenerProyectosPorProfesor(db, numeroEmpleadoProfesor);
     }
 
-    public Cursor buscarProyectosPorNombre(String nombre) {
+    public Cursor obtenerProyectosPorEvento(int idEvento) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return ProyectoBD.buscarProyectosPorNombre(db, nombre);
+        return ProyectoBD.obtenerProyectosPorEvento(db, idEvento);
     }
 
-    public int actualizarProyecto(int id, String nombreProyecto, String descripcion,
-                                  int idProfesor, int idEquipo) {
+    public Cursor obtenerProyectosConDetalles() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProyectoBD.obtenerProyectosConDetalles(db);
+    }
+
+    public Cursor obtenerProyectosConConteoEquipos() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProyectoBD.obtenerProyectosConConteoEquipos(db);
+    }
+
+    public boolean existeProyectoPorClave(String clave) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProyectoBD.existeProyectoPorClave(db, clave);
+    }
+
+    public int actualizarProyecto(int id, String nombre, String descripcion, String clave, Integer numeroEmpleadoProfesor, Integer idEvento) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = ProyectoBD.actualizarProyecto(db, id, nombreProyecto, descripcion,
-                idProfesor, idEquipo);
+        int rows = ProyectoBD.actualizarProyecto(db, id, nombre, descripcion, clave, numeroEmpleadoProfesor, idEvento);
         db.close();
         return rows;
     }
@@ -190,165 +376,286 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return rows;
     }
 
-    // ==================== MÉTODOS PARA EQUIPO ====================
+    // ==================== MetodoS PARA EQUIPO ====================
 
-    public long insertarEquipo(String nombre, String nombreProyecto, int numAlumnos,
-                               String descripcion, int lugar, String cartel,
-                               int cantEval, float promedio, int cantVisitas, String claveAcceso) {
+    public long insertarEquipo(String nombre, String nombreProyecto, int numeroAlumnos, String descripcion,
+                               String turno, String lugar, String cartel, int cantEval, double promedio,
+                               int cantVisitas, Integer idProyecto, Integer boletaLider, String estadoEquipo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = EquipoDB.insertarEquipo(db, nombre, nombreProyecto, numAlumnos,
-                descripcion, lugar, cartel,
-                cantEval, promedio, cantVisitas, claveAcceso);
+        long id = EquipoBD.insertarEquipo(db, nombre, nombreProyecto, numeroAlumnos, descripcion, turno, lugar, cartel, cantEval, promedio, cantVisitas, idProyecto, boletaLider, estadoEquipo);
         db.close();
         return id;
     }
 
     public Cursor obtenerTodosEquipos() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.obtenerTodosEquipos(db);
+        return EquipoBD.obtenerTodosEquipos(db);
     }
 
     public Cursor obtenerEquipoPorId(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.obtenerEquipoPorId(db, id);
+        return EquipoBD.obtenerEquipoPorId(db, id);
     }
 
-    public Cursor buscarEquiposPorNombre(String nombre) {
+    public Cursor obtenerEquiposPorProyecto(int idProyecto) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.buscarEquiposPorNombre(db, nombre);
+        return EquipoBD.obtenerEquiposPorProyecto(db, idProyecto);
     }
 
-    public Cursor buscarEquiposPorProyecto(String proyecto) {
+    public Cursor obtenerEquiposPorLider(int boletaLider) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.buscarEquiposPorProyecto(db, proyecto);
+        return EquipoBD.obtenerEquiposPorLider(db, boletaLider);
     }
 
-    public int actualizarEquipo(int id, String nombre, String nombreProyecto, int numAlumnos,
-                                String descripcion, int lugar, String cartel,
-                                int cantEval, float promedio, int cantVisitas) {
+    public Cursor obtenerEquiposPorEstado(String estado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoBD.obtenerEquiposPorEstado(db, estado);
+    }
+
+    public Cursor obtenerEquiposPorPromedio() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoBD.obtenerEquiposPorPromedio(db);
+    }
+
+    public Cursor obtenerEquiposConDetalles() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoBD.obtenerEquiposConDetalles(db);
+    }
+
+    public Cursor obtenerEstadisticasEquipos() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EquipoBD.obtenerEstadisticasEquipos(db);
+    }
+
+    public int actualizarEquipo(int id, String nombre, String nombreProyecto, int numeroAlumnos, String descripcion,
+                                String turno, String lugar, String cartel, int cantEval, double promedio,
+                                int cantVisitas, Integer idProyecto, Integer boletaLider, String estadoEquipo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EquipoDB.actualizarEquipo(db, id, nombre, nombreProyecto, numAlumnos,
-                descripcion, lugar, cartel,
-                cantEval, promedio, cantVisitas);
+        int rows = EquipoBD.actualizarEquipo(db, id, nombre, nombreProyecto, numeroAlumnos, descripcion, turno, lugar, cartel, cantEval, promedio, cantVisitas, idProyecto, boletaLider, estadoEquipo);
         db.close();
         return rows;
     }
 
-    public int actualizarPromedioEquipo(int id, float nuevoPromedio, int nuevaEvaluacion) {
+    public int actualizarPromedioEquipo(int id, double nuevoPromedio, int nuevaCantEval) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EquipoDB.actualizarPromedio(db, id, nuevoPromedio, nuevaEvaluacion);
+        int rows = EquipoBD.actualizarPromedio(db, id, nuevoPromedio, nuevaCantEval);
         db.close();
         return rows;
     }
 
     public int incrementarVisitasEquipo(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EquipoDB.incrementarVisitas(db, id);
+        int rows = EquipoBD.incrementarVisitas(db, id);
+        db.close();
+        return rows;
+    }
+
+    public int actualizarEstadoEquipo(int id, String nuevoEstado) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EquipoBD.actualizarEstadoEquipo(db, id, nuevoEstado);
         db.close();
         return rows;
     }
 
     public int eliminarEquipo(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EquipoDB.eliminarEquipo(db, id);
+        int rows = EquipoBD.eliminarEquipo(db, id);
         db.close();
         return rows;
     }
 
-    public Cursor obtenerEquiposPorPromedio() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.obtenerEquiposPorPromedio(db);
-    }
+    // ==================== MetodoS PARA ALUMNO ====================
 
-    public Cursor obtenerEquiposPorLugar(int lugar) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoDB.obtenerEquiposPorLugar(db, lugar);
-    }
-
-    // ==================== MÉTODOS PARA ADMINISTRADOR ====================
-
-    /**
-     * Inserta un nuevo administrador en la base de datos
-     * @param nombre Nombre completo del administrador
-     * @param numEmpleado Número de empleado único
-     * @param password Contraseña del administrador
-     * @return ID del nuevo registro insertado o -1 si hubo error
-     */
-    public long insertarAdministrador(String nombre, String numEmpleado, String password) {
+    public long insertarAlumno(int boleta, String nombre, String apellido1, String apellido2, String correo,
+                               String carrera, int semestre, String grupo, String turno, String contraseña,
+                               Integer idEquipo, String estadoRegistro) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = AdministradorBD.insertarAdministrador(db, nombre, numEmpleado, password);
+        long id = AlumnoBD.insertarAlumno(db, boleta, nombre, apellido1, apellido2, correo, carrera, semestre, grupo, turno, contraseña, idEquipo, estadoRegistro);
         db.close();
         return id;
     }
 
-    /**
-     * Obtiene todos los administradores de la base de datos
-     * @return Cursor con los resultados ordenados por nombre
-     */
-    public Cursor obtenerTodosAdministradores() {
+    public Cursor obtenerTodosAlumnos() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return AdministradorBD.obtenerTodosAdministradores(db);
+        return AlumnoBD.obtenerTodosAlumnos(db);
     }
 
-    /**
-     * Obtiene un administrador por su ID
-     * @param id ID del administrador
-     * @return Cursor con el resultado o null si no existe
-     */
-    public Cursor obtenerAdministradorPorId(int id) {
+    public Cursor obtenerAlumnoPorBoleta(int boleta) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return AdministradorBD.obtenerAdministradorPorId(db, id);
+        return AlumnoBD.obtenerAlumnoPorBoleta(db, boleta);
     }
 
-    /**
-     * Obtiene un administrador por su número de empleado
-     * @param numEmpleado Número de empleado a buscar
-     * @return Cursor con el resultado o null si no existe
-     */
-    public Cursor obtenerAdministradorPorNumEmpleado(String numEmpleado) {
+    public Cursor obtenerAlumnosPorEquipo(int idEquipo) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return AdministradorBD.obtenerAdministradorPorNumEmpleado(db, numEmpleado);
+        return AlumnoBD.obtenerAlumnosPorEquipo(db, idEquipo);
     }
 
-    /**
-     * Actualiza los datos de un administrador
-     * @param id ID del administrador a actualizar
-     * @param nombre Nuevo nombre
-     * @param numEmpleado Nuevo número de empleado
-     * @param password Nueva contraseña
-     * @return Número de filas afectadas
-     */
-    public int actualizarAdministrador(int id, String nombre, String numEmpleado, String password) {
+    public Cursor obtenerAlumnosPorEstado(String estado) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AlumnoBD.obtenerAlumnosPorEstado(db, estado);
+    }
+
+    public Cursor obtenerAlumnosDisponibles() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AlumnoBD.obtenerAlumnosDisponibles(db);
+    }
+
+    public Cursor obtenerAlumnosConEquipo() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AlumnoBD.obtenerAlumnosConEquipo(db);
+    }
+
+    public Cursor verificarCredencialesAlumno(int boleta, String contraseña) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AlumnoBD.verificarCredenciales(db, boleta, contraseña);
+    }
+
+    public boolean existeAlumnoPorBoleta(int boleta) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return AlumnoBD.existeAlumnoPorBoleta(db, boleta);
+    }
+
+    public int asignarAlumnoAEquipo(int boleta, int idEquipo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = AdministradorBD.actualizarAdministrador(db, id, nombre, numEmpleado, password);
+        int rows = AlumnoBD.asignarAlumnoAEquipo(db, boleta, idEquipo);
         db.close();
         return rows;
     }
 
-    /**
-     * Elimina un administrador de la base de datos
-     * @param id ID del administrador a eliminar
-     * @return Número de filas afectadas
-     */
-    public int eliminarAdministrador(int id) {
+    public int removerAlumnoDeEquipo(int boleta) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = AdministradorBD.eliminarAdministrador(db, id);
+        int rows = AlumnoBD.removerAlumnoDeEquipo(db, boleta);
         db.close();
         return rows;
     }
 
-    /**
-     * Verifica las credenciales de un administrador
-     * @param numEmpleado Número de empleado
-     * @param password Contraseña
-     * @return Cursor con los datos del administrador si las credenciales son correctas, null en caso contrario
-     */
-    public Cursor verificarCredencialesAdministrador(String numEmpleado, String password) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return AdministradorBD.verificarCredenciales(db, numEmpleado, password);
+    public int actualizarAlumno(int boleta, String nombre, String apellido1, String apellido2, String correo,
+                                String carrera, int semestre, String grupo, String turno, String contraseña,
+                                Integer idEquipo, String estadoRegistro) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AlumnoBD.actualizarAlumno(db, boleta, nombre, apellido1, apellido2, correo, carrera, semestre, grupo, turno, contraseña, idEquipo, estadoRegistro);
+        db.close();
+        return rows;
     }
 
-    // ==================== MÉTODOS ADICIONALES ====================
+    public int eliminarAlumno(int boleta) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = AlumnoBD.eliminarAlumno(db, boleta);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS PARA VISITANTE ====================
+
+    public long insertarVisitante(String nombre, String apellido1, String apellido2, int idEvento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = VisitanteBD.insertarVisitante(db, nombre, apellido1, apellido2, idEvento);
+        db.close();
+        return id;
+    }
+
+    public Cursor obtenerTodosVisitantes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return VisitanteBD.obtenerTodosVisitantes(db);
+    }
+
+    public Cursor obtenerVisitantePorId(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return VisitanteBD.obtenerVisitantePorId(db, id);
+    }
+
+    public Cursor obtenerVisitantesPorEvento(int idEvento) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return VisitanteBD.obtenerVisitantesPorEvento(db, idEvento);
+    }
+
+    public Cursor obtenerVisitantesConEvento() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return VisitanteBD.obtenerVisitantesConEvento(db);
+    }
+
+    public int actualizarVisitante(int id, String nombre, String apellido1, String apellido2, int idEvento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = VisitanteBD.actualizarVisitante(db, id, nombre, apellido1, apellido2, idEvento);
+        db.close();
+        return rows;
+    }
+
+    public int eliminarVisitante(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = VisitanteBD.eliminarVisitante(db, id);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS PARA EVALUACION ====================
+
+    public long insertarEvaluacionProfesor(int calificacion, String comentarios, int idEquipo, int numeroEmpleadoEvaluador) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = EvaluacionBD.insertarEvaluacionProfesor(db, calificacion, comentarios, idEquipo, numeroEmpleadoEvaluador);
+        db.close();
+        return id;
+    }
+
+    public long insertarEvaluacionAlumno(int calificacion, String comentarios, int idEquipo, int boletaEvaluador) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = EvaluacionBD.insertarEvaluacionAlumno(db, calificacion, comentarios, idEquipo, boletaEvaluador);
+        db.close();
+        return id;
+    }
+
+    public long insertarEvaluacionVisitante(int calificacion, String comentarios, int idEquipo, int idVisitanteEvaluador) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long id = EvaluacionBD.insertarEvaluacionVisitante(db, calificacion, comentarios, idEquipo, idVisitanteEvaluador);
+        db.close();
+        return id;
+    }
+
+    public Cursor obtenerTodasEvaluaciones() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.obtenerTodasEvaluaciones(db);
+    }
+
+    public Cursor obtenerEvaluacionesPorEquipo(int idEquipo) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.obtenerEvaluacionesPorEquipo(db, idEquipo);
+    }
+
+    public Cursor obtenerEvaluacionesConDetalles() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.obtenerEvaluacionesConDetalles(db);
+    }
+
+    public Cursor obtenerPromediosPorEquipo() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.obtenerPromediosPorEquipo(db);
+    }
+
+    public Cursor obtenerEstadisticasEvaluaciones() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.obtenerEstadisticasEvaluaciones(db);
+    }
+
+    public boolean yaEvaluoEquipo(int idEquipo, Integer numeroEmpleadoEvaluador, Integer boletaEvaluador, Integer idVisitanteEvaluador) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return EvaluacionBD.yaEvaluoEquipo(db, idEquipo, numeroEmpleadoEvaluador, boletaEvaluador, idVisitanteEvaluador);
+    }
+
+    public int actualizarEvaluacion(int id, int calificacion, String comentarios) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EvaluacionBD.actualizarEvaluacion(db, id, calificacion, comentarios);
+        db.close();
+        return rows;
+    }
+
+    public int eliminarEvaluacion(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = EvaluacionBD.eliminarEvaluacion(db, id);
+        db.close();
+        return rows;
+    }
+
+    // ==================== MetodoS ADICIONALES ====================
 
     public void cerrarConexion() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -362,26 +669,8 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(sql);
         db.close();
     }
-    // Metodo para verificar si la tabla PROYECTO existe
-    public boolean verificarTablaProyecto() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='PROYECTO'", null);
-            boolean existe = cursor != null && cursor.moveToFirst();
-            Log.d(TAG, "Tabla PROYECTO existe: " + existe);
-            return existe;
-        } catch (Exception e) {
-            Log.e(TAG, "Error al verificar tabla PROYECTO: " + e.getMessage());
-            return false;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
 
-    // Metodo para verificar la estructura de la tabla
+    // Metodo para verificar la estructura de las tablas
     public void verificarEstructuraTablas() {
         SQLiteDatabase db = this.getReadableDatabase();
         Log.d(TAG, "=== VERIFICANDO ESTRUCTURA DE TABLAS ===");
@@ -395,27 +684,30 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
-
-        // Verificar estructura específica de PROYECTO
-        try {
-            cursor = db.rawQuery("PRAGMA table_info(PROYECTO)", null);
-            if (cursor.moveToFirst()) {
-                Log.d(TAG, "Columnas de tabla PROYECTO:");
-                do {
-                    String columnName = cursor.getString(1);
-                    String columnType = cursor.getString(2);
-                    Log.d(TAG, "- " + columnName + " (" + columnType + ")");
-                } while (cursor.moveToNext());
-            } else {
-                Log.e(TAG, "Tabla PROYECTO no existe o no tiene columnas");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error al verificar estructura de PROYECTO: " + e.getMessage());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
     }
 
+    // Metodo para recrear la base de datos (solo para testing)
+    public void recrearBaseDatos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            Log.d(TAG, "Recreando base de datos...");
+
+            // Eliminar todas las tablas en orden inverso por las foreign keys
+            db.execSQL("DROP TABLE IF EXISTS " + EvaluacionBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + VisitanteBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AlumnoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + EquipoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + ProyectoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + EventoBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + ProfesorBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AdministradorBD.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + AcademiasBD.TABLE_NAME);
+
+            // Recrear todas las tablas
+            onCreate(db);
+            Log.d(TAG, "Base de datos recreada exitosamente");
+        } catch (Exception e) {
+            Log.e(TAG, "Error al recrear base de datos: " + e.getMessage());
+        }
+    }
 }

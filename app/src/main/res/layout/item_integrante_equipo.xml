@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Ícono de estado -->
+        <ImageView
+            android:id="@+id/ivEstadoIntegrante"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_person"
+            android:layout_marginEnd="12dp"
+            app:tint="@color/success" />
+
+        <!-- Información del integrante -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvNombreIntegrante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Integrante"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvBoletaIntegrante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Boleta: 2020123456"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tvRolIntegrante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Integrante"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="italic"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Botón eliminar (solo para integrantes, no para líder) -->
+        <ImageButton
+            android:id="@+id/btnEliminarIntegrante"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_delete"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Eliminar integrante"
+            app:tint="@color/error" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

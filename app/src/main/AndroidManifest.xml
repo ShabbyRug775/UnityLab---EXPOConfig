@@ -77,6 +77,28 @@
                 android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
         </activity>
 
+        <!-- Actividad para constancia -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.constancia.GenerarConstanciaActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
+        </activity>
+
+        <!-- Actividad registrar equipo -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.equipos.RegistrarEquipoActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
+        </activity>
+
         <!-- Actividades de profesores -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"
@@ -104,6 +126,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.ui.profesores.RegistroProfesorActivity" />
         </activity>
+
+        <activity android:name=".ui.claves.GestionarClavesActivity" />
+        <activity android:name=".ui.equipos.GestionarEquiposActivity" />
+        <activity android:name=".ui.evaluacion.EvaluarEquiposActivity" />
+        <activity android:name=".ui.agenda.AgendaActivity" />
 
         <!-- Actividades de administrador -->
         <activity

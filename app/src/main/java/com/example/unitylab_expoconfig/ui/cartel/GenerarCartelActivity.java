@@ -21,7 +21,7 @@ import androidx.core.content.FileProvider;
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.utils.CartelGenerator;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+//import com.example.unitylab_expoconfig.SQLite.EquipoDB;
 
 import java.io.File;
 
@@ -65,12 +65,12 @@ public class GenerarCartelActivity extends AppCompatActivity {
             return;
         }
 
-        cargarInformacionEquipo();
+        //cargarInformacionEquipo();
         verificarEstadoCartel();
 
         btnGenerarCartel.setOnClickListener(v -> {
             if (checkStoragePermission()) {
-                generarCartel();
+                //generarCartel();
             } else {
                 requestStoragePermission();
             }
@@ -100,50 +100,50 @@ public class GenerarCartelActivity extends AppCompatActivity {
         }
     }
 
-    private void cargarInformacionEquipo() {
-        Cursor cursor = null;
-        try {
-            cursor = dbHelper.obtenerEquipoPorId(equipoId);
-            if (cursor != null && cursor.moveToFirst()) {
-                String nombreEquipo = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
-                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
-                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
-                int lugar = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
-                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
-                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
-                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
-                String cartel = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_CARTEL));
-
-                // Actualizar UI
-                tvNombreEquipo.setText(nombreEquipo);
-                tvNombreProyecto.setText(nombreProyecto);
-
-                // Información adicional
-                StringBuilder infoAdicional = new StringBuilder();
-                infoAdicional.append("Integrantes: ").append(numAlumnos);
-                if (lugar > 0) {
-                    infoAdicional.append(" • Lugar: Mesa ").append(lugar);
-                }
-                infoAdicional.append(" • Visitas: ").append(cantVisitas);
-                if (cantEval > 0) {
-                    infoAdicional.append(" • Evaluaciones: ").append(cantEval);
-                    infoAdicional.append(" • Promedio: ").append(String.format("%.1f", promedio));
-                }
-
-                //tvInfoAdicional.setText(infoAdicional.toString());
-
-                // Verificar si ya tiene cartel
-                if (cartel != null && !cartel.isEmpty()) {
-                    rutaCartelGenerado = cartel;
-                    mostrarCartelExistente();
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error al cargar información del equipo", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (cursor != null) cursor.close();
-        }
-    }
+//    private void cargarInformacionEquipo() {
+//        Cursor cursor = null;
+//        try {
+//            cursor = dbHelper.obtenerEquipoPorId(equipoId);
+//            if (cursor != null && cursor.moveToFirst()) {
+//                String nombreEquipo = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
+//                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
+//                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
+//                int lugar = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
+//                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
+//                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
+//                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
+//                String cartel = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_CARTEL));
+//
+//                // Actualizar UI
+//                tvNombreEquipo.setText(nombreEquipo);
+//                tvNombreProyecto.setText(nombreProyecto);
+//
+//                // Información adicional
+//                StringBuilder infoAdicional = new StringBuilder();
+//                infoAdicional.append("Integrantes: ").append(numAlumnos);
+//                if (lugar > 0) {
+//                    infoAdicional.append(" • Lugar: Mesa ").append(lugar);
+//                }
+//                infoAdicional.append(" • Visitas: ").append(cantVisitas);
+//                if (cantEval > 0) {
+//                    infoAdicional.append(" • Evaluaciones: ").append(cantEval);
+//                    infoAdicional.append(" • Promedio: ").append(String.format("%.1f", promedio));
+//                }
+//
+//                //tvInfoAdicional.setText(infoAdicional.toString());
+//
+//                // Verificar si ya tiene cartel
+//                if (cartel != null && !cartel.isEmpty()) {
+//                    rutaCartelGenerado = cartel;
+//                    mostrarCartelExistente();
+//                }
+//            }
+//        } catch (Exception e) {
+//            Toast.makeText(this, "Error al cargar información del equipo", Toast.LENGTH_SHORT).show();
+//        } finally {
+//            if (cursor != null) cursor.close();
+//        }
+//    }
 
     private void verificarEstadoCartel() {
         if (rutaCartelGenerado != null && !rutaCartelGenerado.isEmpty()) {
@@ -177,29 +177,29 @@ public class GenerarCartelActivity extends AppCompatActivity {
         btnVerCartel.setVisibility(View.VISIBLE);
     }
 
-    private void generarCartel() {
-        mostrarProgreso(true);
-        btnGenerarCartel.setEnabled(false);
-
-        // Ejecutar en hilo secundario
-        new Thread(() -> {
-            CartelGenerator.CartelResult resultado = cartelGenerator.generarCartel(equipoId);
-
-            runOnUiThread(() -> {
-                mostrarProgreso(false);
-                btnGenerarCartel.setEnabled(true);
-
-                if (resultado.exito) {
-                    rutaCartelGenerado = resultado.rutaPdf;
-                    mostrarCartelGenerado();
-                    Toast.makeText(this, "Cartel generado exitosamente", Toast.LENGTH_SHORT).show();
-                } else {
-                    mostrarError(resultado.mensaje);
-                    Toast.makeText(this, "Error: " + resultado.mensaje, Toast.LENGTH_LONG).show();
-                }
-            });
-        }).start();
-    }
+//    private void generarCartel() {
+//        mostrarProgreso(true);
+//        btnGenerarCartel.setEnabled(false);
+//
+//        // Ejecutar en hilo secundario
+//        new Thread(() -> {
+//            CartelGenerator.CartelResult resultado = cartelGenerator.generarCartel(equipoId);
+//
+//            runOnUiThread(() -> {
+//                mostrarProgreso(false);
+//                btnGenerarCartel.setEnabled(true);
+//
+//                if (resultado.exito) {
+//                    rutaCartelGenerado = resultado.rutaPdf;
+//                    mostrarCartelGenerado();
+//                    Toast.makeText(this, "Cartel generado exitosamente", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    mostrarError(resultado.mensaje);
+//                    Toast.makeText(this, "Error: " + resultado.mensaje, Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }).start();
+//    }
 
     private void mostrarCartelGenerado() {
         tvEstadoCartel.setText("Cartel Generado");
@@ -298,7 +298,7 @@ public class GenerarCartelActivity extends AppCompatActivity {
 
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                generarCartel();
+                //generarCartel();
             } else {
                 Toast.makeText(this, "Se requiere permiso de almacenamiento para generar el cartel", Toast.LENGTH_LONG).show();
             }
