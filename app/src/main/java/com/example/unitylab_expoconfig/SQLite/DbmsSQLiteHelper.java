@@ -326,6 +326,11 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return ProyectoBD.buscarProyectosPorClave(db, clave);
     }
+    public Cursor buscarProyectosPorNombre(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return ProyectoBD.buscarProyectosPorNombre(db, nombre);
+    }
+
 
     public Cursor obtenerTodosProyectos() {
         SQLiteDatabase db = this.getReadableDatabase();

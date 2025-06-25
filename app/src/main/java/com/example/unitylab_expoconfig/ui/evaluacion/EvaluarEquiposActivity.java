@@ -3,6 +3,7 @@ package com.example.unitylab_expoconfig.ui.evaluacion;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,7 +55,7 @@ public class EvaluarEquiposActivity extends AppCompatActivity {
         // Inicializar base de datos
         dbHelper = new DbmsSQLiteHelper(this);
         idUsuario = getIntent().getIntExtra("idUsuario", -1);
-        tipoUsuario = getIntent().getStringExtra("tipoUsuario");
+        tipoUsuario = getIntent().getStringExtra("tipoEvaluador");
 
         // Inicializar vistas
         inicializarVistas();
@@ -234,6 +235,10 @@ public class EvaluarEquiposActivity extends AppCompatActivity {
 
     private void enviarEvaluacion(int idEquipo, int calificacion, String comentarios) {
         try {
+            //Validar que tipo de usuario esta enviando la evaluacion
+
+            if (tipoUsuario.equals("profesor")) {
+
             long resultado = dbHelper.insertarEvaluacionProfesor(calificacion, comentarios, idEquipo, idUsuario);
 
             if (resultado != -1) {
@@ -245,6 +250,37 @@ public class EvaluarEquiposActivity extends AppCompatActivity {
                 cargarEquipos();
             } else {
                 Toast.makeText(this, "Error al enviar evaluación", Toast.LENGTH_SHORT).show();
+            }
+            }else if (tipoUsuario.equals("alumno")) {
+                Log.d("EvaluarEquiposActivity", "idUsuario: " + idUsuario);
+                Log.d("EvaluarEquiposActivity", "TipoUsuario: " + tipoUsuario);
+                long resultado = dbHelper.insertarEvaluacionAlumno(calificacion, comentarios, idEquipo, idUsuario);
+                if (resultado != -1) {
+                    Toast.makeText(this, "Evaluación enviada exitosamente", Toast.LENGTH_SHORT).show();
+                    // Actualizar promedio del equipo
+                    actualizarPromedioEquipo(idEquipo);
+                    // Recargar datos
+                    cargarEstadisticas();
+                    cargarEquipos();
+                    } else {
+                    Toast.makeText(this, "Error al enviar evaluación", Toast.LENGTH_SHORT).show();
+                }
+            }else if (tipoUsuario.equals("visitante")) {
+                long resultado = dbHelper.insertarEvaluacionVisitante(calificacion, comentarios, idEquipo, idUsuario);
+                if (resultado != -1) {
+                    Toast.makeText(this, "Evaluación enviada exitosamente", Toast.LENGTH_SHORT).show();
+                    // Actualizar promedio del equipo
+                    actualizarPromedioEquipo(idEquipo);
+                    // Recargar datos
+                    cargarEstadisticas();
+                    cargarEquipos();
+                    } else {
+                    Toast.makeText(this, "Error al enviar evaluación", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                Toast.makeText(this, "Error al procesar evaluación", Toast.LENGTH_SHORT).show();
+
+
             }
 
         } catch (Exception e) {

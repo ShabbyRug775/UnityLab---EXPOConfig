@@ -32,60 +32,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Estado del registro -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardEstadoRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/success_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:layout_marginEnd="16dp"
-                        app:tint="@color/success_text" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Registro Completo"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/success_text" />
-
-                        <TextView
-                            android:id="@+id/tvNombreEquipoCartel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Equipo: Los Desarrolladores"
-                            android:textSize="14sp"
-                            android:textColor="@color/success_text"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Información del cartel -->
+            <!-- Información del equipo -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,345 +49,72 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Información del Cartel"
+                        android:text="Información del Proyecto"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_dark"
+                        android:textColor="@color/primary_color"
                         android:layout_marginBottom="16dp" />
 
+                    <!-- Nombre del equipo -->
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="El cartel se generará automáticamente con la información de tu equipo usando una plantilla profesional. Incluirá:"
+                        android:text="Equipo:"
                         android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="16dp"
-                        android:lineSpacingMultiplier="1.2" />
-
-                    <!-- Lista de elementos incluidos -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_check"
-                                android:layout_marginEnd="12dp"
-                                android:layout_marginTop="2dp"
-                                app:tint="@color/success" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Nombre del evento y fecha de la exposición"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_check"
-                                android:layout_marginEnd="12dp"
-                                android:layout_marginTop="2dp"
-                                app:tint="@color/success" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Información completa del proyecto y equipo"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_check"
-                                android:layout_marginEnd="12dp"
-                                android:layout_marginTop="2dp"
-                                app:tint="@color/success" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Logo distintivo del proyecto (si se proporcionó)"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_check"
-                                android:layout_marginEnd="12dp"
-                                android:layout_marginTop="2dp"
-                                app:tint="@color/success" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Código QR para evaluaciones rápidas"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@drawable/ic_check"
-                                android:layout_marginEnd="12dp"
-                                android:layout_marginTop="2dp"
-                                app:tint="@color/success" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Horario y ubicación asignados (cuando estén disponibles)"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Vista previa del cartel -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardVistaPrevia"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Vista Previa del Cartel"
-                        android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_dark"
-                        android:layout_marginBottom="16dp" />
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="4dp" />
 
-                    <!-- Contenedor de la vista previa -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:background="@drawable/spinner_background"
-                        android:layout_marginBottom="16dp">
-
-                        <!-- Vista previa del cartel generado -->
-                        <ImageView
-                            android:id="@+id/ivVistaPrevia"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/card_background"
-                            android:background="@color/white" />
-
-                        <!-- Loading overlay -->
-                        <LinearLayout
-                            android:id="@+id/layoutGenerando"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="@color/overlay"
-                            android:visibility="gone">
-
-                            <ProgressBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="16dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Generando cartel..."
-                                android:textColor="@color/white"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </FrameLayout>
-
-                    <!-- Opciones de personalización -->
                     <TextView
+                        android:id="@+id/tvNombreEquipoCartel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Personalización (Opcional)"
+                        android:text="Cargando..."
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:layout_marginBottom="12dp" />
 
-                    <!-- Selección de plantilla -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Plantilla:"
-                            android:textSize="14sp"
-                            android:textColor="@color/text_primary"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="12dp" />
-
-                        <Spinner
-                            android:id="@+id/spinnerPlantilla"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/spinner_background"
-                            android:padding="8dp" />
-
-                    </LinearLayout>
-
-                    <!-- Selección de colores -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tema de colores:"
-                            android:textSize="14sp"
-                            android:textColor="@color/text_primary"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="12dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
-                            <View
-                                android:id="@+id/colorAzul"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/card_background"
-                                android:backgroundTint="@color/primary_color"
-                                android:clickable="true"
-                                android:focusable="true" />
-
-                            <View
-                                android:id="@+id/colorVerde"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/button_accent_outline"
-                                android:backgroundTint="@color/success"
-                                android:clickable="true"
-                                android:focusable="true" />
-
-                            <View
-                                android:id="@+id/colorNaranja"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/card_background"
-                                android:backgroundTint="@color/accent_color"
-                                android:clickable="true"
-                                android:focusable="true" />
-
-                            <View
-                                android:id="@+id/colorRojo"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@drawable/card_background"
-                                android:backgroundTint="@color/error"
-                                android:clickable="true"
-                                android:focusable="true" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Botón para regenerar -->
-                    <Button
-                        android:id="@+id/btnRegenerarCartel"
+                    <!-- Nombre del proyecto -->
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Regenerar con Cambios"
-                        android:textColor="@color/primary_color"
-                        android:background="@drawable/button_outline"
-                        android:layout_gravity="center"
-                        style="?android:attr/borderlessButtonStyle" />
+                        android:text="Proyecto:"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvNombreProyecto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cargando..."
+                        android:textSize="16sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Información adicional -->
+                    <TextView
+                        android:id="@+id/tvInfoAdicional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cargando información..."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:lineSpacingMultiplier="1.2" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Estado de generación -->
+            <!-- Estado del cartel -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardEstadoGeneracion"
+                android:id="@+id/cardEstadoRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/info_background">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -448,6 +122,7 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
+                    <!-- Header del estado -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -457,40 +132,229 @@
 
                         <ImageView
                             android:id="@+id/ivEstadoCartel"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_recent"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_info"
                             android:layout_marginEnd="12dp"
-                            app:tint="@color/info_text" />
+                            app:tint="@color/primary_color" />
 
                         <TextView
                             android:id="@+id/tvEstadoCartel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Estado del Cartel"
-                            android:textSize="16sp"
+                            android:text="Listo para generar"
+                            android:textSize="18sp"
                             android:textStyle="bold"
-                            android:textColor="@color/info_text" />
+                            android:textColor="@color/primary_color" />
 
                     </LinearLayout>
 
+                    <!-- Mensaje del estado -->
                     <TextView
                         android:id="@+id/tvMensajeEstado"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tu cartel está listo para generar. Una vez creado, será enviado automáticamente a la cola de impresión."
+                        android:text="Tu cartel está listo para generar. Una vez creado, enviarlo a impresión."
                         android:textSize="14sp"
-                        android:textColor="@color/info_text"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="16dp"
                         android:lineSpacingMultiplier="1.2" />
+
+                    <!-- Progress bar para mostrar carga -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tvProgressText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Generando cartel..."
+                            android:textSize="14sp"
+                            android:textColor="@color/text_secondary"
+                            android:gravity="center"
+                            android:layout_marginTop="48dp"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                    <!-- Lista de elementos incluidos -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="El cartel incluirá:"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_check"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="2dp"
+                                app:tint="@color/success" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Nombre del evento y fecha de la exposición"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_check"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="2dp"
+                                app:tint="@color/success" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Información del proyecto y equipo"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_check"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="2dp"
+                                app:tint="@color/success" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Código QR para información adicional"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_check"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="2dp"
+                                app:tint="@color/success" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Estadísticas de visitas y evaluaciones"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_primary" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Botón principal de acción -->
+                    <Button
+                        android:id="@+id/btnGenerarCartel"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Generar Cartel"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/primary_color"
+                        android:textColor="@android:color/white"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.Material3.Button" />
+
+                    <!-- Botones de acción secundarios -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/btnCompartirCartel"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:text="Compartir"
+                            android:textSize="14sp"
+                            android:backgroundTint="@color/accent_color"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone"
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                        <Button
+                            android:id="@+id/btnVerCartel"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="Ver Cartel"
+                            android:textSize="14sp"
+                            android:backgroundTint="@color/accent_color"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone"
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Acciones disponibles después de generar -->
+            <!-- Opciones de personalización (Futuras funcionalidades) -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardAcciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -507,124 +371,19 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Acciones Disponibles"
+                        android:text="Personalización (Próximamente)"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_dark"
-                        android:layout_marginBottom="16dp" />
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="12dp" />
 
-                    <!-- Descargar cartel -->
-                    <LinearLayout
-                        android:id="@+id/linearDescargarCartel"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_export"
-                            android:layout_marginEnd="16dp"
-                            app:tint="@color/primary_color" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Descargar Cartel (PDF)"
-                            android:textSize="16sp"
-                            android:textColor="@color/text_primary" />
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_forward"
-                            app:tint="@color/text_secondary" />
-
-                    </LinearLayout>
-
-                    <!-- Línea divisoria -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color"
-                        android:layout_marginVertical="8dp" />
-
-                    <!-- Compartir cartel -->
-                    <LinearLayout
-                        android:id="@+id/linearCompartirCartel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_share"
-                            android:layout_marginEnd="16dp"
-                            app:tint="@color/accent_color" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Compartir Cartel"
-                            android:textSize="16sp"
-                            android:textColor="@color/text_primary" />
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_forward"
-                            app:tint="@color/text_secondary" />
-
-                    </LinearLayout>
-
-                    <!-- Línea divisoria -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color"
-                        android:layout_marginVertical="8dp" />
-
-                    <!-- Ver en cola de impresión -->
-                    <LinearLayout
-                        android:id="@+id/linearVerColaImpresion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_print"
-                            android:layout_marginEnd="16dp"
-                            app:tint="@color/warning" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Ver Estado de Impresión"
-                            android:textSize="16sp"
-                            android:textColor="@color/text_primary" />
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_forward"
-                            app:tint="@color/text_secondary" />
-
-                    </LinearLayout>
+                        android:text="Pronto podrás personalizar el diseño y contenido de tu cartel"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:alpha="0.7" />
 
                 </LinearLayout>
 
@@ -633,38 +392,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Botones de acción -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/white"
-        android:elevation="8dp"
-        android:layout_gravity="bottom">
-
-        <Button
-            android:id="@+id/btnVolver"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="Volver"
-            android:textColor="@color/white"
-            android:background="@drawable/button_outline"
-            style="?android:attr/borderlessButtonStyle" />
-
-        <Button
-            android:id="@+id/btnGenerarCartel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Generar Cartel"
-            android:textColor="@color/white"
-            android:background="@drawable/button_primary" />
-
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

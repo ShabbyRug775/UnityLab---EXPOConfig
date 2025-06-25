@@ -25,6 +25,7 @@ import com.example.unitylab_expoconfig.ui.cartel.GenerarCartelActivity;
 import com.example.unitylab_expoconfig.ui.constancia.GenerarConstanciaActivity;
 import com.example.unitylab_expoconfig.ui.equipos.UnirseAEquipoActivity;
 import com.example.unitylab_expoconfig.ui.evaluacion.EvaluarEquiposActivity;
+import com.example.unitylab_expoconfig.ui.equipos.IntegrantesAdapter;
 
 import java.util.ArrayList;
 
@@ -68,6 +69,8 @@ public class EstudianteActivity extends AppCompatActivity {
 
         // Cargar estado del equipo
         cargarEstadoEquipo();
+
+
     }
 
     private void obtenerDatosIntent() {
@@ -170,8 +173,7 @@ public class EstudianteActivity extends AppCompatActivity {
         if (cardEvaluarEquipos != null) {
             cardEvaluarEquipos.setOnClickListener(v -> {
                 Intent intent = new Intent(this, EvaluarEquiposActivity.class);
-                intent.putExtra("idUsuario", idUsuarioActual);
-                intent.putExtra("boleta", boletaUsuario);
+                intent.putExtra("idUsuario", boletaUsuario);
                 intent.putExtra("tipoEvaluador", "alumno");
                 startActivity(intent);
             });
@@ -221,6 +223,7 @@ public class EstudianteActivity extends AppCompatActivity {
 
                 if (!cursorAlumno.isNull(idEquipoIndex)) {
                     idEquipoActual = cursorAlumno.getInt(idEquipoIndex);
+                    Log.d(TAG, "idEquipoActual: " + idEquipoActual);
                     mostrarEstadoConEquipo();
                     cargarDatosEquipo();
                 } else {
@@ -338,8 +341,8 @@ public class EstudianteActivity extends AppCompatActivity {
             // Aquí podrías configurar un adapter para el RecyclerView de integrantes
             // Por simplicidad, crearemos un adapter básico
             if (recyclerIntegrantes != null && !integrantes.isEmpty()) {
-                // IntegrantesAdapter adapter = new IntegrantesAdapter(integrantes);
-                // recyclerIntegrantes.setAdapter(adapter);
+              //  IntegrantesAdapter adapter = new IntegrantesAdapter(integrantes);
+               // recyclerIntegrantes.setAdapter(adapter);
             }
 
         } catch (Exception e) {
