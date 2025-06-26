@@ -441,12 +441,6 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         return rows;
     }
 
-    public int actualizarPromedioEquipo(int id, double nuevoPromedio, int nuevaCantEval) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rows = EquipoBD.actualizarPromedio(db, id, nuevoPromedio, nuevaCantEval);
-        db.close();
-        return rows;
-    }
 
     public int incrementarVisitasEquipo(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -591,6 +585,269 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         int rows = VisitanteBD.eliminarVisitante(db, id);
         db.close();
         return rows;
+    }
+
+    // ==================== MÉTODOS ADICIONALES PARA DbmsSQLiteHelper.java ====================
+// Agregar estos métodos a la clase DbmsSQLiteHelper
+
+    // ==================== MÉTODOS ESPECÍFICOS PARA VISITANTE ====================
+
+    /**
+     * Obtiene equipos con proyectos ordenados por promedio de evaluación
+     * @return Cursor con los equipos ordenados por promedio descendente
+     */
+    public Cursor obtenerEquiposConProyecto() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.Nombre as NombreProyecto, p.Descripcion as DescripcionProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.Estado = 'Registrado' " +
+                "ORDER BY e.Promedio DESC, e.CantEval DESC";
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Actualiza el promedio y cantidad de evaluaciones de un equipo
+     * @param idEquipo ID del equipo
+     * @param promedio Nuevo promedio
+     * @param cantEvaluaciones Nueva cantidad de evaluaciones
+     * @return Número de filas afectadas
+     */
+    public int actualizarPromedioEquipo(int idEquipo, double promedio, int cantEvaluaciones) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Promedio", promedio);
+        values.put("CantEval", cantEvaluaciones);
+
+        int rows = db.update(EquipoBD.TABLE_NAME, values, "IdEquipo = ?",
+                new String[]{String.valueOf(idEquipo)});
+        db.close();
+        return rows;
+    }
+
+    /**
+     * Obtiene estadísticas generales para visitantes
+     * @return Cursor con estadísticas
+     */
+    public Cursor obtenerEstadisticasVisitante() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " +
+                "(SELECT COUNT(*) FROM " + ProyectoBD.TABLE_NAME + ") as TotalProyectos, " +
+                "(SELECT COUNT(*) FROM " + EquipoBD.TABLE_NAME + " WHERE Estado = 'Registrado') as TotalEquipos, " +
+                "(SELECT COUNT(*) FROM " + EvaluacionBD.TABLE_NAME + " WHERE IdVisitanteEvaluador IS NOT NULL) as TotalEvaluacionesVisitantes, " +
+                "(SELECT ROUND(AVG(Calificacion), 2) FROM " + EvaluacionBD.TABLE_NAME + ") as PromedioGeneral";
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Obtiene los proyectos más populares (más evaluados)
+     * @param limite Número máximo de proyectos a retornar
+     * @return Cursor con los proyectos más populares
+     */
+    public Cursor obtenerProyectosMasPopulares(int limite) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.Nombre as NombreProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.Estado = 'Registrado' AND e.CantEval > 0 " +
+                "ORDER BY e.CantEval DESC, e.Promedio DESC " +
+                "LIMIT " + limite;
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Obtiene los proyectos mejor calificados
+     * @param limite Número máximo de proyectos a retornar
+     * @return Cursor con los proyectos mejor calificados
+     */
+    public Cursor obtenerProyectosMejorCalificados(int limite) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.Nombre as NombreProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.Estado = 'Registrado' AND e.CantEval >= 3 " +
+                "ORDER BY e.Promedio DESC, e.CantEval DESC " +
+                "LIMIT " + limite;
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Cuenta las evaluaciones realizadas por un visitante específico
+     * @param idVisitante ID del visitante
+     * @return Número de evaluaciones realizadas
+     */
+    public int contarEvaluacionesVisitante(int idVisitante) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM " + EvaluacionBD.TABLE_NAME +
+                " WHERE IdVisitanteEvaluador = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(idVisitante)});
+
+        int count = 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+            cursor.close();
+        }
+        return count;
+    }
+
+    /**
+     * Obtiene las evaluaciones realizadas por un visitante
+     * @param idVisitante ID del visitante
+     * @return Cursor con las evaluaciones del visitante
+     */
+    public Cursor obtenerEvaluacionesVisitante(int idVisitante) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT ev.*, e.Nombre as NombreEquipo, e.NombreProyecto " +
+                "FROM " + EvaluacionBD.TABLE_NAME + " ev " +
+                "JOIN " + EquipoBD.TABLE_NAME + " e ON ev.IdEquipo = e.IdEquipo " +
+                "WHERE ev.IdVisitanteEvaluador = ? " +
+                "ORDER BY ev.FechaEvaluacion DESC";
+        return db.rawQuery(query, new String[]{String.valueOf(idVisitante)});
+    }
+
+    /**
+     * Verifica si existe un visitante por ID
+     * @param idVisitante ID del visitante
+     * @return true si existe, false en caso contrario
+     */
+    public boolean existeVisitante(int idVisitante) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT 1 FROM " + VisitanteBD.TABLE_NAME + " WHERE IdVisitante = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(idVisitante)});
+
+        boolean existe = false;
+        if (cursor != null) {
+            existe = cursor.getCount() > 0;
+            cursor.close();
+        }
+        return existe;
+    }
+
+    /**
+     * Obtiene feedback del evento (evaluaciones con IdEquipo = -1)
+     * @return Cursor con todo el feedback del evento
+     */
+    public Cursor obtenerFeedbackEvento() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT ev.*, v.Nombre as NombreVisitante " +
+                "FROM " + EvaluacionBD.TABLE_NAME + " ev " +
+                "LEFT JOIN " + VisitanteBD.TABLE_NAME + " v ON ev.IdVisitanteEvaluador = v.IdVisitante " +
+                "WHERE ev.IdEquipo = -1 " +
+                "ORDER BY ev.FechaEvaluacion DESC";
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Obtiene estadísticas del feedback del evento
+     * @return Cursor con estadísticas de feedback
+     */
+    public Cursor obtenerEstadisticasFeedback() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " +
+                "COUNT(*) as TotalFeedbacks, " +
+                "ROUND(AVG(Calificacion), 2) as PromedioSatisfaccion, " +
+                "COUNT(CASE WHEN Calificacion >= 4 THEN 1 END) as FeedbacksPositivos, " +
+                "COUNT(CASE WHEN Calificacion <= 2 THEN 1 END) as FeedbacksNegativos " +
+                "FROM " + EvaluacionBD.TABLE_NAME + " " +
+                "WHERE IdEquipo = -1";
+        return db.rawQuery(query, null);
+    }
+
+    /**
+     * Limpia visitantes anónimos antiguos (más de 1 día)
+     * @return Número de visitantes eliminados
+     */
+    public int limpiarVisitantesAntiguos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Primero eliminar evaluaciones de visitantes antiguos
+        String deleteEvaluaciones = "DELETE FROM " + EvaluacionBD.TABLE_NAME + " " +
+                "WHERE IdVisitanteEvaluador IN (" +
+                "SELECT IdVisitante FROM " + VisitanteBD.TABLE_NAME + " " +
+                "WHERE Nombre = 'Visitante' AND Apellido1 = 'Anónimo' " +
+                "AND datetime('now', '-1 day') > datetime('now')" +
+                ")";
+        db.execSQL(deleteEvaluaciones);
+
+        // Luego eliminar visitantes antiguos
+        String deleteVisitantes = "DELETE FROM " + VisitanteBD.TABLE_NAME + " " +
+                "WHERE Nombre = 'Visitante' AND Apellido1 = 'Anónimo' " +
+                "AND datetime('now', '-1 day') > datetime('now')";
+        db.execSQL(deleteVisitantes);
+
+        // Retornar el número de filas afectadas
+        Cursor cursor = db.rawQuery("SELECT changes()", null);
+        int changes = 0;
+        if (cursor.moveToFirst()) {
+            changes = cursor.getInt(0);
+        }
+        cursor.close();
+        return changes;
+    }
+
+    // ==================== MÉTODOS DE UTILIDAD ADICIONALES ====================
+
+    /**
+     * Obtiene información detallada de un equipo con su proyecto
+     * @param idEquipo ID del equipo
+     * @return Cursor con información detallada
+     */
+    public Cursor obtenerDetalleCompletoEquipo(int idEquipo) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.*, pr.Nombre as NombreProfesor, pr.Apellido1 as ApellidoProfesor " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "LEFT JOIN " + ProfesorBD.TABLE_NAME + " pr ON p.NumeroEmpleadoAsesor = pr.NumeroEmpleado " +
+                "WHERE e.IdEquipo = ?";
+        return db.rawQuery(query, new String[]{String.valueOf(idEquipo)});
+    }
+
+    /**
+     * Busca equipos por nombre de proyecto o equipo
+     * @param termino Término de búsqueda
+     * @return Cursor con los equipos que coinciden
+     */
+    public Cursor buscarEquipos(String termino) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.Nombre as NombreProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.Estado = 'Registrado' AND (" +
+                "e.Nombre LIKE ? OR " +
+                "e.NombreProyecto LIKE ? OR " +
+                "p.Nombre LIKE ? OR " +
+                "e.Descripcion LIKE ?" +
+                ") ORDER BY e.Promedio DESC";
+
+        String searchTerm = "%" + termino + "%";
+        return db.rawQuery(query, new String[]{searchTerm, searchTerm, searchTerm, searchTerm});
+    }
+
+    /**
+     * Obtiene equipos filtrados por ubicación
+     * @param lugar Lugar/ubicación a filtrar
+     * @return Cursor con equipos en esa ubicación
+     */
+    public Cursor obtenerEquiposPorLugar(String lugar) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, p.Nombre as NombreProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.Estado = 'Registrado' AND e.Lugar = ? " +
+                "ORDER BY e.Promedio DESC";
+        return db.rawQuery(query, new String[]{lugar});
+    }
+
+    /**
+     * Obtiene todas las ubicaciones únicas donde hay equipos
+     * @return Cursor con las ubicaciones
+     */
+    public Cursor obtenerUbicacionesEquipos() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT Lugar FROM " + EquipoBD.TABLE_NAME + " " +
+                "WHERE Estado = 'Registrado' AND Lugar IS NOT NULL " +
+                "ORDER BY Lugar ASC";
+        return db.rawQuery(query, null);
     }
 
     // ==================== MetodoS PARA EVALUACION ====================

@@ -61,5 +61,6 @@ dependencies {
 
     implementation ("androidx.core:core:1.10.1")
     implementation (libs.core.v352)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 }

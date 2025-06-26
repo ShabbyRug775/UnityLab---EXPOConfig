@@ -209,4 +209,119 @@
     <!-- Campos obligatorios -->
     <string name="campo_obligatorio">*</string>
     <string name="campos_obligatorios">Los campos marcados con * son obligatorios</string>
+    <!-- Strings para visitante -->
+    <string name="visitante_bienvenida">¡Bienvenido, Visitante!</string>
+    <string name="visitante_subtitulo">Evaluador de Proyectos</string>
+    <string name="visitante_acceso_publico">Acceso Público</string>
+    <string name="visitante_info_anonima">Como visitante, tu participación es anónima. No necesitas registrarte para evaluar proyectos y ver la agenda.</string>
+
+    <!-- Funciones principales -->
+    <string name="evaluar_proyectos">Evaluar Proyectos</string>
+    <string name="evaluar_proyectos_desc">Califica y comenta los proyectos expuestos</string>
+    <string name="ver_agenda">Ver Agenda</string>
+    <string name="ver_agenda_desc">Consulta el cronograma de actividades</string>
+    <string name="ver_todos_proyectos">Ver todos los proyectos</string>
+
+    <!-- Información útil -->
+    <string name="que_puedes_hacer">¿Qué puedes hacer?</string>
+    <string name="como_evaluar">Cómo Evaluar</string>
+    <string name="como_evaluar_desc">Aprende a usar el sistema de evaluación</string>
+    <string name="mapa_ubicaciones">Mapa de Ubicaciones</string>
+    <string name="mapa_ubicaciones_desc">Encuentra los stands y salones</string>
+    <string name="feedback_evento">Comparte tu experiencia</string>
+    <string name="feedback_evento_desc">Ayúdanos a mejorar futuros eventos</string>
+
+    <!-- Estadísticas -->
+
+    <string name="equipos">Equipos</string>
+    <string name="evaluadas">Evaluadas</string>
+    <string name="evaluados">Evaluados</string>
+    <string name="pendientes">Pendientes</string>
+
+    <!-- Proyectos destacados -->
+    <string name="proyectos_destacados">Proyectos Destacados</string>
+    <string name="sin_proyectos_disponibles">Aún no hay proyectos disponibles</string>
+    <string name="proyectos_apareceran">Los proyectos aparecerán aquí cuando estén listos para evaluación</string>
+
+    <string name="sin_evaluar">Sin evaluar</string>
+    <string name="se_primero_evaluar">Sé el primero en evaluar</string>
+
+    <!-- Evaluación -->
+    <string name="evaluar_proyecto">Evaluar Proyecto</string>
+    <string name="calificacion_requerida">Calificación *</string>
+    <string name="comentarios_opcionales">Comentarios (opcional)</string>
+    <string name="enviar_evaluacion">Enviar Evaluación</string>
+
+    <string name="selecciona_calificacion">Por favor, selecciona una calificación</string>
+    <string name="evaluacion_enviada">¡Evaluación enviada exitosamente!</string>
+    <string name="error_enviar_evaluacion">Error al enviar evaluación</string>
+    <string name="ya_evaluado">✅ Ya evaluado</string>
+    <string name="evaluar">⭐ Evaluar</string>
+    <string name="tu_evaluacion">Tu Evaluación</string>
+    <string name="sin_comentarios">Sin comentarios</string>
+    <string name="fecha">Fecha</string>
+    <string name="ver_mi_evaluacion">Ver mi evaluación</string>
+
+    <!-- Criterios de evaluación -->
+    <string name="criterios_evaluacion">Califica este proyecto del 1 al 5 basándote en:</string>
+    <string name="criterio_innovacion">• Innovación y creatividad</string>
+    <string name="criterio_funcionalidad">• Funcionalidad del proyecto</string>
+    <string name="criterio_presentacion">• Presentación del equipo</string>
+    <string name="criterio_impacto">• Impacto potencial</string>
+
+    <!-- Feedback del evento -->
+    <string name="tu_opinion_importa">Tu Opinión Importa</string>
+    <string name="ayuda_mejorar">Ayúdanos a mejorar compartiendo tu experiencia en el evento</string>
+    <string name="evaluacion_general">Evaluación General</string>
+    <string name="como_calificarias_evento">¿Cómo calificarías el evento en general? *</string>
+    <string name="organizacion_evento">Organización del evento *</string>
+    <string name="calidad_proyectos_presentados">Calidad de los proyectos presentados *</string>
+    <string name="instalaciones_espacios">Instalaciones y espacios</string>
+    <string name="atencion_personal">Atención del personal organizador</string>
+    <string name="comentarios_detallados">Comentarios Detallados</string>
+    <string name="aspectos_gustaron_mas">¿Qué aspectos del evento te gustaron más?</string>
+    <string name="aspectos_mejorar">¿Qué aspectos consideras que se pueden mejorar?</string>
+    <string name="sugerencias_proximos_eventos">Sugerencias para próximos eventos</string>
+    <string name="comentarios_adicionales">Comentarios adicionales</string>
+    <string name="enviar_feedback">Enviar Feedback</string>
+    <string name="completa_calificaciones_obligatorias">Por favor completa todas las calificaciones obligatorias (*)</string>
+    <string name="gracias_feedback">¡Gracias por tu feedback!</string>
+    <string name="opinion_valiosa">Tu opinión es muy valiosa para nosotros y nos ayudará a mejorar futuros eventos.</string>
+    <string name="ventana_cerrara_automaticamente">Esta ventana se cerrará automáticamente...</string>
+
+    <!-- Mapa y ubicaciones -->
+    <string name="mapa_evento">Mapa del Evento</string>
+    <string name="encuentra_ubicaciones">Encuentra fácilmente todas las ubicaciones del evento</string>
+    <string name="mapa_interactivo">Mapa Interactivo</string>
+    <string name="en_desarrollo">(En desarrollo)</string>
+    <string name="ubicaciones_principales">Ubicaciones Principales</string>
+    <string name="lab_informatica">🔵 Laboratorio A - Proyectos de Informática</string>
+    <string name="lab_electronica">🔴 Laboratorio B - Proyectos de Electrónica</string>
+    <string name="auditorio">🟢 Auditorio - Conferencias y Presentaciones</string>
+    <string name="cafeteria">🟡 Cafetería - Área de Descanso</string>
+    <string name="registro">⚪ Registro - Información General</string>
+
+    <!-- Guía de evaluación -->
+    <string name="guia_evaluacion">Guía de Evaluación</string>
+    <string name="aprende_evaluar">Aprende cómo evaluar proyectos de manera efectiva</string>
+    <string name="criterios_evaluacion_titulo">Criterios de Evaluación</string>
+    <string name="escala_calificacion">Escala de Calificación</string>
+    <string name="una_estrella">⭐ 1 Estrella - Necesita mejoras significativas</string>
+    <string name="dos_estrellas">⭐⭐ 2 Estrellas - Por debajo del promedio</string>
+    <string name="tres_estrellas">⭐⭐⭐ 3 Estrellas - Cumple expectativas</string>
+    <string name="cuatro_estrellas">⭐⭐⭐⭐ 4 Estrellas - Supera expectativas</string>
+    <string name="cinco_estrellas">⭐⭐⭐⭐⭐ 5 Estrellas - Excelente, excepcional</string>
+
+    <!-- Mensajes generales -->
+    <string name="salir_sistema">Salir del Sistema</string>
+    <string name="error_cargar_datos">Error al cargar datos</string>
+    <string name="error_cargar_estadisticas">Error al cargar estadísticas</string>
+    <string name="error_cargar_equipos">Error al cargar equipos</string>
+    <string name="error_cargar_proyectos">Error al cargar proyectos</string>
+    <string name="no_proyectos_evaluar">No hay proyectos disponibles para evaluar</string>
+    <string name="proyectos_apareceran_listos">Los proyectos aparecerán aquí cuando estén listos para la exposición</string>
+    <string name="funcionalidad_desarrollo">Funcionalidad en desarrollo</string>
+    <string name="ubicacion">Ubicación:</string>
+    <string name="evaluacion">evaluación</string>
+    <string name="evaluaciones">evaluaciones</string>
 </resources>

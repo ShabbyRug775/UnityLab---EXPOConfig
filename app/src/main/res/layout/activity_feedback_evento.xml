@@ -1,511 +1,391 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:orientation="vertical"
     android:background="@color/background_light">
 
-    <LinearLayout
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_color"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <!-- Título principal -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Feedback del Evento"
-            android:textColor="@color/text_primary"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <!-- Subtítulo -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="Tu opinión nos ayuda a mejorar"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Card de información personal -->
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/card_background">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <LinearLayout
+            <!-- Header -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/primary_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_person"
-                        android:layout_marginEnd="12dp"
-                        app:tint="@color/primary_color" />
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Información Personal"
+                        android:text="Tu Opinión Importa"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_color" />
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ayúdanos a mejorar compartiendo tu experiencia en el evento"
+                        android:textSize="14sp"
+                        android:textColor="@color/white"
+                        android:alpha="0.9" />
 
                 </LinearLayout>
 
-                <!-- Nombre -->
-                <com.google.android.material.textfield.TextInputLayout
+            </androidx.cardview.widget.CardView>
+
+            <!-- Formulario de feedback -->
+            <LinearLayout
+                android:id="@+id/layoutFormulario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Evaluaciones con estrellas -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="@color/primary_color"
-                    app:hintTextColor="@color/primary_color">
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editNombreEvaluador"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tu nombre *"
-                        android:inputType="textPersonName"
-                        android:maxLines="1" />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Evaluación General"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
 
-                <!-- Rol -->
+                        <!-- Evaluación general del evento -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="¿Cómo calificarías el evento en general? *"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <RatingBar
+                            android:id="@+id/ratingEventoGeneral"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:rating="0"
+                            android:layout_marginBottom="20dp" />
+
+                        <!-- Organización -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Organización del evento *"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <RatingBar
+                            android:id="@+id/ratingOrganizacion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:rating="0"
+                            android:layout_marginBottom="20dp" />
+
+                        <!-- Calidad de proyectos -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Calidad de los proyectos presentados *"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <RatingBar
+                            android:id="@+id/ratingCalidadProyectos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:rating="0"
+                            android:layout_marginBottom="20dp" />
+
+                        <!-- Instalaciones -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Instalaciones y espacios"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <RatingBar
+                            android:id="@+id/ratingInstalaciones"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:rating="0"
+                            android:layout_marginBottom="20dp" />
+
+                        <!-- Atención del personal -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Atención del personal organizador"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="8dp" />
+
+                        <RatingBar
+                            android:id="@+id/ratingAtencion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:rating="0" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Comentarios textuales -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Comentarios Detallados"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Aspectos que más gustaron -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primary_color"
+                            app:hintTextColor="@color/primary_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editAspectosMejor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="¿Qué aspectos del evento te gustaron más?"
+                                android:inputType="textMultiLine"
+                                android:minLines="2"
+                                android:maxLines="4"
+                                android:gravity="top"
+                                android:maxLength="300" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Áreas de mejora -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primary_color"
+                            app:hintTextColor="@color/primary_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editAreasMejora"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="¿Qué aspectos consideras que se pueden mejorar?"
+                                android:inputType="textMultiLine"
+                                android:minLines="2"
+                                android:maxLines="4"
+                                android:gravity="top"
+                                android:maxLength="300" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Sugerencias -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primary_color"
+                            app:hintTextColor="@color/primary_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editSugerencias"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Sugerencias para próximos eventos"
+                                android:inputType="textMultiLine"
+                                android:minLines="2"
+                                android:maxLines="4"
+                                android:gravity="top"
+                                android:maxLength="300" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Comentarios adicionales -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primary_color"
+                            app:hintTextColor="@color/primary_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editComentarios"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Comentarios adicionales"
+                                android:inputType="textMultiLine"
+                                android:minLines="3"
+                                android:maxLines="5"
+                                android:gravity="top"
+                                android:maxLength="500" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Botones de acción -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginTop="8dp">
+
+                    <Button
+                        android:id="@+id/btnCancelar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancelar"
+                        android:textColor="@color/text_secondary"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_marginEnd="12dp"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <Button
+                        android:id="@+id/btnEnviarFeedback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enviar Feedback"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:background="@drawable/button_primary"
+                        android:paddingHorizontal="20dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Mensaje de agradecimiento -->
+            <LinearLayout
+                android:id="@+id/layoutAgradecimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/circle_indicator"
+                android:padding="32dp"
+                android:visibility="gone"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_check_circle"
+                    app:tint="@color/success_text"
+                    android:layout_marginBottom="16dp" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tu rol en el evento *"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
+                    android:text="¡Gracias por tu feedback!"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/success_text"
+                    android:textAlignment="center"
                     android:layout_marginBottom="8dp" />
 
-                <Spinner
-                    android:id="@+id/spinnerRol"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/spinner_background"
-                    android:padding="12dp" />
+                    android:layout_height="wrap_content"
+                    android:text="Tu opinión es muy valiosa para nosotros y nos ayudará a mejorar futuros eventos."
+                    android:textSize="14sp"
+                    android:textColor="@color/success_text"
+                    android:textAlignment="center"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Esta ventana se cerrará automáticamente..."
+                    android:textSize="12sp"
+                    android:textColor="@color/success_text"
+                    android:textAlignment="center"
+                    android:alpha="0.8"
+                    android:layout_marginTop="12dp" />
 
             </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Card de evaluación general -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/card_background">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_rate_review"
-                        android:layout_marginEnd="12dp"
-                        app:tint="@color/accent_color" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Evaluación General"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_color" />
-
-                </LinearLayout>
-
-                <!-- Calificación general del evento -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="¿Cómo calificarías el evento en general? *"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-                <RatingBar
-                    android:id="@+id/ratingEventoGeneral"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:rating="0"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Organización -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Organización del evento *"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-                <RatingBar
-                    android:id="@+id/ratingOrganizacion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:rating="0"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Calidad de proyectos -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Calidad de los proyectos presentados *"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-                <RatingBar
-                    android:id="@+id/ratingCalidadProyectos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:rating="0"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Instalaciones -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Instalaciones y espacios *"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
-
-                <RatingBar
-                    android:id="@+id/ratingInstalaciones"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:rating="0"
-                    android:layout_marginBottom="12dp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Card de comentarios -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/card_background">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_comment"
-                        android:layout_marginEnd="12dp"
-                        app:tint="@color/success" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Comentarios y Sugerencias"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_color" />
-
-                </LinearLayout>
-
-                <!-- Lo que más te gustó -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="@color/primary_color"
-                    app:hintTextColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editQueGusto"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="¿Qué fue lo que más te gustó del evento?"
-                        android:inputType="textMultiLine"
-                        android:minLines="2"
-                        android:maxLines="4"
-                        android:gravity="top" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Áreas de mejora -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="@color/primary_color"
-                    app:hintTextColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editAreasMejora"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="¿Qué aspectos consideras que se pueden mejorar?"
-                        android:inputType="textMultiLine"
-                        android:minLines="2"
-                        android:maxLines="4"
-                        android:gravity="top" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Sugerencias para próximos eventos -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="@color/primary_color"
-                    app:hintTextColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editSugerencias"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Sugerencias para próximos eventos"
-                        android:inputType="textMultiLine"
-                        android:minLines="2"
-                        android:maxLines="4"
-                        android:gravity="top" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Comentarios adicionales -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="@color/primary_color"
-                    app:hintTextColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editComentariosAdicionales"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Comentarios adicionales (opcional)"
-                        android:inputType="textMultiLine"
-                        android:minLines="3"
-                        android:maxLines="6"
-                        android:gravity="top" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Card de recomendación -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/info_background">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_thumb_up"
-                        android:layout_marginEnd="12dp"
-                        app:tint="@color/info_text" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Recomendación"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/info_text" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="¿Recomendarías este evento a otros? *"
-                    android:textSize="16sp"
-                    android:textColor="@color/info_text"
-                    android:layout_marginBottom="12dp" />
-
-                <RadioGroup
-                    android:id="@+id/radioGroupRecomendacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/radioSi"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sí"
-                        android:textColor="@color/info_text"
-                        android:buttonTint="@color/info_text" />
-
-                    <RadioButton
-                        android:id="@+id/radioNo"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textColor="@color/info_text"
-                        android:buttonTint="@color/info_text" />
-
-                    <RadioButton
-                        android:id="@+id/radioMaybeIf"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tal vez"
-                        android:textColor="@color/info_text"
-                        android:buttonTint="@color/info_text" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Botones -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
-
-            <Button
-                android:id="@+id/btnCancelar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancelar"
-                android:textColor="@color/white"
-                android:background="@drawable/button_outline"
-                android:layout_marginEnd="12dp"
-                style="?android:attr/borderlessButtonStyle" />
-
-            <Button
-                android:id="@+id/btnEnviarFeedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Enviar Feedback"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:background="@drawable/button_primary" />
 
         </LinearLayout>
 
-        <!-- Mensaje de agradecimiento (inicialmente oculto) -->
-        <LinearLayout
-            android:id="@+id/layoutAgradecimiento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="vertical"
-            android:background="@color/success_background"
-            android:padding="20dp"
-            android:visibility="gone">
+    </ScrollView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="¡Gracias por tu feedback!"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/success_text"
-                android:textAlignment="center"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tu opinión es muy valiosa para nosotros y nos ayudará a mejorar futuros eventos."
-                android:textSize="14sp"
-                android:textColor="@color/success_text"
-                android:textAlignment="center" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>
