@@ -3,6 +3,7 @@ package com.example.unitylab_expoconfig.ui.visitante;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -325,6 +326,10 @@ public class EvaluarProyectosVisitanteActivity extends AppCompatActivity {
     }
 
     // Adapter para la lista de equipos a evaluar
+// ==================== ADAPTER CORREGIDO ====================
+// REEMPLAZA la clase EquiposEvaluacionAdapter en EvaluarProyectosVisitanteActivity.java
+
+    // Adapter para la lista de equipos a evaluar
     private static class EquiposEvaluacionAdapter extends RecyclerView.Adapter<EquiposEvaluacionAdapter.EquipoViewHolder> {
         private List<EquipoEvaluacion> equipos;
         private OnEquipoClickListener listener;
@@ -334,7 +339,7 @@ public class EvaluarProyectosVisitanteActivity extends AppCompatActivity {
         }
 
         public EquiposEvaluacionAdapter(List<EquipoEvaluacion> equipos, OnEquipoClickListener listener) {
-            this.equipos = equipos;
+            this.equipos = equipos != null ? equipos : new ArrayList<>();
             this.listener = listener;
         }
 
@@ -348,45 +353,78 @@ public class EvaluarProyectosVisitanteActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull EquipoViewHolder holder, int position) {
-            EquipoEvaluacion equipo = equipos.get(position);
+            if (equipos == null || position >= equipos.size()) return;
 
-            holder.tvNombreProyecto.setText(equipo.getNombreProyecto());
-            holder.tvNombreEquipo.setText(equipo.getNombre());
-            holder.tvDescripcion.setText(equipo.getDescripcion());
-            holder.tvLugar.setText("📍 " + equipo.getLugar());
+            EquipoEvaluacion equipo = equipos.get(position);
+            if (equipo == null) return;
+
+            // Configurar textos de forma segura
+            if (holder.tvNombreProyecto != null) {
+                holder.tvNombreProyecto.setText(equipo.getNombreProyecto() != null ?
+                        equipo.getNombreProyecto() : "Proyecto sin nombre");
+            }
+
+            if (holder.tvNombreEquipo != null) {
+                holder.tvNombreEquipo.setText(equipo.getNombre() != null ?
+                        equipo.getNombre() : "Equipo sin nombre");
+            }
+
+            if (holder.tvDescripcion != null) {
+                holder.tvDescripcion.setText(equipo.getDescripcion() != null ?
+                        equipo.getDescripcion() : "Sin descripción disponible");
+            }
+
+            if (holder.tvLugar != null) {
+                holder.tvLugar.setText("📍 " + (equipo.getLugar() != null ?
+                        equipo.getLugar() : "Sin ubicación"));
+            }
 
             // Estado de evaluación
-            if (equipo.isYaEvaluado()) {
-                holder.tvEstadoEvaluacion.setText("✅ Ya evaluado");
-                holder.tvEstadoEvaluacion.setTextColor(holder.itemView.getContext()
-                        .getResources().getColor(R.color.success_text));
-                holder.cardEquipo.setAlpha(0.7f);
-            } else {
-                holder.tvEstadoEvaluacion.setText("⭐ Evaluar");
-                holder.tvEstadoEvaluacion.setTextColor(holder.itemView.getContext()
-                        .getResources().getColor(R.color.primary_color));
-                holder.cardEquipo.setAlpha(1.0f);
+            if (holder.tvEstadoEvaluacion != null) {
+                if (equipo.isYaEvaluado()) {
+                    holder.tvEstadoEvaluacion.setText("✅ Ya evaluado");
+                    holder.tvEstadoEvaluacion.setTextColor(holder.itemView.getContext()
+                            .getResources().getColor(android.R.color.holo_green_dark));
+                } else {
+                    holder.tvEstadoEvaluacion.setText("⭐ Evaluar");
+                    holder.tvEstadoEvaluacion.setTextColor(holder.itemView.getContext()
+                            .getResources().getColor(android.R.color.holo_blue_dark));
+                }
             }
 
             // Promedio y evaluaciones
-            if (equipo.getCantEval() > 0) {
-                holder.tvPromedio.setText(String.format(Locale.getDefault(),
-                        "%.1f ⭐ (%d eval.)", equipo.getPromedio(), equipo.getCantEval()));
-                holder.tvPromedio.setVisibility(View.VISIBLE);
-            } else {
-                holder.tvPromedio.setVisibility(View.GONE);
+            if (holder.tvPromedio != null) {
+                if (equipo.getCantEval() > 0) {
+                    holder.tvPromedio.setText(String.format(Locale.getDefault(),
+                            "%.1f ⭐ (%d eval.)", equipo.getPromedio(), equipo.getCantEval()));
+                    holder.tvPromedio.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvPromedio.setText("Sin evaluar");
+                    holder.tvPromedio.setVisibility(View.VISIBLE);
+                }
             }
 
-            holder.cardEquipo.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onEquipoClick(equipo);
-                }
-            });
+            // Alpha para elementos ya evaluados
+            if (holder.cardEquipo != null) {
+                holder.cardEquipo.setAlpha(equipo.isYaEvaluado() ? 0.7f : 1.0f);
+
+                // Click listener
+                holder.cardEquipo.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onEquipoClick(equipo);
+                    }
+                });
+            }
         }
 
         @Override
         public int getItemCount() {
             return equipos != null ? equipos.size() : 0;
+        }
+
+        public void updateEquipos(List<EquipoEvaluacion> nuevosEquipos) {
+            this.equipos = nuevosEquipos != null ? nuevosEquipos : new ArrayList<>();
+            notifyDataSetChanged();
         }
 
         static class EquipoViewHolder extends RecyclerView.ViewHolder {
@@ -396,6 +434,8 @@ public class EvaluarProyectosVisitanteActivity extends AppCompatActivity {
 
             public EquipoViewHolder(@NonNull View itemView) {
                 super(itemView);
+
+                // Inicializar vistas de forma segura
                 cardEquipo = itemView.findViewById(R.id.cardEquipo);
                 tvNombreProyecto = itemView.findViewById(R.id.tvNombreProyecto);
                 tvNombreEquipo = itemView.findViewById(R.id.tvNombreEquipo);
@@ -403,6 +443,14 @@ public class EvaluarProyectosVisitanteActivity extends AppCompatActivity {
                 tvLugar = itemView.findViewById(R.id.tvLugar);
                 tvPromedio = itemView.findViewById(R.id.tvPromedio);
                 tvEstadoEvaluacion = itemView.findViewById(R.id.tvEstadoEvaluacion);
+
+                // Log para debugging si alguna vista es null
+                if (tvNombreProyecto == null) Log.e("EquipoViewHolder", "tvNombreProyecto es null");
+                if (tvNombreEquipo == null) Log.e("EquipoViewHolder", "tvNombreEquipo es null");
+                if (tvDescripcion == null) Log.e("EquipoViewHolder", "tvDescripcion es null");
+                if (tvLugar == null) Log.e("EquipoViewHolder", "tvLugar es null");
+                if (tvPromedio == null) Log.e("EquipoViewHolder", "tvPromedio es null");
+                if (tvEstadoEvaluacion == null) Log.e("EquipoViewHolder", "tvEstadoEvaluacion es null");
             }
         }
     }

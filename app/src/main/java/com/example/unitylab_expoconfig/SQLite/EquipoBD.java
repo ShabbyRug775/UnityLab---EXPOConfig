@@ -96,13 +96,7 @@ public class EquipoBD {
                 null, null, COL_NOMBRE + " ASC");
     }
 
-    public static Cursor obtenerEquiposPorEstado(SQLiteDatabase db, String estado) {
-        return db.query(TABLE_NAME,
-                null,
-                COL_ESTADO_EQUIPO + " = ?",
-                new String[]{estado},
-                null, null, COL_NOMBRE + " ASC");
-    }
+
 
     public static Cursor obtenerEquiposPorTurno(SQLiteDatabase db, String turno) {
         return db.query(TABLE_NAME,

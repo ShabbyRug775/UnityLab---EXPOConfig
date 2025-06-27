@@ -414,7 +414,12 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
 
     public Cursor obtenerEquiposPorEstado(String estado) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return EquipoBD.obtenerEquiposPorEstado(db, estado);
+        String query = "SELECT e.*, p.Nombre as NombreProyecto " +
+                "FROM " + EquipoBD.TABLE_NAME + " e " +
+                "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
+                "WHERE e.EstadoEquipo = ? " +
+                "ORDER BY e.Promedio DESC";
+        return db.rawQuery(query, new String[]{estado});
     }
 
     public Cursor obtenerEquiposPorPromedio() {
@@ -601,7 +606,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT e.*, p.Nombre as NombreProyecto, p.Descripcion as DescripcionProyecto " +
                 "FROM " + EquipoBD.TABLE_NAME + " e " +
                 "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
-                "WHERE e.Estado = 'Registrado' " +
+                "WHERE e.EstadoEquipo = 'Registrado' " +
                 "ORDER BY e.Promedio DESC, e.CantEval DESC";
         return db.rawQuery(query, null);
     }
@@ -633,7 +638,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " +
                 "(SELECT COUNT(*) FROM " + ProyectoBD.TABLE_NAME + ") as TotalProyectos, " +
-                "(SELECT COUNT(*) FROM " + EquipoBD.TABLE_NAME + " WHERE Estado = 'Registrado') as TotalEquipos, " +
+                "(SELECT COUNT(*) FROM " + EquipoBD.TABLE_NAME + " WHERE EstadoEquipo = 'Registrado') as TotalEquipos, " +
                 "(SELECT COUNT(*) FROM " + EvaluacionBD.TABLE_NAME + " WHERE IdVisitanteEvaluador IS NOT NULL) as TotalEvaluacionesVisitantes, " +
                 "(SELECT ROUND(AVG(Calificacion), 2) FROM " + EvaluacionBD.TABLE_NAME + ") as PromedioGeneral";
         return db.rawQuery(query, null);
@@ -649,7 +654,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT e.*, p.Nombre as NombreProyecto " +
                 "FROM " + EquipoBD.TABLE_NAME + " e " +
                 "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
-                "WHERE e.Estado = 'Registrado' AND e.CantEval > 0 " +
+                "WHERE e.EstadoEquipo = 'Registrado' AND e.CantEval > 0 " +
                 "ORDER BY e.CantEval DESC, e.Promedio DESC " +
                 "LIMIT " + limite;
         return db.rawQuery(query, null);
@@ -665,7 +670,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT e.*, p.Nombre as NombreProyecto " +
                 "FROM " + EquipoBD.TABLE_NAME + " e " +
                 "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
-                "WHERE e.Estado = 'Registrado' AND e.CantEval >= 3 " +
+                "WHERE e.EstadoEquipo = 'Registrado' AND e.CantEval >= 1 " +
                 "ORDER BY e.Promedio DESC, e.CantEval DESC " +
                 "LIMIT " + limite;
         return db.rawQuery(query, null);
@@ -812,7 +817,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT e.*, p.Nombre as NombreProyecto " +
                 "FROM " + EquipoBD.TABLE_NAME + " e " +
                 "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
-                "WHERE e.Estado = 'Registrado' AND (" +
+                "WHERE e.EstadoEquipo = 'Registrado' AND (" +
                 "e.Nombre LIKE ? OR " +
                 "e.NombreProyecto LIKE ? OR " +
                 "p.Nombre LIKE ? OR " +
@@ -833,7 +838,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT e.*, p.Nombre as NombreProyecto " +
                 "FROM " + EquipoBD.TABLE_NAME + " e " +
                 "LEFT JOIN " + ProyectoBD.TABLE_NAME + " p ON e.IdProyecto = p.IdProyecto " +
-                "WHERE e.Estado = 'Registrado' AND e.Lugar = ? " +
+                "WHERE e.EstadoEquipo = 'Registrado' AND e.Lugar = ? " +
                 "ORDER BY e.Promedio DESC";
         return db.rawQuery(query, new String[]{lugar});
     }
@@ -845,7 +850,7 @@ public class DbmsSQLiteHelper extends SQLiteOpenHelper {
     public Cursor obtenerUbicacionesEquipos() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT DISTINCT Lugar FROM " + EquipoBD.TABLE_NAME + " " +
-                "WHERE Estado = 'Registrado' AND Lugar IS NOT NULL " +
+                "WHERE EstadoEquipo = 'Registrado' AND Lugar IS NOT NULL " +
                 "ORDER BY Lugar ASC";
         return db.rawQuery(query, null);
     }
