@@ -15,7 +15,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+import com.example.unitylab_expoconfig.SQLite.EquipoBD;
 import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 import com.example.unitylab_expoconfig.SQLite.ProfesorBD;
 
@@ -88,29 +88,29 @@ public class CartelGenerator {
 
             if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
                 info = new EquipoInfo();
-                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_ID_EQUIPO));
-                info.nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
-                info.nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
-                info.descripcionCorta = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
-                info.lugar = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
-                info.numeroAlumnos = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
-                info.cantEvaluaciones = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
-                info.promedio = cursorEquipo.getFloat(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
-                info.cantVisitas = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
+                info.idEquipo = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_ID_EQUIPO));
+                info.nombreEquipo = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_NOMBRE));
+                info.nombreProyecto = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_NOMBRE_PROYECTO));
+                info.descripcionCorta = cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_DESCRIPCION));
+                info.lugar = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_LUGAR));
+                info.numeroAlumnos = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_NUMERO_ALUMNOS));
+                info.cantEvaluaciones = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_CANT_EVAL));
+                info.promedio = cursorEquipo.getFloat(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_PROMEDIO));
+                info.cantVisitas = cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoBD.COL_CANT_VISITAS));
 
                 // Buscar proyecto relacionado por nombre (ya que no hay FK directa)
                 cursorProyecto = dbHelper.buscarProyectosPorNombre(info.nombreProyecto);
                 if (cursorProyecto != null && cursorProyecto.moveToFirst()) {
                     info.descripcionProyecto = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION));
-                    info.fechaCreacion = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION));
+                    //info.fechaCreacion = cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION));
 
-                    int idProfesor = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_PROFESOR));
+                    int idProfesor = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_NUMERO_EMPLEADO_PROFESOR));
 
                     // Obtener información del profesor
-                    cursorProfesor = dbHelper.obtenerProfesorPorId(idProfesor);
+                    cursorProfesor = dbHelper.obtenerProfesorPorNumeroEmpleado(idProfesor);
                     if (cursorProfesor != null && cursorProfesor.moveToFirst()) {
-                        String nombreProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("nombre"));
-                        String apellidosProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("apellidos"));
+                        String nombreProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("Nombre"));
+                        String apellidosProfesor = cursorProfesor.getString(cursorProfesor.getColumnIndexOrThrow("Apellido1"));
                         info.nombreProfesor = nombreProfesor + " " + (apellidosProfesor != null ? apellidosProfesor : "");
                     }
                 }
@@ -273,28 +273,29 @@ public class CartelGenerator {
         // Información del proyecto
         canvas.drawText("PROYECTO:", 50, y, headerPaint);
         y += 25;
-        canvas.drawText(info.nombreProyecto != null ? info.nombreProyecto : "Sin nombre", 50, y, titlePaint);
-        y += 35;
+        canvas.drawText(info.nombreProyecto != null ? info.nombreProyecto : "Sin nombre", 50, y, bodyPaint);
+        y += 20;
 
-        // Descripción del proyecto
         if (info.descripcionProyecto != null && !info.descripcionProyecto.isEmpty()) {
+            canvas.drawText("Descripción:", 50, y, headerPaint);
+            y += 20;
             dibujarTextoMultilinea(canvas, info.descripcionProyecto, 50, y, bodyPaint, PAGE_WIDTH - 100);
             y += calcularAlturaTexto(info.descripcionProyecto, PAGE_WIDTH - 100) + 20;
         }
 
-        // Información técnica en dos columnas
+        // Información del equipo en dos columnas
         float columna1X = 50;
-        float columna2X = PAGE_WIDTH / 2 + 25;
+        float columna2X = PAGE_WIDTH / 2;
         float yColumnas = y;
 
-        // Columna 1
+        // Columna 1 - Información del equipo
         canvas.drawText("EQUIPO:", columna1X, yColumnas, headerPaint);
         yColumnas += 20;
-        canvas.drawText(info.nombreEquipo != null ? info.nombreEquipo : "Sin nombre", columna1X, yColumnas, bodyPaint);
+        canvas.drawText("Nombre: " + (info.nombreEquipo != null ? info.nombreEquipo : "Sin nombre"), columna1X, yColumnas, bodyPaint);
         yColumnas += 18;
         canvas.drawText("Integrantes: " + info.numeroAlumnos, columna1X, yColumnas, bodyPaint);
         yColumnas += 18;
-        canvas.drawText("Lugar: " + (info.lugar > 0 ? "Mesa " + info.lugar : "Por asignar"), columna1X, yColumnas, bodyPaint);
+        canvas.drawText("Ubicación: " + (info.lugar > 0 ? "Mesa " + info.lugar : "Por asignar"), columna1X, yColumnas, bodyPaint);
         yColumnas += 18;
         canvas.drawText("Grupo: " + (info.grupo != null ? info.grupo : ""), columna1X, yColumnas, bodyPaint);
         yColumnas += 18;
@@ -346,20 +347,30 @@ public class CartelGenerator {
 
         document.finishPage(page);
 
-        // Guardar PDF
+        // ✅ NUEVO: Guardar PDF en almacenamiento privado de la aplicación (SIN PERMISOS)
         String fileName = "cartel_" +
                 (info.nombreEquipo != null ? info.nombreEquipo.replaceAll("[^a-zA-Z0-9]", "_") : "equipo") +
                 "_" + System.currentTimeMillis() + ".pdf";
 
-        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File pdfFile = new File(downloadsDir, fileName);
+        // Usar directorio privado de la aplicación para documentos
+        File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "Carteles");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
 
-        FileOutputStream fos = new FileOutputStream(pdfFile);
-        document.writeTo(fos);
-        document.close();
-        fos.close();
+        File pdfFile = new File(directory, fileName);
 
-        return pdfFile.getAbsolutePath();
+        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+            document.writeTo(fos);
+            document.close();
+
+            Log.d(TAG, "Cartel guardado en: " + pdfFile.getAbsolutePath());
+            return pdfFile.getAbsolutePath();
+
+        } catch (IOException e) {
+            Log.e(TAG, "Error al guardar cartel: " + e.getMessage(), e);
+            throw e;
+        }
     }
 
     /**
@@ -428,18 +439,23 @@ public class CartelGenerator {
             // Obtener datos actuales del equipo
             Cursor cursor = dbHelper.obtenerEquipoPorId(idEquipo);
             if (cursor != null && cursor.moveToFirst()) {
-                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE));
-                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE_PROYECTO));
-                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS));
-                String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(EquipoDB.COL_DESCRIPCION));
-                int lugar = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_LUGAR));
-                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_EVAL));
-                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoDB.COL_PROMEDIO));
-                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoDB.COL_CANT_VISITAS));
+                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_NOMBRE));
+                String nombreProyecto = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_NOMBRE_PROYECTO));
+                int numAlumnos = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoBD.COL_NUMERO_ALUMNOS));
+                String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_DESCRIPCION));
+                String lugar = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_LUGAR));
+                int cantEval = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoBD.COL_CANT_EVAL));
+                float promedio = cursor.getFloat(cursor.getColumnIndexOrThrow(EquipoBD.COL_PROMEDIO));
+                int cantVisitas = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoBD.COL_CANT_VISITAS));
+                String turno = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_TURNO));
+                int idproyecto = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoBD.COL_ID_PROYECTO));
+                int boletalider = cursor.getInt(cursor.getColumnIndexOrThrow(EquipoBD.COL_BOLETA_LIDER));
+                String estadoquipo = cursor.getString(cursor.getColumnIndexOrThrow(EquipoBD.COL_ESTADO_EQUIPO));
+
 
                 // Actualizar con la nueva ruta del cartel
                 dbHelper.actualizarEquipo(idEquipo, nombre, nombreProyecto, numAlumnos,
-                        descripcion, lugar, rutaPdf, cantEval, promedio, cantVisitas);
+                        descripcion, turno,lugar, rutaPdf, cantEval, promedio, cantVisitas,idproyecto,boletalider,estadoquipo);
             }
             if (cursor != null) cursor.close();
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,8 +13,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+import com.example.unitylab_expoconfig.SQLite.EventoBD;
 import com.example.unitylab_expoconfig.SQLite.ProfesorBD;
 import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 
@@ -37,40 +37,45 @@ public class CrearProyectoActivity extends AppCompatActivity {
     // Campos del proyecto
     private EditText editNombreProyecto, editDescripcionProyecto, editProfesorResponsable;
 
-    // Campos del equipo
-    private EditText editNombreEquipo, editNumAlumnos, editDescripcionEquipo;
-    private Spinner spinnerLugarEquipo;
-    private Button btnSubirCartel;
-    private ImageView imgPreviewCartel;
+    // Clave de acceso
+    private TextView tvClaveGenerada;
+    private LinearLayout layoutClaveGenerada;
 
-    // Otros controles
+    // Botones
     private Button btnCrearProyecto, btnCancelar, btnGenerarClave;
-    private String cartelPath = ""; // Ruta del archivo del cartel
+
+    private String claveAcceso = "";
     private DbmsSQLiteHelper dbHelper;
     private SQLiteDatabase db;
     private int idUsuarioActual;
     private String tipoUsuario;
+    private String nombreUsuario;
+    private Spinner spinnerEvento;
+    private ArrayAdapter<String> eventoAdapter;
+    private int[] eventoIds = new int[0]; // Para almacenar los IDs de los eventos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_proyecto);
-
         Log.d(TAG, "=== INICIANDO CrearProyectoActivity ===");
 
         // Obtener datos del usuario actual
+        // Obtener datos del intent
         Intent intent = getIntent();
-        idUsuarioActual = intent.getIntExtra("idUsuario", -1);
-        tipoUsuario = intent.getStringExtra("tipoUsuario");
-
+        if (intent != null) {
+            idUsuarioActual = intent.getIntExtra("idUsuario", -1);
+            tipoUsuario = intent.getStringExtra("tipoUsuario");
+            nombreUsuario = intent.getStringExtra("nombreUsuario");
+        }
         Log.d(TAG, "Usuario actual: ID=" + idUsuarioActual + ", Tipo=" + tipoUsuario);
 
         dbHelper = new DbmsSQLiteHelper(this);
         db = dbHelper.getWritableDatabase();
 
         inicializarVistas();
-        configurarSpinners();
         configurarBotones();
+        cargarEventos();
 
         // Prellenar datos según el tipo de usuario
         if ("profesor".equals(tipoUsuario)) {
@@ -85,14 +90,11 @@ public class CrearProyectoActivity extends AppCompatActivity {
             editNombreProyecto = findViewById(R.id.editNombreProyecto);
             editDescripcionProyecto = findViewById(R.id.editDescripcionProyecto);
             editProfesorResponsable = findViewById(R.id.editProfesorResponsable);
+            spinnerEvento = findViewById(R.id.spinnerEvento);
 
-            // Campos del equipo
-            editNombreEquipo = findViewById(R.id.editNombreEquipo);
-            editNumAlumnos = findViewById(R.id.editNumAlumnos);
-            editDescripcionEquipo = findViewById(R.id.editDescripcionEquipo);
-            spinnerLugarEquipo = findViewById(R.id.spinnerLugarEquipo);
-            btnSubirCartel = findViewById(R.id.btnSubirCartel);
-            imgPreviewCartel = findViewById(R.id.imgPreviewCartel);
+            // Clave de acceso
+            tvClaveGenerada = findViewById(R.id.tvClaveGenerada);
+            layoutClaveGenerada = findViewById(R.id.layoutClaveGenerada);
 
             // Botones
             btnCrearProyecto = findViewById(R.id.btnCrearProyecto);
@@ -106,41 +108,18 @@ public class CrearProyectoActivity extends AppCompatActivity {
         }
     }
 
-    private void configurarSpinners() {
-        Log.d(TAG, "Configurando spinners...");
-        try {
-            // Configurar spinner de lugares (stands)
-            String[] lugares = new String[50]; // Asumiendo 50 stands disponibles
-            for (int i = 0; i < lugares.length; i++) {
-                lugares[i] = "Stand " + (i + 1);
-            }
-
-            ArrayAdapter<String> lugarAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, lugares);
-            lugarAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerLugarEquipo.setAdapter(lugarAdapter);
-
-            Log.d(TAG, "Spinner de lugares configurado");
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error al configurar spinners: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     private void prellenarDatosProfesor() {
         Log.d(TAG, "Prellenando datos del profesor...");
         try {
             if ("profesor".equals(tipoUsuario)) {
                 // Obtener datos del profesor actual
-                Cursor cursor = ProfesorBD.obtenerProfesorPorId(db, idUsuarioActual);
+                Cursor cursor = ProfesorBD.obtenerProfesorPorNumeroEmpleado(db,idUsuarioActual);
                 if (cursor != null && cursor.moveToFirst()) {
                     String nombre = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_NOMBRE));
-                    String apellidos = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_APELLIDOS));
+                    String apellido = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_APELLIDO1));
 
-                    editProfesorResponsable.setText(nombre + " " + apellidos);
-
-                    Log.d(TAG, "Datos prellenados: Nombre=" + nombre + " " + apellidos);
+                    editProfesorResponsable.setText(nombre + " " + apellido);
+                    Log.d(TAG, "Datos prellenados: Nombre=" + nombre + " " + apellido);
                     cursor.close();
                 } else {
                     Log.w(TAG, "No se pudieron obtener datos del profesor con ID: " + idUsuarioActual);
@@ -153,28 +132,26 @@ public class CrearProyectoActivity extends AppCompatActivity {
     }
 
     private void configurarBotones() {
-        btnCrearProyecto.setOnClickListener(v -> guardarProyectoYEquipo());
+        btnCrearProyecto.setOnClickListener(v -> guardarProyecto());
         btnCancelar.setOnClickListener(v -> finish());
 
-        btnSubirCartel.setOnClickListener(v -> {
-            // Implementar lógica para subir imagen del cartel
-            // Esto abriría el selector de archivos/galería
-            // Por simplicidad, aquí solo simulamos que se subió
-            cartelPath = "/path/to/cartel.jpg";
-            imgPreviewCartel.setVisibility(View.VISIBLE);
-            //imgPreviewCartel.setImageResource(R.drawable.placeholder_image);
-            Toast.makeText(this, "Cartel subido (simulado)", Toast.LENGTH_SHORT).show();
+        btnGenerarClave.setOnClickListener(v -> {
+            claveAcceso = generarCodigoAleatorio(6);
+            tvClaveGenerada.setText(claveAcceso);
+            layoutClaveGenerada.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Clave generada: " + claveAcceso, Toast.LENGTH_SHORT).show();
         });
 
-        btnGenerarClave.setOnClickListener(v -> {
-            // Generar clave aleatoria para el proyecto
-            String clave = generarCodigoAleatorio(6);
-            Toast.makeText(this, "Clave generada: " + clave, Toast.LENGTH_SHORT).show();
+        findViewById(R.id.btnCopiarClave).setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Código proyecto", claveAcceso);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Clave copiada", Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void guardarProyectoYEquipo() {
-        Log.d(TAG, "=== INICIANDO GUARDADO DE PROYECTO Y EQUIPO ===");
+    private void guardarProyecto() {
+        Log.d(TAG, "=== INICIANDO GUARDADO DEL PROYECTO ===");
 
         try {
             if (!validarCampos()) {
@@ -182,60 +159,41 @@ public class CrearProyectoActivity extends AppCompatActivity {
                 return;
             }
 
-            // Obtener datos del formulario para el equipo
-            String nombreEquipo = editNombreEquipo.getText().toString().trim();
-            int numAlumnos = Integer.parseInt(editNumAlumnos.getText().toString().trim());
-            String descripcionEquipo = editDescripcionEquipo.getText().toString().trim();
-            int lugar = spinnerLugarEquipo.getSelectedItemPosition() + 1; // +1 para que empiece en 1
+            if (TextUtils.isEmpty(claveAcceso)) {
+                Toast.makeText(this, "Debe generar una clave de acceso", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // Obtener datos del formulario para el proyecto
+            // Obtener datos del formulario
             String nombreProyecto = editNombreProyecto.getText().toString().trim();
             String descripcionProyecto = editDescripcionProyecto.getText().toString().trim();
+
+            // Obtener evento seleccionado (puede ser null)
+            Integer idEvento = null;
+            if (eventoAdapter != null && eventoAdapter.getCount() > 0 &&
+                    spinnerEvento.getSelectedItemPosition() >= 0) {
+                int posicion = spinnerEvento.getSelectedItemPosition();
+                idEvento = eventoIds[posicion];
+            }
 
             // Obtener fecha actual
             String fechaCreacion = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     .format(new Date());
 
-            String claveAcceso = generarCodigoAleatorio(6); // Código de 6 caracteres
-
-            // Primero insertar el equipo
-            Log.d(TAG, "Insertando equipo en la base de datos...");
-            long idEquipo = EquipoDB.insertarEquipo(
-                    db,
-                    nombreEquipo,
-                    nombreProyecto, // Nombre del proyecto como nombreProyecto en equipo
-                    numAlumnos,
-                    descripcionEquipo,
-                    lugar,
-                    cartelPath,
-                    0, // cantEval inicial
-                    0, // promedio inicial
-                    0,  // cantVisitas inicial
-                    claveAcceso
-            );
-
-            if (idEquipo == -1) {
-                Log.e(TAG, "Error al insertar equipo");
-                Toast.makeText(this, "Error al crear el equipo", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Log.d(TAG, "Equipo creado con ID: " + idEquipo);
-
-            // Luego insertar el proyecto con referencia al equipo
+            // Insertar el proyecto
             Log.d(TAG, "Insertando proyecto en la base de datos...");
             long idProyecto = ProyectoBD.insertarProyecto(
                     db,
                     nombreProyecto,
                     descripcionProyecto,
+                    claveAcceso,
                     idUsuarioActual,
-                    (int) idEquipo,
-                    fechaCreacion
+                    idEvento  // Ahora pasamos el evento seleccionado
             );
 
             if (idProyecto != -1) {
                 Log.d(TAG, "Proyecto creado exitosamente con ID: " + idProyecto);
-                Toast.makeText(this, "Proyecto y equipo creados exitosamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Proyecto creado exitosamente", Toast.LENGTH_SHORT).show();
 
                 // Regresar a la lista de proyectos
                 Intent intent = new Intent(this, ListaProyectosActivity.class);
@@ -245,13 +203,11 @@ public class CrearProyectoActivity extends AppCompatActivity {
                 finish();
             } else {
                 Log.e(TAG, "Error: la inserción del proyecto devolvió -1");
-                // Si falla el proyecto, eliminar el equipo creado para mantener consistencia
-                EquipoDB.eliminarEquipo(db, (int) idEquipo);
                 Toast.makeText(this, "Error al crear el proyecto", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "Excepción al guardar proyecto y equipo: " + e.getMessage());
+            Log.e(TAG, "Excepción al guardar el proyecto: " + e.getMessage());
             e.printStackTrace();
             Toast.makeText(this, "Error inesperado: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -260,67 +216,73 @@ public class CrearProyectoActivity extends AppCompatActivity {
     private boolean validarCampos() {
         Log.d(TAG, "Validando campos...");
 
-        // Validar campos del proyecto
+        // Validar nombre del proyecto
         if (TextUtils.isEmpty(editNombreProyecto.getText())) {
             editNombreProyecto.setError("El nombre del proyecto es obligatorio");
             editNombreProyecto.requestFocus();
             return false;
         }
 
-        // Validar campos del equipo
-        if (TextUtils.isEmpty(editNombreEquipo.getText())) {
-            editNombreEquipo.setError("El nombre del equipo es obligatorio");
-            editNombreEquipo.requestFocus();
+        // Validar descripción del proyecto (opcional)
+        // Si quieres hacerla obligatoria, descomenta estas líneas:
+        /*
+        if (TextUtils.isEmpty(editDescripcionProyecto.getText())) {
+            editDescripcionProyecto.setError("La descripción del proyecto es obligatoria");
+            editDescripcionProyecto.requestFocus();
             return false;
         }
-
-        if (TextUtils.isEmpty(editNumAlumnos.getText())) {
-            editNumAlumnos.setError("El número de alumnos es obligatorio");
-            editNumAlumnos.requestFocus();
-            return false;
-        }
-
-        try {
-            int num = Integer.parseInt(editNumAlumnos.getText().toString());
-            if (num <= 0) {
-                editNumAlumnos.setError("Debe haber al menos 1 alumno");
-                editNumAlumnos.requestFocus();
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            editNumAlumnos.setError("Número inválido");
-            editNumAlumnos.requestFocus();
-            return false;
-        }
+        */
 
         return true;
     }
+    private void cargarEventos() {
+        Log.d(TAG, "Cargando eventos desde la base de datos...");
+        try {
+            Cursor cursor = EventoBD.obtenerTodosEventos(db);
+            if (cursor != null && cursor.getCount() > 0) {
+                eventoIds = new int[cursor.getCount()];
+                String[] nombresEventos = new String[cursor.getCount()];
+
+                int i = 0;
+                while (cursor.moveToNext()) {
+                    eventoIds[i] = cursor.getInt(cursor.getColumnIndexOrThrow(EventoBD.COL_ID_EVENTO));
+                    String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EventoBD.COL_NOMBRE));
+                    String fecha = cursor.getString(cursor.getColumnIndexOrThrow(EventoBD.COL_FECHA_INICIO));
+
+                    // Formatear nombre con fecha
+                    nombresEventos[i] = nombre + " (" + fecha.split(" ")[0] + ")";
+                    i++;
+                }
+
+                eventoAdapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_spinner_item, nombresEventos);
+                eventoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerEvento.setAdapter(eventoAdapter);
+
+                Log.d(TAG, "Eventos cargados exitosamente: " + cursor.getCount());
+            } else {
+                Log.w(TAG, "No hay eventos registrados");
+                spinnerEvento.setEnabled(false);
+                Toast.makeText(this, "No hay eventos registrados", Toast.LENGTH_SHORT).show();
+            }
+
+            if (cursor != null) cursor.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Error al cargar eventos: " + e.getMessage());
+            e.printStackTrace();
+            Toast.makeText(this, "Error al cargar eventos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private String generarCodigoAleatorio(int longitud) {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
-
         for (int i = 0; i < longitud; i++) {
             int index = (int) (Math.random() * caracteres.length());
             sb.append(caracteres.charAt(index));
         }
-
         return sb.toString();
-    }
-
-    private void mostrarClaveGenerada(String clave) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Código de acceso del equipo");
-        builder.setMessage("Comparte este código con los miembros del equipo:\n\n" + clave);
-        builder.setPositiveButton("Copiar", (dialog, which) -> {
-            // Copiar al portapapeles
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Código equipo", clave);
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "Código copiado", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNegativeButton("OK", null);
-        builder.show();
     }
 
     @Override

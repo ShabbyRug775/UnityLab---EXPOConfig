@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permisos necesarios para funcionalidades de proyectos -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -77,6 +82,28 @@
                 android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
         </activity>
 
+        <!-- Actividad para constancia -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.constancia.GenerarConstanciaActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
+        </activity>
+
+        <!-- Actividad registrar equipo -->
+        <activity
+            android:name="com.example.unitylab_expoconfig.ui.equipos.RegistrarEquipoActivity"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity" />
+        </activity>
+
         <!-- Actividades de profesores -->
         <activity
             android:name="com.example.unitylab_expoconfig.ui.profesores.LoginProfesor"
@@ -104,6 +131,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.ui.profesores.RegistroProfesorActivity" />
         </activity>
+
+        <activity android:name=".ui.claves.GestionarClavesActivity" />
+        <activity android:name=".ui.equipos.GestionarEquiposActivity" />
+        <activity android:name=".ui.evaluacion.EvaluarEquiposActivity" />
+        <activity android:name=".ui.agenda.AgendaActivity" />
 
         <!-- Actividades de administrador -->
         <activity
@@ -141,6 +173,67 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.MainActivity" />
+        </activity>
+
+        <!-- Evaluación de proyectos para visitantes -->
+        <activity
+            android:name=".ui.visitante.EvaluarProyectosVisitanteActivity"
+            android:label="@string/evaluar_proyectos"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".ui.visitante.VisitanteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.visitante.VisitanteActivity" />
+        </activity>
+
+        <!-- Detalle de proyecto para visitantes -->
+        <activity
+            android:name=".ui.visitante.DetalleProyectoVisitanteActivity"
+            android:label="@string/evaluar_proyecto"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".ui.visitante.VisitanteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.visitante.VisitanteActivity" />
+        </activity>
+
+        <!-- Guía de evaluación -->
+        <activity
+            android:name=".ui.visitante.GuiaEvaluacionActivity"
+            android:label="@string/guia_evaluacion"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".ui.visitante.VisitanteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.visitante.VisitanteActivity" />
+        </activity>
+
+        <!-- Mapa de ubicaciones -->
+        <activity
+            android:name=".ui.visitante.MapaUbicacionesActivity"
+            android:label="@string/mapa_ubicaciones"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".ui.visitante.VisitanteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.visitante.VisitanteActivity" />
+        </activity>
+
+        <!-- Feedback del evento -->
+        <activity
+            android:name=".ui.visitante.FeedbackEventoActivity"
+            android:label="@string/feedback_evento"
+            android:theme="@style/Theme.UnityLab_EXPOConfig"
+            android:parentActivityName=".ui.visitante.VisitanteActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.visitante.VisitanteActivity" />
         </activity>
 
         <!-- Actividad de bienvenida -->
@@ -225,6 +318,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.unitylab_expoconfig.ui.inicio.BienvenidaActivity" />
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
 
 
 

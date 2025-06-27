@@ -18,7 +18,7 @@ import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
 
 public class RegistroEstudianteActivity extends AppCompatActivity {
 
-    private EditText editNombre, editApellidos, editCorreo, editBoleta,
+    private EditText editNombre, editApellido1,editApellido2, editCorreo, editBoleta,
             editGrupo, editPassword, editConfirmarPassword;
     private AutoCompleteTextView spinnerSemestre, spinnerCarrera, spinnerTurno;
     private CheckBox checkTerminos;
@@ -33,7 +33,8 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
 
         // Inicializar vistas
         editNombre = findViewById(R.id.editNombre);
-        editApellidos = findViewById(R.id.editApellidos);
+        editApellido1 = findViewById(R.id.editApellido1);
+        editApellido2 = findViewById(R.id.editApellido2);
         editCorreo = findViewById(R.id.editCorreo);
         editBoleta = findViewById(R.id.editBoleta);
         editGrupo = findViewById(R.id.editGrupo);
@@ -66,7 +67,7 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
         spinnerCarrera.setAdapter(carreraAdapter);
 
         // Semestres disponibles
-        String[] semestres = new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
+        String[] semestres = new String[]{"1", "2", "3", "4", "5", "6", "7", "8","9","10","11","12"};
         ArrayAdapter<String> semestreAdapter = new ArrayAdapter<>(
                 this, R.layout.dropdown_menu_item, semestres);
         spinnerSemestre.setAdapter(semestreAdapter);
@@ -81,7 +82,8 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
     private void registrarEstudiante() {
         // Validar campos vacíos
         if (editNombre.getText().toString().isEmpty() ||
-                editApellidos.getText().toString().isEmpty() ||
+                editApellido1.getText().toString().isEmpty() ||
+                editApellido2.getText().toString().isEmpty() ||
                 editCorreo.getText().toString().isEmpty() ||
                 editBoleta.getText().toString().isEmpty() ||
                 editGrupo.getText().toString().isEmpty() ||
@@ -119,17 +121,7 @@ public class RegistroEstudianteActivity extends AppCompatActivity {
         }
 
         // Insertar en la base de datos
-        long id = dbHelper.insertarEstudiante(
-                editNombre.getText().toString(),
-                editApellidos.getText().toString(),
-                editCorreo.getText().toString(),
-                editBoleta.getText().toString(),
-                editGrupo.getText().toString(),
-                spinnerSemestre.getText().toString(),
-                spinnerCarrera.getText().toString(),
-                spinnerTurno.getText().toString(),
-                editPassword.getText().toString()
-        );
+        long id = dbHelper.insertarAlumno(Integer.parseInt(editBoleta.getText().toString()),editNombre.getText().toString(),editApellido1.getText().toString(),editApellido2.getText().toString(),editCorreo.getText().toString(),spinnerCarrera.getText().toString(),Integer.parseInt(spinnerSemestre.getText().toString()),editGrupo.getText().toString(),spinnerTurno.getText().toString(),editPassword.getText().toString(),null,null);
 
         if (id != -1) {
             Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();

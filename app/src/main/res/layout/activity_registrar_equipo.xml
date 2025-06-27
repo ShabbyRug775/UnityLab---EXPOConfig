@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Validar Clave"
-                        android:textColor="@color/primary_color"
+                        android:textColor="@color/white"
                         android:background="@drawable/button_primary"
                         android:layout_gravity="end" />
 
@@ -296,7 +296,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+ Agregar Integrante"
-                        android:textColor="@color/primary_color"
+                        android:textColor="@color/white"
                         android:background="@drawable/button_outline"
                         android:layout_gravity="center"
                         android:layout_marginTop="8dp"
@@ -370,59 +370,6 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Logo del proyecto -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Logo o Imagen Distintiva:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
-
-                        <ImageView
-                            android:id="@+id/ivLogoProyecto"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginEnd="16dp"
-                            android:background="@drawable/button_accent_outline"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_folder_projects" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_vertical">
-
-                            <Button
-                                android:id="@+id/btnSeleccionarImagen"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Seleccionar Imagen"
-                                android:textColor="@color/primary_color"
-                                android:background="@drawable/button_outline"
-                                android:layout_marginBottom="8dp"
-                                style="?android:attr/borderlessButtonStyle" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Opcional: JPG, PNG máx 2MB"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_hint"
-                                android:gravity="center" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -522,7 +469,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="Cancelar"
-            android:textColor="@color/primary_color"
+            android:textColor="@color/white"
             android:background="@drawable/button_outline"
             style="?android:attr/borderlessButtonStyle" />
 

@@ -8,12 +8,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inicio_main);
+        EjemploUsoCompleto Ejemplo = new EjemploUsoCompleto(this);
+        Ejemplo.ejecutarEjemploCompleto();
 
         // Configurar click listeners para cada CardView
         CardView cardAdmin = findViewById(R.id.cardAdministrador);

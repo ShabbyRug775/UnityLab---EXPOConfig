@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Directorio para documentos (Carteles y Constancias) -->
+    <external-files-path
+        name="documents"
+        path="Documents/" />
+
+    <!-- Directorio para archivos compartidos -->
+    <external-files-path
+        name="shared_files"
+        path="." />
+
+    <!-- Cache interno para archivos temporales -->
+    <cache-path
+        name="cache"
+        path="." />
+</paths>

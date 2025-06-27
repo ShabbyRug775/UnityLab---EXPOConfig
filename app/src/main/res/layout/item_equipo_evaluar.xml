@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardEquipo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="3dp"
+    android:background="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header del equipo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNombreProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del Proyecto"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvNombreEquipo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Equipo"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+            <!-- Estado de evaluación -->
+            <TextView
+                android:id="@+id/tvEstadoEvaluacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⭐ Evaluar"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_blue_dark"
+                android:background="@drawable/spinner_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp" />
+
+        </LinearLayout>
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/tvDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción del proyecto que puede ser un poco larga..."
+            android:textSize="13sp"
+            android:textColor="@android:color/darker_gray"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.1"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Footer con información adicional -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvLugar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="📍 Laboratorio A-101"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/tvPromedio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4.5 ⭐ (12 eval.)"
+                android:textSize="12sp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

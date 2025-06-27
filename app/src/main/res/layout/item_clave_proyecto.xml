@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardClave"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header con nombre del proyecto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNombreProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del Proyecto"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvNumEquipos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 equipos"
+                    android:textSize="12sp"
+                    android:textColor="@color/success"
+                    android:layout_marginTop="2dp"
+                    android:drawableStart="@drawable/ic_group"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_add"
+                app:tint="@color/primary_color" />
+
+        </LinearLayout>
+
+        <!-- Clave de acceso -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/card_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clave:"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tvClave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PROJ-2024-A1B2C3"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color"
+                android:fontFamily="monospace" />
+
+            <ImageButton
+                android:id="@+id/btnCopiar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_share"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Copiar clave"
+                app:tint="@color/text_secondary" />
+
+        </LinearLayout>
+
+        <!-- Botones de acción -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Toca para ver detalles"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="start|center_vertical" />
+
+            <Button
+                android:id="@+id/btnRegenerar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regenerar"
+                android:textColor="@color/warning"
+                android:background="?android:attr/selectableItemBackground"
+                android:textSize="12sp"
+                android:minHeight="32dp"
+                android:paddingHorizontal="12dp"
+                style="?android:attr/borderlessButtonStyle" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

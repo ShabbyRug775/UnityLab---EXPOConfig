@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.unitylab_expoconfig.R;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EquipoDB;
+//import com.example.unitylab_expoconfig.SQLite.EquipoDB;
 import com.example.unitylab_expoconfig.SQLite.ProyectoBD;
 
 public class DetalleProyectoActivity extends AppCompatActivity {
@@ -50,7 +50,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         configurarBotones();
 
         // Cargar datos del proyecto
-        cargarDatosProyecto();
+        //cargarDatosProyecto();
     }
 
     private void configurarBotones() {
@@ -72,58 +72,58 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         btnVerCartel.setOnClickListener(v -> verCartelEquipo());
     }
 
-    private void cargarDatosProyecto() {
-        if (idProyecto == -1) {
-            Toast.makeText(this, "Error: Proyecto no válido", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        // Obtener datos del proyecto
-        Cursor cursorProyecto = ProyectoBD.obtenerProyectoPorId(db, idProyecto);
-        if (cursorProyecto == null || !cursorProyecto.moveToFirst()) {
-            Toast.makeText(this, "Error: Proyecto no encontrado", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        // Obtener datos del equipo asociado
-        int idEquipo = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_EQUIPO));
-        Cursor cursorEquipo = EquipoDB.obtenerEquipoPorId(db, idEquipo);
-
-        // Mostrar datos del proyecto
-        TextView tvNombre = findViewById(R.id.tvNombreProyecto);
-        TextView tvDescripcion = findViewById(R.id.tvDescripcion);
-        TextView tvEstado = findViewById(R.id.tvEstado);
-        TextView tvFechaCreacion = findViewById(R.id.tvFechaCreacion);
-        TextView tvNombreEquipo = findViewById(R.id.tvNombreEquipo);
-        TextView tvCodigoAcceso = findViewById(R.id.tvCodigoAcceso);
-
-        // Proyecto
-        tvNombre.setText(cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
-        tvDescripcion.setText(cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
-        tvFechaCreacion.setText("Creado: " + cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION)));
-
-        // Estado (asumiendo que hay un campo estado, si no, puedes eliminarlo)
-        tvEstado.setText("ACTIVO"); // Puedes ajustar esto según tu lógica
-
-        // Equipo (si existe)
-        if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
-            tvNombreEquipo.setText("Equipo: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE)));
-            tvCodigoAcceso.setText("Clave de acceso: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CLAVE_ACCESO)));
-
-            // Mostrar más datos del equipo si es necesario
-            TextView tvNumAlumnos = findViewById(R.id.tvNumAlumnos);
-            TextView tvLugar = findViewById(R.id.tvLugar);
-
-            tvNumAlumnos.setText("Miembros: " + cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS)));
-            tvLugar.setText("Lugar: Stand " + cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_LUGAR)));
-
-            cursorEquipo.close();
-        }
-
-        cursorProyecto.close();
-    }
+//    private void cargarDatosProyecto() {
+//        if (idProyecto == -1) {
+//            Toast.makeText(this, "Error: Proyecto no válido", Toast.LENGTH_SHORT).show();
+//            finish();
+//            return;
+//        }
+//
+//        // Obtener datos del proyecto
+//        Cursor cursorProyecto = ProyectoBD.obtenerProyectoPorId(db, idProyecto);
+//        if (cursorProyecto == null || !cursorProyecto.moveToFirst()) {
+//            Toast.makeText(this, "Error: Proyecto no encontrado", Toast.LENGTH_SHORT).show();
+//            finish();
+//            return;
+//        }
+//
+//        // Obtener datos del equipo asociado
+//        int idEquipo = cursorProyecto.getInt(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_ID_EQUIPO));
+//        Cursor cursorEquipo = EquipoDB.obtenerEquipoPorId(db, idEquipo);
+//
+//        // Mostrar datos del proyecto
+//        TextView tvNombre = findViewById(R.id.tvNombreProyecto);
+//        TextView tvDescripcion = findViewById(R.id.tvDescripcion);
+//        TextView tvEstado = findViewById(R.id.tvEstado);
+//        TextView tvFechaCreacion = findViewById(R.id.tvFechaCreacion);
+//        TextView tvNombreEquipo = findViewById(R.id.tvNombreEquipo);
+//        TextView tvCodigoAcceso = findViewById(R.id.tvCodigoAcceso);
+//
+//        // Proyecto
+//        tvNombre.setText(cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_NOMBRE_PROYECTO)));
+//        tvDescripcion.setText(cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_DESCRIPCION)));
+//        tvFechaCreacion.setText("Creado: " + cursorProyecto.getString(cursorProyecto.getColumnIndexOrThrow(ProyectoBD.COL_FECHA_CREACION)));
+//
+//        // Estado (asumiendo que hay un campo estado, si no, puedes eliminarlo)
+//        tvEstado.setText("ACTIVO"); // Puedes ajustar esto según tu lógica
+//
+//        // Equipo (si existe)
+//        if (cursorEquipo != null && cursorEquipo.moveToFirst()) {
+//            tvNombreEquipo.setText("Equipo: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NOMBRE)));
+//            tvCodigoAcceso.setText("Clave de acceso: " + cursorEquipo.getString(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_CLAVE_ACCESO)));
+//
+//            // Mostrar más datos del equipo si es necesario
+//            TextView tvNumAlumnos = findViewById(R.id.tvNumAlumnos);
+//            TextView tvLugar = findViewById(R.id.tvLugar);
+//
+//            tvNumAlumnos.setText("Miembros: " + cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_NUM_ALUMNOS)));
+//            tvLugar.setText("Lugar: Stand " + cursorEquipo.getInt(cursorEquipo.getColumnIndexOrThrow(EquipoDB.COL_LUGAR)));
+//
+//            cursorEquipo.close();
+//        }
+//
+//        cursorProyecto.close();
+//    }
 
     private void editarProyecto() {
         // Implementar lógica para editar proyecto

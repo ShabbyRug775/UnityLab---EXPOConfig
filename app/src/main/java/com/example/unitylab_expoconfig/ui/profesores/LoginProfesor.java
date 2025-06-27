@@ -53,21 +53,21 @@ public class LoginProfesor extends AppCompatActivity {
     }
 
     private void validarProfesor() {
-        String numEmpleado = editTextEmpleado.getText().toString().trim();
+        int numEmpleado = Integer.parseInt(editTextEmpleado.getText().toString().trim());
         String password = editTextPassword.getText().toString().trim();
 
-        if (numEmpleado.isEmpty() || password.isEmpty()) {
+        if (numEmpleado == 0 || password.isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Cursor cursor = dbHelper.buscarProfesorPorNumEmpleado(numEmpleado);
+        Cursor cursor = dbHelper.obtenerProfesorPorNumeroEmpleado(numEmpleado);
 
         if (cursor != null && cursor.moveToFirst()) {
-            String passwordGuardada = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_PASSWORD));
+            String passwordGuardada = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_CONTRASEÑA));
 
             if (password.equals(passwordGuardada)) {
-                int idProfesor = cursor.getInt(cursor.getColumnIndexOrThrow(ProfesorBD.COL_ID));
+                int idProfesor = cursor.getInt(cursor.getColumnIndexOrThrow(ProfesorBD.COL_NUMERO_EMPLEADO));
                 String nombre = cursor.getString(cursor.getColumnIndexOrThrow(ProfesorBD.COL_NOMBRE));
 
                 Intent intent = new Intent(this, ProfesorActivity.class);

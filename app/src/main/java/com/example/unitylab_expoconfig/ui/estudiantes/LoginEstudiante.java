@@ -11,8 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.unitylab_expoconfig.R;
+import com.example.unitylab_expoconfig.SQLite.AlumnoBD;
 import com.example.unitylab_expoconfig.SQLite.DbmsSQLiteHelper;
-import com.example.unitylab_expoconfig.SQLite.EstudianteBD;
+//import com.example.unitylab_expoconfig.SQLite.EstudianteBD;
 import com.example.unitylab_expoconfig.ui.inicio.EstudianteActivity;
 
 public class LoginEstudiante extends AppCompatActivity {
@@ -53,23 +54,23 @@ public class LoginEstudiante extends AppCompatActivity {
     }
 
     private void validarEstudiante() {
-        String boleta = editTextBoleta.getText().toString().trim();
+        int boleta = Integer.parseInt(editTextBoleta.getText().toString().trim());
         String password = editTextPassword.getText().toString().trim();
 
-        if (boleta.isEmpty() || password.isEmpty()) {
+        if (boleta <= 0 || password.isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Cursor cursor = dbHelper.buscarEstudiantesPorBoleta(boleta);
+        Cursor cursor = dbHelper.obtenerAlumnoPorBoleta(boleta);
 
         if (cursor != null && cursor.moveToFirst()) {
-            String passwordGuardada = cursor.getString(cursor.getColumnIndexOrThrow(EstudianteBD.COL_PASSWORD));
+            String passwordGuardada = cursor.getString(cursor.getColumnIndexOrThrow(AlumnoBD.COL_CONTRASEÑA));
 
             // En una app real, aquí compararías el hash de la contraseña
             if (password.equals(passwordGuardada)) {
-                int idEstudiante = cursor.getInt(cursor.getColumnIndexOrThrow(EstudianteBD.COL_ID));
-                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(EstudianteBD.COL_NOMBRE));
+                int idEstudiante = cursor.getInt(cursor.getColumnIndexOrThrow(AlumnoBD.COL_BOLETA));
+                String nombre = cursor.getString(cursor.getColumnIndexOrThrow(AlumnoBD.COL_NOMBRE));
 
                 // Redirigir a Bienvenida con datos del estudiante
                 Intent intent = new Intent(this, EstudianteActivity.class);

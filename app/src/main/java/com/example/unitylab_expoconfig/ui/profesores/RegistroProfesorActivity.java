@@ -127,37 +127,37 @@ public class RegistroProfesorActivity extends AppCompatActivity {
         }
 
         // Verificar si el número de empleado ya existe
-        Cursor cursor = dbHelper.buscarProfesorPorNumEmpleado(numEmpleadoStr);
-        if (cursor != null && cursor.getCount() > 0) {
-            Toast.makeText(this, "Ya existe un profesor con este número de empleado", Toast.LENGTH_SHORT).show();
-            cursor.close();
-            return;
-        }
+//        Cursor cursor = dbHelper.buscarProfesorPorNumEmpleado(numEmpleadoStr);
+//        if (cursor != null && cursor.getCount() > 0) {
+//            Toast.makeText(this, "Ya existe un profesor con este número de empleado", Toast.LENGTH_SHORT).show();
+//            cursor.close();
+//            return;
+//        }
 
         // Obtener ID de departamento
         int idDepto = obtenerIdDepartamento(spinnerDepartamento.getText().toString());
 
         // Insertar en la base de datos
-        long id = dbHelper.insertarProfesor(
-                editNombre.getText().toString(),
-                editApellidos.getText().toString(),
-                editCorreo.getText().toString(),
-                numEmpleado,
-                idDepto,
-                editPassword.getText().toString()
-        );
+//        long id = dbHelper.insertarProfesor(
+//                editNombre.getText().toString(),
+//                editApellidos.getText().toString(),
+//                editCorreo.getText().toString(),
+//                numEmpleado,
+//                idDepto,
+//                editPassword.getText().toString()
+//        );
 
-        if (id != -1) {
-            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, LoginProfesor.class));
-            finish();
-        } else {
-            Toast.makeText(this, "Error al registrar", Toast.LENGTH_SHORT).show();
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
+//        if (id != -1) {
+//            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(this, LoginProfesor.class));
+//            finish();
+//        } else {
+//            Toast.makeText(this, "Error al registrar", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        if (cursor != null) {
+//            cursor.close();
+//        }
     }
 
     @Override

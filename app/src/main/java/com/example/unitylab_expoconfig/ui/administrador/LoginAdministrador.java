@@ -19,6 +19,7 @@ public class LoginAdministrador extends AppCompatActivity {
 
     private EditText editTextEmpleado, editTextPassword;
     private DbmsSQLiteHelper dbHelper;
+    private AdminActivity adminActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class LoginAdministrador extends AppCompatActivity {
         setContentView(R.layout.login_administrador);
 
         dbHelper = new DbmsSQLiteHelper(this);
+
         editTextEmpleado = findViewById(R.id.editTextNumEmpleado);
         editTextPassword = findViewById(R.id.editTextPassword);
 
@@ -49,10 +51,10 @@ public class LoginAdministrador extends AppCompatActivity {
     }
 
     private void validarAdministrador() {
-        String numEmpleado = editTextEmpleado.getText().toString().trim();
+        int numEmpleado = Integer.parseInt(editTextEmpleado.getText().toString().trim());
         String password = editTextPassword.getText().toString().trim();
 
-        if (numEmpleado.isEmpty() || password.isEmpty()) {
+        if (numEmpleado == 0 || password.isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -61,7 +63,7 @@ public class LoginAdministrador extends AppCompatActivity {
 
         if (cursor != null && cursor.moveToFirst()) {
             // Autenticación exitosa
-            int idAdmin = cursor.getInt(cursor.getColumnIndexOrThrow(AdministradorBD.COL_ID));
+            int idAdmin = cursor.getInt(cursor.getColumnIndexOrThrow(AdministradorBD.COL_NUMERO_EMPLEADO));
             String nombre = cursor.getString(cursor.getColumnIndexOrThrow(AdministradorBD.COL_NOMBRE));
 
             Intent intent = new Intent(this, AdminActivity.class);
